@@ -1,133 +1,182 @@
-import React from 'react'
-import { useState } from 'react';
+import { Form, Formik } from 'formik';
+import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { IRootState } from '../../store';
-import Select from 'react-select';
-import { toggleAnimation, toggleLayout, toggleMenu, toggleNavbar, toggleRTL, toggleTheme, toggleSemidark } from '../../store/themeConfigSlice';
-import ReactQuill from 'react-quill';
+import * as Yup from 'yup';
 import InputCustom from '../../components/atoms/InputCustom';
-
+import { IRootState } from '../../store';
+import { useMutate } from '../../hooks/UseMutate';
 
 const role = [
     { value: 'user', label: 'user' },
     { value: 'admin', label: 'admin' },
-
 ];
 const gender = [
     { value: 'male', label: 'male' },
     { value: 'female', label: 'female' },
-
 ];
 const country = [
     { value: 'egypt', label: 'egypt' },
     { value: 'korea', label: 'korea' },
-
 ];
-
-
 
 type UserCustom_TP = {
     showCustomizer?: boolean;
-    setShowCustomizer?:any
+    setShowCustomizer?: any;
+    userData?:any
+};
 
-  };
-
-
-
-const AddUser = ({
-    showCustomizer,
-    setShowCustomizer,
-
-  }:UserCustom_TP) => {
+const AddUser = ({ showCustomizer, setShowCustomizer , userData }: UserCustom_TP) => {
+    console.log("🚀 ~ file: AddUser.tsx:29 ~ AddUser ~ userData:", userData)
     const themeConfig = useSelector((state: IRootState) => state.themeConfig);
     const dispatch = useDispatch();
     const [currentImage, setCurrentImage] = useState<File>();
-    const [previewImage, setPreviewImage] = useState<string>("");
+    const [previewImage, setPreviewImage] = useState<string>('');
     const [editorValue, setEditorValue] = useState('');
-    const [formValues,setFormValues]=useState({
-        name:'',
-        username:'',
-        avatar:'',
-        status:'',
-        email:'',
-        phone:'',
-        password:'',
-        gender:'',
-        country:'',
-        bio:'',
+    const [formValues, setFormValues] = useState({
+        name: '',
+        username: '',
+        avatar: '',
+        status: '',
+        email: '',
+        phone: '',
+        password: '',
+        gender: '',
+        country: '',
+        bio: '',
+    });
+    editorValue;
 
-    })
-    editorValue
+    console.log(editorValue, 'l');
 
-    console.log(editorValue,'l')
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setFormValues({ ...formValues, [e.currentTarget.name]: e.currentTarget.value });
+        console.log(formValues);
+    };
 
-
-      const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setFormValues({ ...formValues, [e.currentTarget.name]: e.currentTarget.value })
-        console.log(formValues)
-      }
-
-      const handleQuillEdit = (value:string) => {
+    const handleQuillEdit = (value: string) => {
         setFormValues((prev) => {
-          return {
-            ...prev,
-            bio: value
-          }
-        })
-        console.log(formValues)
-      }
-
+            return {
+                ...prev,
+                bio: value,
+            };
+        });
+        console.log(formValues);
+    };
 
     const selectImage = (event: React.ChangeEvent<HTMLInputElement>) => {
         const selectedFiles = event.target.files as FileList;
         setCurrentImage(selectedFiles?.[0]);
         setPreviewImage(URL.createObjectURL(selectedFiles?.[0]));
-        console.log(previewImage,'hey')
-        setFormValues((prev:any) => {
+        console.log(previewImage, 'hey');
+        setFormValues((prev: any) => {
             return {
-              ...prev,
-              avatar: selectedFiles?.[0]
-            }
-          })
-          console.log(formValues)
-      };
+                ...prev,
+                avatar: selectedFiles?.[0],
+            };
+        });
+        console.log(formValues);
+    };
+
+    const validatopnSchema = () =>
+        Yup.object({
+            name: Yup.string().trim().required('faild os requerd'),
+            email: Yup.string().trim().required('sdrfgv'),
+        });
+
+    const initialValues = {
+        name: userData?.name ? userData?.name : '',
+        username: '',
+        avatar: '',
+        status: '',
+        email: '',
+        phone: '',
+        password: '',
+        gender: '',
+        country: '',
+        bio: '',
+    };
+
+    // post data
+    const { mutate } = useMutate({
+        mutationKey: ['teachers/id'],
+        endpoint: `/api/user/store`,
+        onSuccess: (data: any) => {
+            console.log('done');
+        },
+        onError: (err: any) => {
+            console.log('error', err);
+        },
+        formData: true,
+    });
+    // update
+    const { mutate: update } = useMutate({
+        mutationKey: ['teachers/id'],
+        endpoint: `/api/user/store`,
+        onSuccess: (data: any) => {
+            console.log('done');
+        },
+        onError: (err: any) => {
+            console.log('error', err);
+        },
+        formData: true,
+    });
 
 
-  return (
-    <div>
-    <div className={`${(showCustomizer && '!block') || ''} fixed inset-0 bg-[black]/60 z-[51] px-4 hidden transition-[display]`} onClick={() => setShowCustomizer(false)}></div>
 
-    <nav
-        className={`${
-            (showCustomizer && 'ltr:!right-0 rtl:!left-0') || ''
-        } bg-white fixed ltr:-right-[50%] rtl:-left-[50%] top-0 bottom-0 w-full max-w-[50%] shadow-[5px_0_25px_0_rgba(94,92,154,0.1)] transition-[right] duration-300 z-[51] dark:bg-black p-4`}
-    >
+    return (
+        <div>
+            <div className={`${(showCustomizer && '!block') || ''} fixed inset-0 bg-[black]/60 z-[51] px-4 hidden transition-[display]`} onClick={() => setShowCustomizer(false)}></div>
 
-        <div className="overflow-y-auto overflow-x-hidden perfect-scrollbar h-full">
-            <div className="text-center relative pb-5">
-                <button type="button" className="absolute top-0 ltr:right-0 rtl:left-0 opacity-30 hover:opacity-100 dark:text-white" onClick={() => setShowCustomizer(false)}>
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="20"
-                        height="20"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                    >
-                        <line x1="18" y1="6" x2="6" y2="18"></line>
-                        <line x1="6" y1="6" x2="18" y2="18"></line>
-                    </svg>
-                </button>
+            <nav
+                className={`${
+                    (showCustomizer && 'ltr:!right-0 rtl:!left-0') || ''
+                } bg-white fixed ltr:-right-[50%] rtl:-left-[50%] top-0 bottom-0 w-full max-w-[50%] shadow-[5px_0_25px_0_rgba(94,92,154,0.1)] transition-[right] duration-300 z-[51] dark:bg-black p-4`}
+            >
+                <div className="overflow-y-auto overflow-x-hidden perfect-scrollbar h-full">
+                    <div className="text-center relative pb-5">
+                        <button type="button" className="absolute top-0 ltr:right-0 rtl:left-0 opacity-30 hover:opacity-100 dark:text-white" onClick={() => setShowCustomizer(false)}>
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="20"
+                                height="20"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="1.5"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                            >
+                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                            </svg>
+                        </button>
 
-                <h4 className="mb-1 dark:text-white font-semibold text-lg">Add New User </h4>
+                        <h4 className="mb-1 dark:text-white font-semibold text-lg">Add New User </h4>
+                    </div>
 
-            </div>
+                    <div className="border border-dashed border-white-light dark:border-[#1b2e4b] rounded-md mb-3 p-3">
+                        <Formik
+                            initialValues={initialValues}
+                            validationSchema={validatopnSchema}
+                            onSubmit={(values) => {
+                                console.log('values', values);
+                                mutate({ ...values });
+                                // update({ ...values, _methode: 'put' });
+                            }}
+                        >
+                            <Form>
+                                <InputCustom type="text" name="name" />
+                                <InputCustom type="text" name="username" />
+                                <InputCustom type="email" name="email" />
+                                <InputCustom type="password" name="password" />
+                                <InputCustom type="text" name="phone" />
 
-            <div className="border border-dashed border-white-light dark:border-[#1b2e4b] rounded-md mb-3 p-3">
-            <form>
+                                <button type="submit" className="btn btn-primary w-full">
+                                    Save
+                                </button>
+                            </Form>
+                        </Formik>
+                        {/* <form>
                 <div className='grid lg:grid-cols-12 max-sm:grid-cols-1 gap-5 ' >
                    <div className='lg:col-span-6 max-sm:col-span-1 '>
                         <label htmlFor="name">Full Name</label>
@@ -185,15 +234,12 @@ const AddUser = ({
                     </div>
 
                 </div>
-            </form>
-
-            </div>
-
-
+            </form> */}
+                    </div>
+                </div>
+            </nav>
         </div>
-    </nav>
-</div>
-  )
-}
+    );
+};
 
-export default AddUser
+export default AddUser;

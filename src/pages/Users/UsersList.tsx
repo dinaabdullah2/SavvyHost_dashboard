@@ -1,5 +1,5 @@
 import { DataTable, DataTableSortStatus } from 'mantine-datatable';
-import { useEffect, useState } from 'react';
+import { useEffect, useId, useState } from 'react';
 import sortBy from 'lodash/sortBy';
 import { useDispatch, useSelector } from 'react-redux';
 import { IRootState } from '../../store';
@@ -12,20 +12,19 @@ import AddUser from './AddUser';
 import EditUser from './EditUser';
 import useFetch from '../../hooks/UseFetch';
 import axios from 'axios';
-import { useMutation } from '@tanstack/react-query';
-
+import { notifyManager, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutate } from '../../hooks/UseMutate';
+import SweetAlert from '../Components/SweetAlert';
+import { Form, Formik } from 'formik';
+import { BaseInputField } from '../../components/atoms/BaseInputField';
 
 const options = [
     { value: 'Filter Role', label: 'All' },
     { value: '1', label: 'admin' },
     { value: '2', label: 'user' },
-
-
 ];
 
-
 const UsersList = () => {
-
     const dispatch = useDispatch();
     useEffect(() => {
         dispatch(setPageTitle('Users Table'));
@@ -36,26 +35,34 @@ const UsersList = () => {
     interface User {
         id: number;
         image: string;
-        name:string;
+        name: string;
         username: string;
-        email:string;
-        phone:string;
+        email: string;
+        phone: string;
         content: string;
-        role_id: any,
+        role_id: any;
 
         // Add more properties if needed...
     }
 
-      const { data: Users } = useFetch<{
+    const {
+        data: Users,
+        isLoading,
+        isRefetching,
+        isFetching,
+        refetch,
+    } = useFetch<{
         data: {
-           all_users: User[];
+            all_users: User[];
         };
-      }>({
+    }>({
         endpoint: `api/user/index`,
         queryKey: [`All-Users`],
-      });
-      console.log(Users?.data?.all_users)
-
+    });
+    console.log('🚀 ~ file: UsersList.tsx:49 ~ isFetching:', isFetching);
+    console.log('🚀 ~ file: UsersList.tsx:49 ~ isRefetching:', isRefetching);
+    console.log('🚀 ~ file: UsersList.tsx:49 ~ isLoading:', isLoading);
+    console.log(Users?.data?.all_users);
 
     const [page, setPage] = useState(1);
     const PAGE_SIZES = [10, 20, 30, 50, 100];
@@ -67,21 +74,17 @@ const UsersList = () => {
     const [selectedRecords, setSelectedRecords] = useState<any>([]);
     const [search, setSearch] = useState('');
     const [sortStatus, setSortStatus] = useState<DataTableSortStatus>({ columnAccessor: 'id', direction: 'asc' });
-    const [selectValue,setSelectValue]=useState<any>('')
-    const [userData,setUserData]=useState<any>()
-
-
+    const [selectValue, setSelectValue] = useState<any>('');
+    const [userData, setUserData] = useState<any>();
 
     useEffect(() => {
-
-        setInitialRecords(sortBy(Users?.data?.all_users, 'id'))
-
+        setInitialRecords(sortBy(Users?.data?.all_users, 'id'));
     }, [Users?.data?.all_users]);
 
-    function OpenEditForm(id:any){
+    function OpenEditForm(id: any) {
         setShowEditForm(!showEditForm);
-        setUserData(id)
-        console.log(userData,'idd')
+        setUserData(id);
+        console.log(userData, 'idd');
     }
 
     useEffect(() => {
@@ -94,30 +97,25 @@ const UsersList = () => {
         setRecordsData([...initialRecords.slice(from, to)]);
     }, [page, pageSize, initialRecords]);
 
-     // filter
+    // filter
     useEffect(() => {
-        if(selectValue !== 'Filter Role'){
-        setInitialRecords(() => {
-            return Users?.data?.all_users.filter((item) => {
-                return (
-                    item.role_id.toString().includes(selectValue.toLowerCase())
-                );
+        if (selectValue !== 'Filter Role') {
+            setInitialRecords(() => {
+                return Users?.data?.all_users.filter((item) => {
+                    return item.role_id.toString().includes(selectValue.toLowerCase());
+                });
             });
-        })}else{
-            setInitialRecords(Users?.data?.all_users)
+        } else {
+            setInitialRecords(Users?.data?.all_users);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectValue]);
 
-
     //search
     useEffect(() => {
-        setInitialRecords(() =>{
+        setInitialRecords(() => {
             return Users?.data?.all_users.filter((item) => {
-                return (
-                    item.name.toLowerCase().includes(search.toLowerCase()) ||
-                    item.email.toLowerCase().includes(search.toLowerCase())
-                );
+                return item.name.toLowerCase().includes(search.toLowerCase()) || item.email.toLowerCase().includes(search.toLowerCase());
             });
         });
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -130,41 +128,43 @@ const UsersList = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [sortStatus]);
 
+    const queryClient = useQueryClient();
 
-const showAlert = async (type: number,id :any) => {
-    if (type === 10) {
-        Swal.fire({
-            icon: 'warning',
-            title: 'Are you sure?',
-            text: "You won't be able to revert this!",
-            showCancelButton: true,
-            confirmButtonText: 'Delete',
-            padding: '2em',
-            customClass: 'sweet-alerts',
+    const [idUser, setUserId] = useState();
+    const { mutate: deleteUser } = useMutate({
+        mutationKey: [`teachers/id/{id`],
+        endpoint: `api/user/delete/${idUser?.id}`,
+        onSuccess: (data: any) => {
+            console.log('done');
+            queryClient.refetchQueries(['api/user/index']);
+            refetch();
+        },
+        onError: (err: any) => {
+            console.log('error', err);
+        },
+        method: 'delete',
+        formData: true,
+    });
 
-        }).then((result) => {
-            if (result.value) {
-                console.log(id,'id')
-                axios.delete(`https://dashboard.savvyhost.io/api/user/delete/${id.id}`, {
-                    headers: {
-
-                      "Content-Type": "multipart/form-data"
-                    }
-                  })
-                    .then(response => {
-                      console.log(response,"deleted")
-                      Swal.fire({ title: 'Deleted!', text: 'Your file has been deleted.', icon: 'success', customClass: 'sweet-alerts' });
-                    }
-                    ).catch((err) => {
-                        Swal.fire({ title: 'Sorry!', text: 'User can not be Deleted .', icon: "error", customClass: 'sweet-alerts' });
-                        console.log(err,'err')
-                     })
-                //delete
-
-            }
-        });
-    }
-}
+    const showAlert = async (type: number, id: any) => {
+        if (type === 10) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                showCancelButton: true,
+                confirmButtonText: 'Delete',
+                padding: '2em',
+                customClass: 'sweet-alerts',
+            }).then((result) => {
+                if (result.value) {
+                    console.log(id, 'id');
+                    // delete user
+                    deleteUser(id);
+                }
+            });
+        }
+    };
 
     return (
         <div className="panel">
@@ -174,18 +174,23 @@ const showAlert = async (type: number,id :any) => {
                     <input type="text" className="form-input w-auto" placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} />
                 </div>
                 <div>
-                 <Select className='w-[200px]' defaultValue={options[0]} options={options} onChange={(event)=>{setSelectValue(event?.value)}} isSearchable={false} />
+                    <Select
+                        className="w-[200px]"
+                        defaultValue={options[0]}
+                        options={options}
+                        onChange={(event) => {
+                            setSelectValue(event?.value);
+                        }}
+                        isSearchable={false}
+                    />
                 </div>
                 <div>
-                <button
-                    type="button"
-                    className="bg-primary font-semibold hover:bg-blue-500 text-white py-2 px-5 rounded-lg cursor-pointer"
-                    onClick={() => setShowCustomizer(!showCustomizer)}
-                >
-                   Add User
-                </button>
-                   <AddUser showCustomizer={showCustomizer} setShowCustomizer={setShowCustomizer} />
-                   <EditUser showEditForm={showEditForm} userData={userData} setShowEditForm={setShowEditForm} />
+                    <button type="button" className="bg-primary font-semibold hover:bg-blue-500 text-white py-2 px-5 rounded-lg cursor-pointer" onClick={() => setShowCustomizer(!showCustomizer)}>
+                        Add User
+                    </button>
+
+                    <AddUser userData={userData} showCustomizer={showCustomizer} setShowCustomizer={setShowCustomizer} />
+                    {/* <EditUser showEditForm={showEditForm} userData={userData} setShowEditForm={setShowEditForm} /> */}
                 </div>
             </div>
             <div className="datatables">
@@ -194,40 +199,25 @@ const showAlert = async (type: number,id :any) => {
                     className={`${isRtl ? 'whitespace-nowrap table-hover' : 'whitespace-nowrap table-hover'}`}
                     records={recordsData}
                     columns={[
-                        { accessor: 'id', title: 'ID', sortable: true  },
+                        { accessor: 'id', title: 'ID', sortable: true },
                         {
                             accessor: 'name',
                             title: 'User',
                             sortable: true,
-                            width:"200px",
+                            width: '200px',
                             render: ({ name }) => (
                                 <div className="flex items-center w-max">
-
                                     <div>{name}</div>
                                 </div>
                             ),
                         },
-                        { accessor: 'email', title:"Email" ,sortable: true },
+                        { accessor: 'email', title: 'Email', sortable: true },
                         { accessor: 'phone', title: 'Phone No.', sortable: true },
                         {
                             accessor: 'role',
                             title: 'Role',
                             sortable: true,
-                            render: ({role_id }) => (
-                                <div className="flex items-center w-max">
-                                    {role_id == 1?
-                                      <div>
-                                         admin
-                                      </div>
-                                      :
-                                      <div>
-                                         user
-                                      </div>
-
-
-                                    }
-                                </div>
-                            ),
+                            render: ({ role_id }) => <div className="flex items-center w-max">{role_id == 1 ? <div>admin</div> : <div>user</div>}</div>,
                         },
                         {
                             accessor: 'action',
@@ -235,9 +225,12 @@ const showAlert = async (type: number,id :any) => {
                             titleClassName: '!text-center',
                             render: (id) => (
                                 <div className="flex items-center w-max mx-auto gap-2">
-                                    <Tippy >
-                                        <button type="button" className=""   onClick={() =>OpenEditForm(id)}>
-                                            <svg  width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-blue-700">
+                                    <Tippy>
+                                        <button type="button" className="" onClick={() => {
+                                            setShowCustomizer(!showCustomizer)
+                                            setUserData(id)
+                                        }}>
+                                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-blue-700">
                                                 <path
                                                     d="M15.2869 3.15178L14.3601 4.07866L5.83882 12.5999L5.83881 12.5999C5.26166 13.1771 4.97308 13.4656 4.7249 13.7838C4.43213 14.1592 4.18114 14.5653 3.97634 14.995C3.80273 15.3593 3.67368 15.7465 3.41556 16.5208L2.32181 19.8021L2.05445 20.6042C1.92743 20.9852 2.0266 21.4053 2.31063 21.6894C2.59466 21.9734 3.01478 22.0726 3.39584 21.9456L4.19792 21.6782L7.47918 20.5844L7.47919 20.5844C8.25353 20.3263 8.6407 20.1973 9.00498 20.0237C9.43469 19.8189 9.84082 19.5679 10.2162 19.2751C10.5344 19.0269 10.8229 18.7383 11.4001 18.1612L11.4001 18.1612L19.9213 9.63993L20.8482 8.71306C22.3839 7.17735 22.3839 4.68748 20.8482 3.15178C19.3125 1.61607 16.8226 1.61607 15.2869 3.15178Z"
                                                     stroke="currentColor"
@@ -252,8 +245,15 @@ const showAlert = async (type: number,id :any) => {
                                             </svg>
                                         </button>
                                     </Tippy>
-                                    <Tippy >
-                                      <button type="button" className="" onClick={() => showAlert(10,id)}>
+                                    <Tippy>
+                                        <button
+                                            type="button"
+                                            className=""
+                                            onClick={() => {
+                                                showAlert(10, id);
+                                                setUserId(id);
+                                            }}
+                                        >
                                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-red-600">
                                                 <path
                                                     opacity="0.5"
@@ -272,9 +272,8 @@ const showAlert = async (type: number,id :any) => {
                                                 <path opacity="0.5" d="M9.5 11L10 16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
                                                 <path opacity="0.5" d="M14.5 11L14 16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
                                             </svg>
-                                       </button>
+                                        </button>
                                     </Tippy>
-
                                 </div>
                             ),
                         },
@@ -294,8 +293,7 @@ const showAlert = async (type: number,id :any) => {
                 />
             </div>
         </div>
-
     );
-}
+};
 
-export default UsersList
+export default UsersList;
