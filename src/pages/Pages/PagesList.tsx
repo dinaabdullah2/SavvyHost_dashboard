@@ -10,6 +10,8 @@ import Select from 'react-select';
 import Swal from 'sweetalert2';
 import AddPage from './AddPage';
 import EditPage from './EditPage';
+import useFetch from '../../hooks/UseFetch';
+import axios from 'axios';
 
 
 const rowData = [
@@ -362,10 +364,60 @@ const options = [
 
 const PagesList = () => {
     const dispatch = useDispatch();
-    useEffect(() => {
-        dispatch(setPageTitle('Order Sorting Table'));
-    });
+    // useEffect(() => {
+    //     dispatch(setPageTitle('Pages Table'));
+    //     axios.get(`https://dashboard.savvyhost.io/dashboard/page/index`, {
+    //         headers: {
+
+    //           "Content-Type": "multipart/form-data"
+    //         }
+    //       })
+    //         .then(response => {
+    //           console.log(response,"feee")
+
+    //         }
+    //         ).catch((err) => {
+
+    //             console.log(err,'fee')
+    //          })
+    // });
     const isRtl = useSelector((state: IRootState) => state.themeConfig.rtlClass) === 'rtl' ? true : false;
+
+
+    interface Page {
+        id: number;
+        image: string;
+        name: string;
+        username: string;
+        email: string;
+        phone: string;
+        content: string;
+        role_id: number;
+        publish:boolean
+
+        // Add more properties if needed...
+    }
+
+    const {
+        data: Pages,
+        isLoading,
+        isRefetching,
+        isFetching,
+        refetch,
+    } = useFetch<{
+        data: {
+            pages: Page[];
+        };
+    }>({
+        endpoint: `dashboard/page/index`,
+        queryKey: [`All-Pages`],
+    });
+    console.log('🚀 ~ file: PagesList.tsx:49 ~ isFetching:', isFetching);
+    console.log('🚀 ~ file: PagesList.tsx:49 ~ isRefetching:', isRefetching);
+    console.log('🚀 ~ file: PagesList.tsx:49 ~ isLoading:', isLoading);
+    console.log('🚀 ~ file: PagesList.tsx:49 ~ Refetching:',Pages?.data?.pages);
+
+
 
     const [page, setPage] = useState(1);
     const PAGE_SIZES = [10, 20, 30, 50, 100];
@@ -547,7 +599,7 @@ const showAlert = async (type: number) => {
                 />
             </div>
 
-            
+
         </div>
 
     );

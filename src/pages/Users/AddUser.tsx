@@ -5,6 +5,14 @@ import * as Yup from 'yup';
 import InputCustom from '../../components/atoms/InputCustom';
 import { IRootState } from '../../store';
 import { useMutate } from '../../hooks/UseMutate';
+import Select from 'react-select';
+// import ReactQuill from 'react-quill';
+// import UploadImg from '../../components/atoms/UploadImg';
+import Editor from '../../components/atoms/Editor';
+import UploadImage from '../../components/atoms/UploadImage';
+import axios from 'axios';
+import Swal from 'sweetalert2';
+
 
 const role = [
     { value: 'user', label: 'user' },
@@ -74,7 +82,7 @@ const AddUser = ({ showCustomizer, setShowCustomizer , userData }: UserCustom_TP
                 avatar: selectedFiles?.[0],
             };
         });
-        console.log(formValues);
+        console.log(currentImage,'lll');
     };
 
     const validatopnSchema = () =>
@@ -85,21 +93,21 @@ const AddUser = ({ showCustomizer, setShowCustomizer , userData }: UserCustom_TP
 
     const initialValues = {
         name: userData?.name ? userData?.name : '',
-        username: '',
-        avatar: '',
-        status: '',
-        email: '',
-        phone: '',
-        password: '',
-        gender: '',
-        country: '',
-        bio: '',
+        username: userData?.username ? userData?.username : '',
+        avatar: userData?.avatar ? userData?.avatar : '',
+        status: userData?.status ? userData?.status : '',
+        email: userData?.email ? userData?.email : '',
+        phone: userData?.phone ? userData?.phone : '',
+        password: userData?.password ? userData?.password : '',
+        gender: userData?.gender ? userData?.gender : '',
+        country: userData?.country ? userData?.country : '',
+        bio: userData?.bio ? userData?.bio : '',
     };
 
     // post data
     const { mutate } = useMutate({
         mutationKey: ['teachers/id'],
-        endpoint: `/api/user/store`,
+        endpoint: `dashboard/user/store`,
         onSuccess: (data: any) => {
             console.log('done');
         },
@@ -110,7 +118,7 @@ const AddUser = ({ showCustomizer, setShowCustomizer , userData }: UserCustom_TP
     });
     // update
     const { mutate: update } = useMutate({
-        mutationKey: ['teachers/id'],
+        mutationKey: ['users/id'],
         endpoint: `/api/user/store`,
         onSuccess: (data: any) => {
             console.log('done');
@@ -121,6 +129,22 @@ const AddUser = ({ showCustomizer, setShowCustomizer , userData }: UserCustom_TP
         formData: true,
     });
 
+    const handleSubmit = (values:any) =>{
+        axios.post(`https://dashboard.savvyhost.io/dashboard/user/store`,values, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+              "Authorization": `Bearer ${localStorage.getItem('token')}`,
+            }
+          })
+            .then(response => {
+              console.log(response,"added")
+              Swal.fire({ title: 'add!', text: 'Your file has been added successfully.', icon: 'success', customClass: 'sweet-alerts' });
+            }
+            ).catch((err) => {
+                Swal.fire({ title: 'Sorry!', text: 'User can not be added .', icon: "error", customClass: 'sweet-alerts' });
+                console.log(err,'err')
+             })
+    }
 
 
     return (
@@ -158,6 +182,7 @@ const AddUser = ({ showCustomizer, setShowCustomizer , userData }: UserCustom_TP
                         <Formik
                             initialValues={initialValues}
                             validationSchema={validatopnSchema}
+                            // onSubmit={(values) => {handleSubmit(values)}}
                             onSubmit={(values) => {
                                 console.log('values', values);
                                 mutate({ ...values });
@@ -165,17 +190,56 @@ const AddUser = ({ showCustomizer, setShowCustomizer , userData }: UserCustom_TP
                             }}
                         >
                             <Form>
-                                <InputCustom type="text" name="name" />
-                                <InputCustom type="text" name="username" />
-                                <InputCustom type="email" name="email" />
-                                <InputCustom type="password" name="password" />
-                                <InputCustom type="text" name="phone" />
-
-                                <button type="submit" className="btn btn-primary w-full">
-                                    Save
-                                </button>
+                            <div className='grid lg:grid-cols-12 max-sm:grid-cols-1 gap-5 ' >
+                               <div className='lg:col-span-6 max-sm:col-span-1 '>
+                                    <label htmlFor="name">Full Name</label>
+                                    <InputCustom type="text" name="name" />
+                                </div>
+                                <div className='lg:col-span-6 max-sm:col-span-1 '>
+                                    <label htmlFor="username">Username</label>
+                                    <InputCustom type="text" name="username" />
+                                </div>
+                                <div className='lg:col-span-6 max-sm:col-span-1 '>
+                                   <label htmlFor="email">Email</label>
+                                   <InputCustom type="text" name="email" />
+                                </div>
+                                <div className='lg:col-span-6 max-sm:col-span-1 '>
+                                  <label htmlFor="password">Password</label>
+                                  <InputCustom type="password" name="password" />
+                                </div>
+                                <div className='lg:col-span-6 max-sm:col-span-1 '>
+                                    <label htmlFor="phone">Phone</label>
+                                    <InputCustom type="text" name="phone" />
+                                </div>
+                                <div className='lg:col-span-6 max-sm:col-span-1 '>
+                                    <label htmlFor="Country">Country</label>
+                                    <Select defaultValue={country[0]} options={country} isSearchable={false} />
+                                </div>
+                                <div className='lg:col-span-6 max-sm:col-span-1 '>
+                                    <label htmlFor="Country">Gender</label>
+                                    <Select defaultValue={gender[0]} options={gender} isSearchable={false} />
+                                </div>
+                                <div className='lg:col-span-6 max-sm:col-span-1 '>
+                                    <label htmlFor="Role">Role</label>
+                                    <Select defaultValue={role[0]} options={role} isSearchable={false} />
+                                </div>
+                                <div className='lg:col-span-12 max-sm:col-span-1 '>
+                                    <label htmlFor="Bio">Bio</label>
+                                    <Editor name='bio' />
+                                </div>
+                                <div className='lg:col-span-12 max-sm:col-span-1 '>
+                                    <label htmlFor="avatar">Image</label>
+                                    <UploadImage name='avatar'/>
+                                </div>
+                                <div className='lg:col-span-12 max-sm:col-span-1 '>
+                                    <button type="submit" className="btn btn-primary w-full">
+                                        Save
+                                    </button>
+                                </div>
+                              </div>
                             </Form>
                         </Formik>
+
                         {/* <form>
                 <div className='grid lg:grid-cols-12 max-sm:grid-cols-1 gap-5 ' >
                    <div className='lg:col-span-6 max-sm:col-span-1 '>

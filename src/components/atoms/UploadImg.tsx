@@ -1,9 +1,10 @@
 import React, { useState } from "react"
-
+import { IconUpload } from '@tabler/icons-react';
 import ImageUploading, { ImageListType } from "react-images-uploading"
 import { useFormikContext } from "formik"
+import { IconTrash } from '@tabler/icons-react';
 
-const UploadImg = (name) => {
+const UploadImg = (name:any) => {
   console.log("🚀 ~ file: UploadImg.tsx:10 ~ UploadImg ~ name:", name)
   const [images, setImages] = React.useState([])
   const maxNumber = 69
@@ -13,11 +14,10 @@ const UploadImg = (name) => {
     imageList: ImageListType,
     addUpdateIndex: number[] | undefined
   ) => {
-    setFieldValue(
-      name,
 
-      setImages(imageList as never[])
-    )
+    setFieldValue(name,setImages(imageList as never[]))
+
+    // console.log(images[0],'img')
   }
   return (
     <ImageUploading
@@ -41,13 +41,13 @@ const UploadImg = (name) => {
             <div className="">
               <button
                 type="button"
-                className="px-[300px] py-[100px]"
+                className="px-[100px] py-[100px]"
                 style={isDragging ? { color: "red" } : undefined}
                 onClick={onImageUpload}
                 {...dragProps}
               >
-                {/* <UploadSvgIcon stroke={"#A0A0A0"} /> */}
-                
+                <IconUpload />
+
               </button>
             </div>
             <div className="absolute w-full">
@@ -66,7 +66,7 @@ const UploadImg = (name) => {
                         type="button"
                         onClick={() => onImageUpdate(index)}
                       >
-                        {/* <IconUpload /> */}
+                        <IconUpload />
                       </button>
                     </div>
                     <div className="absolute top-0 right-0 bg-gray-200 p-1 rounded-md m-2 flex">
@@ -74,7 +74,7 @@ const UploadImg = (name) => {
                         type="button"
                         onClick={() => onImageRemove(index)}
                       >
-                        {/* <SvgDeleteIcon stroke={"#ff0000"} /> */}
+                        <IconTrash />
                       </button>
                     </div>
                   </div>

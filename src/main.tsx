@@ -18,6 +18,7 @@ import router from './router/index';
 import { Provider } from 'react-redux';
 import store from './store/index';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+
 const queryClient = new QueryClient({
     defaultOptions: {
       queries: { refetchOnWindowFocus: false },
@@ -28,11 +29,13 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
 
     <React.StrictMode>
        <QueryClientProvider client={queryClient}>
+
             <Suspense>
                 <Provider store={store}>
                     <RouterProvider router={router} />
                 </Provider>
             </Suspense>
+
         </QueryClientProvider>
     </React.StrictMode>
 );

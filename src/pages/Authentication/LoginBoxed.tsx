@@ -3,7 +3,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { IRootState } from '../../store';
 import { useEffect } from 'react';
 import { setPageTitle } from '../../store/themeConfigSlice';
-
+import axios from 'axios';
+import { Form, Formik } from 'formik';
+import * as Yup from 'yup';
+import InputCustom from '../../components/atoms/InputCustom';
 const LoginBoxed = () => {
     const dispatch = useDispatch();
     useEffect(() => {
@@ -11,35 +14,93 @@ const LoginBoxed = () => {
     });
     const navigate = useNavigate();
     const isDark = useSelector((state: IRootState) => state.themeConfig.theme) === 'dark' ? true : false;
+    const initialValues = {
 
-    const submitForm = () => {
-        navigate('/');
     };
+
+    const validatopnSchema = () =>
+        Yup.object({
+
+            login: Yup.string().trim().required('sdrfgv'),
+
+        });
+
+    // const { login, user } = useAuth();
+
+    const delay = (ms:any) => new Promise(res => setTimeout(res, ms));
+    const handleRedirect = async () => {
+            await delay(7000);
+
+        if(localStorage.getItem("token")){
+            navigate("/")
+         
+
+        }else {
+            navigate("/login")
+        }
+     }
+    const API_BASE_URL = "https://dashboard.savvyhost.io";
+    const handleSubmit = async (values: any) => {
+        axios.post(`https://dashboard.savvyhost.io/api/login`,values
+        , {
+            headers: {
+                "Content-Type": "application/json; charset=utf-8",
+                Authorization: "Bearer your-token-here",
+            }
+          })
+            .then(response => {
+              console.log(response,"feee")
+              localStorage.setItem("token",response.data.access_token)
+              handleRedirect()
+            }
+            ).catch((err) => {
+
+                console.log(err,'fee')
+             })
+
+
+
+
+    };
+
+
+
 
     return (
         <div className="flex justify-center items-center min-h-screen bg-cover bg-center bg-[url('/assets/images/map.svg')] dark:bg-[url('/assets/images/map-dark.svg')]">
             <div className="panel sm:w-[480px] m-6 max-w-lg w-full">
                 <h2 className="font-bold text-2xl mb-3">Sign In</h2>
                 <p className="mb-7">Enter your email and password to login</p>
-                <form className="space-y-5" onSubmit={submitForm}>
-                    <div>
-                        <label htmlFor="email">Email</label>
-                        <input id="email" type="email" className="form-input" placeholder="Enter Email" />
-                    </div>
-                    <div>
-                        <label htmlFor="password">Password</label>
-                        <input id="password" type="password" className="form-input" placeholder="Enter Password" />
-                    </div>
-                    <div>
-                        <label className="cursor-pointer">
-                            <input type="checkbox" className="form-checkbox" />
-                            <span className="text-white-dark">Subscribe to weekly newsletter</span>
-                        </label>
-                    </div>
-                    <button type="submit" className="btn btn-primary w-full">
-                        SIGN IN
-                    </button>
-                </form>
+                        <Formik
+                            initialValues={initialValues}
+                            validationSchema={validatopnSchema}
+                            onSubmit={(values) => {handleSubmit(values)}}
+                            // onSubmit={(values) => {
+                            //     console.log('values', values);
+                            //     mutate({ ...values });
+                            //     // update({ ...values, _methode: 'put' });
+                            // }}
+                        >
+                            <Form>
+                            <div className='grid lg:grid-cols-12 max-sm:grid-cols-1 gap-5 ' >
+
+                                <div className='lg:col-span-6 max-sm:col-span-1 '>
+                                   <label htmlFor="login">Email</label>
+                                   <InputCustom type="text" name="login" />
+                                </div>
+                                <div className='lg:col-span-6 max-sm:col-span-1 '>
+                                  <label htmlFor="password">Password</label>
+                                  <InputCustom type="password" name="password" />
+                                </div>
+
+                                <div className='lg:col-span-12 max-sm:col-span-1 '>
+                                    <button type="submit" className="btn btn-primary w-full">
+                                        Save
+                                    </button>
+                                </div>
+                              </div>
+                            </Form>
+                        </Formik>
                 <div className="relative my-7 h-5 text-center before:w-full before:h-[1px] before:absolute before:inset-0 before:m-auto before:bg-[#ebedf2] dark:before:bg-[#253b5c]">
                     <div className="font-bold text-white-dark bg-white dark:bg-black px-2 relative z-[1] inline-block">
                         <span>OR</span>

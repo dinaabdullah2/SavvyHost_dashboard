@@ -14,7 +14,7 @@ import useFetch from '../../hooks/UseFetch';
 import axios from 'axios';
 import { notifyManager, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useMutate } from '../../hooks/UseMutate';
-import SweetAlert from '../Components/SweetAlert';
+// import SweetAlert from '../Components/SweetAlert';
 import { Form, Formik } from 'formik';
 import { BaseInputField } from '../../components/atoms/BaseInputField';
 
@@ -40,7 +40,7 @@ const UsersList = () => {
         email: string;
         phone: string;
         content: string;
-        role_id: any;
+        role_id: number;
 
         // Add more properties if needed...
     }
@@ -67,7 +67,7 @@ const UsersList = () => {
     const [page, setPage] = useState(1);
     const PAGE_SIZES = [10, 20, 30, 50, 100];
     const [pageSize, setPageSize] = useState(PAGE_SIZES[0]);
-    const [initialRecords, setInitialRecords] = useState(sortBy(Users?.data?.all_users, 'id'));
+    const [initialRecords, setInitialRecords] = useState<any>(sortBy(Users?.data?.all_users, 'id'));
     const [recordsData, setRecordsData] = useState(initialRecords);
     const [showCustomizer, setShowCustomizer] = useState(false);
     const [showEditForm, setShowEditForm] = useState(false);
@@ -101,7 +101,7 @@ const UsersList = () => {
     useEffect(() => {
         if (selectValue !== 'Filter Role') {
             setInitialRecords(() => {
-                return Users?.data?.all_users.filter((item) => {
+                return Users?.data?.all_users.filter((item:any) => {
                     return item.role_id.toString().includes(selectValue.toLowerCase());
                 });
             });
@@ -114,7 +114,7 @@ const UsersList = () => {
     //search
     useEffect(() => {
         setInitialRecords(() => {
-            return Users?.data?.all_users.filter((item) => {
+            return Users?.data?.all_users.filter((item:any) => {
                 return item.name.toLowerCase().includes(search.toLowerCase()) || item.email.toLowerCase().includes(search.toLowerCase());
             });
         });
@@ -127,26 +127,28 @@ const UsersList = () => {
         setPage(1);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [sortStatus]);
+   const queryClient = useQueryClient();
 
-    const queryClient = useQueryClient();
-
-    const [idUser, setUserId] = useState();
+ 
+    const [idUser, setUserId] = useState<any>();
     const { mutate: deleteUser } = useMutate({
-        mutationKey: [`teachers/id/{id`],
-        endpoint: `api/user/delete/${idUser?.id}`,
+        mutationKey: [`users/id/{id}`],
+        endpoint: `dashboard/user/delete/${idUser?.id}`,
         onSuccess: (data: any) => {
             console.log('done');
+            Swal.fire({ title: 'Deleted!', text: 'Your file has been deleted.', icon: 'success', customClass: 'sweet-alerts' });
             queryClient.refetchQueries(['api/user/index']);
             refetch();
         },
         onError: (err: any) => {
             console.log('error', err);
+            Swal.fire({ title: 'Sorry!', text: 'User can not be Deleted .', icon: "error", customClass: 'sweet-alerts' });
         },
         method: 'delete',
-        formData: true,
+        formData: false,
     });
 
-    const showAlert = async (type: number, id: any) => {
+    const showAlert = async (type: number,id :any) => {
         if (type === 10) {
             Swal.fire({
                 icon: 'warning',
@@ -156,16 +158,30 @@ const UsersList = () => {
                 confirmButtonText: 'Delete',
                 padding: '2em',
                 customClass: 'sweet-alerts',
+
             }).then((result) => {
                 if (result.value) {
-                    console.log(id, 'id');
-                    // delete user
-                    deleteUser(id);
+                    console.log(id,'id')
+                    deleteUser(id)
+
+                    // axios.delete(`https://dashboard.savvyhost.io/api/user/delete/${id.id}`, {
+                    //     headers: {
+                    //       "Content-Type": "multipart/form-data"
+                    //     }
+                    //   }).then(response => {
+                    //       console.log(response,"deleted")
+                    //       Swal.fire({ title: 'Deleted!', text: 'Your file has been deleted.', icon: 'success', customClass: 'sweet-alerts' });
+                    //     }
+                    //     ).catch((err) => {
+                    //         Swal.fire({ title: 'Sorry!', text: 'User can not be Deleted .', icon: "error", customClass: 'sweet-alerts' });
+                    //         console.log(err,'err')
+                    //      })
+                    //delete
+
                 }
             });
         }
-    };
-
+    }
     return (
         <div className="panel">
             <div className="flex md:items-center md:flex-row flex-col mb-5 gap-5">
@@ -200,24 +216,15 @@ const UsersList = () => {
                     records={recordsData}
                     columns={[
                         { accessor: 'id', title: 'ID', sortable: true },
-                        {
-                            accessor: 'name',
-                            title: 'User',
-                            sortable: true,
-                            width: '200px',
-                            render: ({ name }) => (
-                                <div className="flex items-center w-max">
-                                    <div>{name}</div>
-                                </div>
-                            ),
-                        },
+                        { accessor: 'name', title: 'User', sortable: true },
                         { accessor: 'email', title: 'Email', sortable: true },
                         { accessor: 'phone', title: 'Phone No.', sortable: true },
                         {
                             accessor: 'role',
                             title: 'Role',
                             sortable: true,
-                            render: ({ role_id }) => <div className="flex items-center w-max">{role_id == 1 ? <div>admin</div> : <div>user</div>}</div>,
+                            render: (role_id ) =>
+                            <div className="flex items-center w-max">{role_id == 1 ? <div>admin</div> : <div>user</div>}</div>,
                         },
                         {
                             accessor: 'action',

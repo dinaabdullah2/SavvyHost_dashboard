@@ -24,16 +24,17 @@ export function useMutate<response_T>({ endpoint, mutationKey, onError, onSucces
             return axios({
                 method: method.toUpperCase(), // Use the specified method
                 url: `https://dashboard.savvyhost.io/${endpoint}`,
-                data: values,
+                data: method === 'delete'? '' :  values,
                 headers: formData
-                    ? {
-                          'Content-Type': 'multipart/form-data',
-                          Authorization: authorizationHeader,
-                      }
-                    : {
-                          'Content-Type': 'application/json; charset=utf-8',
-                          Authorization: authorizationHeader,
-                      },
+                ? {
+
+                    "Content-Type": "multipart/form-data",
+                      Authorization: authorizationHeader,
+                  }
+                : {
+                      'Content-Type': 'application/json; charset=utf-8',
+                      Authorization: authorizationHeader,
+                  },
             });
         },
         onSuccess,

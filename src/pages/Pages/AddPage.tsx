@@ -7,6 +7,10 @@ import { toggleAnimation, toggleLayout, toggleMenu, toggleNavbar, toggleRTL, tog
 import ReactQuill from 'react-quill';
 import { Tab } from '@headlessui/react';
 import { Fragment } from 'react';
+import axios from 'axios';
+import Swal from 'sweetalert2';
+import * as Yup from 'yup';
+import { useMutate } from '../../hooks/UseMutate';
 
 const role = [
     { value: 'user', label: 'user' },
@@ -28,28 +32,118 @@ const options = [
 
 type PageCustom_TP = {
     showAddForm?: boolean;
-    setShowAddForm?:any
+    setShowAddForm?:any;
+    pageData?:any
 
   };
 
-const AddPage = ({
-    showAddForm,
-    setShowAddForm,
+const AddPage = ({showAddForm,setShowAddForm,pageData}:PageCustom_TP) =>
+    {
+        console.log("🚀 ~ file: AddPage.tsx:29 ~ AddPage ~ pageData:", pageData)
+        const themeConfig = useSelector((state: IRootState) => state.themeConfig);
+        const dispatch = useDispatch();
+        const [currentImage, setCurrentImage] = useState<File>();
+        const [previewImage, setPreviewImage] = useState<string>('');
+        const [seoSection,setSeoSection] = useState<any>('yes')
+        const [editorValue, setEditorValue] = useState('');
+        const [formValues, setFormValues] = useState({
+            name: '',
+            username: '',
+            avatar: '',
+            status: '',
+            email: '',
+            phone: '',
+            password: '',
+            gender: '',
+            country: '',
+            bio: '',
+        });
+        editorValue;
 
-  }:PageCustom_TP) => {
-    const themeConfig = useSelector((state: IRootState) => state.themeConfig);
-    const dispatch = useDispatch();
-    const [seoSection,setSeoSection] = useState<any>('yes')
-    const [currentImage, setCurrentImage] = useState<File>();
-    const [previewImage, setPreviewImage] = useState<string>("");
-    const[value,setValue]= useState('')
+   
 
-    const selectImage = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const selectedFiles = event.target.files as FileList;
-        setCurrentImage(selectedFiles?.[0]);
-        setPreviewImage(URL.createObjectURL(selectedFiles?.[0]));
-        console.log(previewImage,'hey')
-      };
+        const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+            setFormValues({ ...formValues, [e.currentTarget.name]: e.currentTarget.value });
+            console.log(formValues);
+        };
+
+        const handleQuillEdit = (value: string) => {
+            setFormValues((prev) => {
+                return {
+                    ...prev,
+                    bio: value,
+                };
+            });
+            console.log(formValues);
+        };
+
+        const selectImage = (event: React.ChangeEvent<HTMLInputElement>) => {
+            const selectedFiles = event.target.files as FileList;
+            setCurrentImage(selectedFiles?.[0]);
+            setPreviewImage(URL.createObjectURL(selectedFiles?.[0]));
+            console.log(previewImage, 'hey');
+            setFormValues((prev: any) => {
+                return {
+                    ...prev,
+                    avatar: selectedFiles?.[0],
+                };
+            });
+            console.log(currentImage,'lll');
+        };
+
+        const validatopnSchema = () =>
+            Yup.object({
+                name: Yup.string().trim().required('faild os requerd'),
+                email: Yup.string().trim().required('sdrfgv'),
+            });
+
+        const initialValues = {
+            name: pageData?.name ? pageData?.name : '',
+            username: pageData?.username ? pageData?.username : '',
+
+        };
+
+        // post data
+        const { mutate } = useMutate({
+            mutationKey: ['teachers/id'],
+            endpoint: `dashboard/user/store`,
+            onSuccess: (data: any) => {
+                console.log('done');
+            },
+            onError: (err: any) => {
+                console.log('error', err);
+            },
+            formData: true,
+        });
+        // update
+        const { mutate: update } = useMutate({
+            mutationKey: ['users/id'],
+            endpoint: `/api/user/store`,
+            onSuccess: (data: any) => {
+                console.log('done');
+            },
+            onError: (err: any) => {
+                console.log('error', err);
+            },
+            formData: true,
+        });
+
+        const handleSubmit = (values:any) =>{
+            axios.post(`https://dashboard.savvyhost.io/dashboard/user/store`,values, {
+                headers: {
+                  "Content-Type": "multipart/form-data",
+                  "Authorization": `Bearer ${localStorage.getItem('token')}`,
+                }
+              })
+                .then(response => {
+                  console.log(response,"added")
+                  Swal.fire({ title: 'add!', text: 'Your file has been added successfully.', icon: 'success', customClass: 'sweet-alerts' });
+                }
+                ).catch((err) => {
+                    Swal.fire({ title: 'Sorry!', text: 'User can not be added .', icon: "error", customClass: 'sweet-alerts' });
+                    console.log(err,'err')
+                 })
+        }
 
   return (
     <div>
