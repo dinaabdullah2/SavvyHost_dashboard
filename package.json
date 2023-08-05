@@ -49,6 +49,7 @@
         "react-export-table-to-excel": "^1.0.6",
         "react-flatpickr": "^3.10.13",
         "react-images-uploading": "^3.1.7",
+        "react-phone-input-2": "^2.15.1",
         "react-popper": "^2.3.0",
         "react-quill": "^2.0.0",
         "react-redux": "^8.0.4",

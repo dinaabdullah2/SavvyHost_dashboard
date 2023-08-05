@@ -15,6 +15,7 @@ import Swal from 'sweetalert2';
 import useFetch from '../../hooks/UseFetch';
 import SelectCustom from '../../components/atoms/SelectCustom';
 import SelectCountries from '../../components/atoms/SelectCountries';
+import PhoneInput2 from '../../components/atoms/PhoneInput';
 
 
 const role = [
@@ -79,10 +80,7 @@ const AddUser = ({ showCustomizer, setShowCustomizer , userData }: UserCustom_TP
         endpoint: `api/dashboard/user/create`,
         queryKey: [`All-Countries`],
     });
-    console.log('🚀 ~ file: UsersList.tsx:49 ~ isFetching:', isFetching);
-    console.log('🚀 ~ file: UsersList.tsx:49 ~ isRefetching:', isRefetching);
-    console.log('🚀 ~ file: UsersList.tsx:49 ~ isLoading:', isLoading);
-    console.log(Countries?.data?.countries);
+
 
 
 
@@ -125,7 +123,6 @@ const AddUser = ({ showCustomizer, setShowCustomizer , userData }: UserCustom_TP
         const selectedFiles = event.target.files as FileList;
         setCurrentImage(selectedFiles?.[0]);
         setPreviewImage(URL.createObjectURL(selectedFiles?.[0]));
-        console.log(previewImage, 'hey');
         setFormValues((prev: any) => {
             return {
                 ...prev,
@@ -187,7 +184,6 @@ const AddUser = ({ showCustomizer, setShowCustomizer , userData }: UserCustom_TP
             }
           })
             .then(response => {
-              console.log(response,"added")
               Swal.fire({ title: 'add!', text: 'Your file has been added successfully.', icon: 'success', customClass: 'sweet-alerts' });
             }
             ).catch((err) => {
@@ -284,6 +280,9 @@ const AddUser = ({ showCustomizer, setShowCustomizer , userData }: UserCustom_TP
                                 <div className='lg:col-span-12 max-sm:col-span-1 '>
                                     <label htmlFor="avatar">Image</label>
                                     <UploadImage name='avatar'/>
+                                </div>
+                                <div>
+                                    <PhoneInput2 name="phone" label="phone number" resetForm="resetForm"/>
                                 </div>
                                 <div className='lg:col-span-12 max-sm:col-span-1 '>
                                     <button type="submit" className="btn btn-primary w-full">
