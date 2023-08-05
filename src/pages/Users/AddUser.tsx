@@ -57,6 +57,7 @@ const AddUser = ({ showCustomizer, setShowCustomizer , userData }: UserCustom_TP
     });
     editorValue;
 
+
     interface Country {
         id: number;
         country_code: string,
@@ -64,8 +65,6 @@ const AddUser = ({ showCustomizer, setShowCustomizer , userData }: UserCustom_TP
 
         // Add more properties if needed...
       }
-
-
     const {
         data: Countries,
         isLoading,
@@ -84,6 +83,25 @@ const AddUser = ({ showCustomizer, setShowCustomizer , userData }: UserCustom_TP
     console.log('🚀 ~ file: UsersList.tsx:49 ~ isRefetching:', isRefetching);
     console.log('🚀 ~ file: UsersList.tsx:49 ~ isLoading:', isLoading);
     console.log(Countries?.data?.countries);
+
+
+
+    interface Role {
+        id: number;
+        role_name: string,
+        // Add more properties if needed...
+      }
+    const {
+        data: Roles,
+    } = useFetch<{
+        data: {
+            roles: Role[];
+        };
+    }>({
+        endpoint: `api/dashboard/user/create`,
+        queryKey: [`All-Roles`],
+    });
+    console.log(Roles?.data?.roles);
 
 
     console.log(editorValue, 'l');
