@@ -12,6 +12,9 @@ import AddPage from './AddPage';
 import EditPage from './EditPage';
 import useFetch from '../../hooks/UseFetch';
 import axios from 'axios';
+import { useMutate } from '../../hooks/UseMutate';
+import { useQueryClient } from '@tanstack/react-query';
+
 
 
 const rowData = [
@@ -355,9 +358,9 @@ const rowData = [
 ];
 
 const options = [
-    { value: 'Filter Role', label: 'All' },
-    { value: 'user', label: 'user' },
-    { value: 'admin', label: 'admin' },
+    { value: 'Filter Publish', label: 'All' },
+    { value: 1, label: 'Publish' },
+    { value: 0, label: 'Draft' },
 
 ];
 
@@ -386,14 +389,12 @@ const PagesList = () => {
 
     interface Page {
         id: number;
-        image: string;
+        logo: string;
         name: string;
-        username: string;
-        email: string;
-        phone: string;
         content: string;
         role_id: number;
-        publish:boolean
+        publish:boolean;
+        searchable:boolean
 
         // Add more properties if needed...
     }
@@ -409,7 +410,7 @@ const PagesList = () => {
             pages: Page[];
         };
     }>({
-        endpoint: `dashboard/page/index`,
+        endpoint: `api/dashboard/page/index`,
         queryKey: [`All-Pages`],
     });
     console.log('🚀 ~ file: PagesList.tsx:49 ~ isFetching:', isFetching);
@@ -422,7 +423,7 @@ const PagesList = () => {
     const [page, setPage] = useState(1);
     const PAGE_SIZES = [10, 20, 30, 50, 100];
     const [pageSize, setPageSize] = useState(PAGE_SIZES[0]);
-    const [initialRecords, setInitialRecords] = useState(sortBy(rowData, 'id'));
+    const [initialRecords, setInitialRecords] = useState<any>(sortBy(Pages?.data?.pages, 'id'));
     const [recordsData, setRecordsData] = useState(initialRecords);
     const [showAddForm, setShowAddForm] = useState(false);
     const [showEditForm, setShowEditForm] = useState(false);
@@ -430,6 +431,12 @@ const PagesList = () => {
     const [search, setSearch] = useState('');
     const [sortStatus, setSortStatus] = useState<DataTableSortStatus>({ columnAccessor: 'id', direction: 'asc' });
     const [selectValue,setSelectValue]=useState<any>('')
+    const [pageData, setPageData] = useState<any>();
+
+    useEffect(() => {
+        setInitialRecords(sortBy(Pages?.data?.pages, 'id'));
+    }, [Pages?.data?.pages]);
+
 
     useEffect(() => {
         setPage(1);
@@ -442,15 +449,15 @@ const PagesList = () => {
     }, [page, pageSize, initialRecords]);
 
     useEffect(() => {
-        if(selectValue !== 'Filter Role'){
+        if(selectValue !== 'Filter Publish'){
         setInitialRecords(() => {
-            return rowData.filter((item) => {
+            return Pages?.data?.pages.filter((item:any) => {
                 return (
-                    item.role.toString().includes(selectValue.toLowerCase())
+                    item.publish == selectValue
                 );
             });
         })}else{
-            setInitialRecords(rowData)
+            setInitialRecords(Pages?.data?.pages)
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectValue]);
@@ -459,13 +466,11 @@ const PagesList = () => {
 
     useEffect(() => {
         setInitialRecords(() => {
-            return rowData.filter((item) => {
+            return Pages?.data?.pages.filter((item:any) => {
                 return (
                     item.id.toString().includes(search.toLowerCase()) ||
-                    item.firstName.toLowerCase().includes(search.toLowerCase()) ||
-                    item.lastName.toLowerCase().includes(search.toLowerCase()) ||
-                    item.email.toLowerCase().includes(search.toLowerCase()) ||
-                    item.phone.toLowerCase().includes(search.toLowerCase())
+                    item.name.toLowerCase().includes(search.toLowerCase())
+
                 );
             });
         });
@@ -479,8 +484,34 @@ const PagesList = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [sortStatus]);
 
+    const htmlString: string = "<p>scsdcdsc</p>";
+const parser: DOMParser = new DOMParser();
+const parsedHTML: Document = parser.parseFromString(htmlString, "text/html");
+const htmlElement: HTMLElement = parsedHTML.body.firstChild as HTMLElement;
 
-const showAlert = async (type: number) => {
+console.log(htmlElement,'<p>');
+
+const queryClient = useQueryClient();
+
+const [idPage, setPageId] = useState<any>();
+const { mutate: deletePage } = useMutate({
+    mutationKey: [`Pages/id/{id}`],
+    endpoint: `api/dashboard/page/delete/${idPage?.id}`,
+    onSuccess: (data: any) => {
+        console.log('done');
+        Swal.fire({ title: 'Deleted!', text: 'Your Page has been deleted.', icon: 'success', customClass: 'sweet-alerts' });
+        queryClient.refetchQueries(['api/dashboard/category/index']);
+        refetch();
+    },
+    onError: (err: any) => {
+        console.log('error', err);
+        Swal.fire({ title: 'Sorry!', text: 'Page can not be Deleted .', icon: "error", customClass: 'sweet-alerts' });
+    },
+    method: 'delete',
+    formData: false,
+});
+
+const showAlert = async (type: number,id :any) => {
     if (type === 10) {
         Swal.fire({
             icon: 'warning',
@@ -493,8 +524,23 @@ const showAlert = async (type: number) => {
 
         }).then((result) => {
             if (result.value) {
+                console.log(id,'id')
+                deletePage(id)
+
+                // axios.delete(`https://dashboard.savvyhost.io/api/user/delete/${id.id}`, {
+                //     headers: {
+                //       "Content-Type": "multipart/form-data"
+                //     }
+                //   }).then(response => {
+                //       console.log(response,"deleted")
+                //       Swal.fire({ title: 'Deleted!', text: 'Your file has been deleted.', icon: 'success', customClass: 'sweet-alerts' });
+                //     }
+                //     ).catch((err) => {
+                //         Swal.fire({ title: 'Sorry!', text: 'User can not be Deleted .', icon: "error", customClass: 'sweet-alerts' });
+                //         console.log(err,'err')
+                //      })
                 //delete
-                Swal.fire({ title: 'Deleted!', text: 'Your file has been deleted.', icon: 'success', customClass: 'sweet-alerts' });
+
             }
         });
     }
@@ -518,7 +564,7 @@ const showAlert = async (type: number) => {
                 >
                    Add Page
                 </button>
-                   <AddPage showAddForm={showAddForm} setShowAddForm={setShowAddForm} />
+                   <AddPage  refetch={refetch}  pageData={pageData} showAddForm={showAddForm} setShowAddForm={setShowAddForm} />
                    <EditPage showEditForm={showEditForm} setShowEditForm={setShowEditForm} />
                 </div>
             </div>
@@ -528,20 +574,44 @@ const showAlert = async (type: number) => {
                     className={`${isRtl ? 'whitespace-nowrap table-hover' : 'whitespace-nowrap table-hover'}`}
                     records={recordsData}
                     columns={[
-                        { accessor: 'id', title: 'ID', sortable: true },
-                        { accessor: 'firstName', title: 'First Name', sortable: true },
-                        { accessor: 'lastName', title: 'Last Name', sortable: true },
-                        { accessor: 'email', sortable: true },
-                        { accessor: 'phone', title: 'Phone No.', sortable: true },
-                        { accessor: 'role', title: 'Role', sortable: true },
+                        { accessor: 'id', title: 'ID', sortable: true , width:"80px"},
+                        {
+                            accessor: 'name',
+                            title: 'Page',
+                            sortable: true,
+                            render: ({ name, logo }:any) => (
+                                <div className="flex items-center w-max">
+                                    <img className="w-9 h-9 rounded-full ltr:mr-2 rtl:ml-2 object-cover" src={logo} alt="" />
+                                    <div>{name}</div>
+                                </div>
+                            ),
+                        },
+
+                        // { accessor: 'content', title: 'Content', sortable: true },
+                        { accessor: 'publish',
+                          title: 'Publish',
+                          sortable: true,
+                          render: ({ publish }:any) => (
+                                <div>{publish? "Publish":"Draft"}</div>
+
+                        )},
+                        {  accessor: 'searchable',
+                           title: 'Searchable',
+                           sortable: true,
+                        render: ({ searchable }:any) => (
+                                <div>{searchable? "Yes":"No"}</div>
+                        )},
                         {
                             accessor: 'action',
                             title: 'Action',
                             titleClassName: '!text-center',
-                            render: () => (
+                            render: (id) => (
                                 <div className="flex items-center w-max mx-auto gap-2">
                                     <Tippy >
-                                        <button type="button" className=""  onClick={() => setShowEditForm(!showEditForm)}>
+                                        <button type="button" className="" onClick={() => {
+                                            setShowAddForm(!showAddForm)
+                                            setPageData(id)
+                                        }}>
                                             <svg  width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-blue-700">
                                                 <path
                                                     d="M15.2869 3.15178L14.3601 4.07866L5.83882 12.5999L5.83881 12.5999C5.26166 13.1771 4.97308 13.4656 4.7249 13.7838C4.43213 14.1592 4.18114 14.5653 3.97634 14.995C3.80273 15.3593 3.67368 15.7465 3.41556 16.5208L2.32181 19.8021L2.05445 20.6042C1.92743 20.9852 2.0266 21.4053 2.31063 21.6894C2.59466 21.9734 3.01478 22.0726 3.39584 21.9456L4.19792 21.6782L7.47918 20.5844L7.47919 20.5844C8.25353 20.3263 8.6407 20.1973 9.00498 20.0237C9.43469 19.8189 9.84082 19.5679 10.2162 19.2751C10.5344 19.0269 10.8229 18.7383 11.4001 18.1612L11.4001 18.1612L19.9213 9.63993L20.8482 8.71306C22.3839 7.17735 22.3839 4.68748 20.8482 3.15178C19.3125 1.61607 16.8226 1.61607 15.2869 3.15178Z"
@@ -558,7 +628,10 @@ const showAlert = async (type: number) => {
                                         </button>
                                     </Tippy>
                                     <Tippy >
-                                      <button type="button" className="" onClick={() => showAlert(10)}>
+                                      <button type="button" className=""  onClick={() => {
+                                                showAlert(10, id);
+                                                setPageId(id);
+                                            }}>
                                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-red-600">
                                                 <path
                                                     opacity="0.5"

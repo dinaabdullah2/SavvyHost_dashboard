@@ -163,7 +163,7 @@ const Sidebar = () => {
                                             </div>
                                         </NavLink>
                                     </li>
-                             
+
                                     <li className="menu nav-item">
                                         <button type="button" className={`${currentMenu === 'invoice' ? 'active' : ''} nav-link group w-full`} onClick={() => toggleMenu('invoice')}>
                                             <div className="flex items-center">

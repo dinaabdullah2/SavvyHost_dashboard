@@ -8,8 +8,8 @@ import React from 'react';
 import Tippy from '@tippyjs/react';
 import Select from 'react-select';
 import Swal from 'sweetalert2';
-import AddUser from './AddUser';
-import EditUser from './EditUser';
+import AddCategory from './AddCategory';
+// import EditUser from './EditUser';
 import useFetch from '../../hooks/UseFetch';
 import axios from 'axios';
 import { notifyManager, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -24,7 +24,7 @@ const options = [
     { value: '2', label: 'user' },
 ];
 
-const UsersList = () => {
+const CategoriesList = () => {
     const dispatch = useDispatch();
     useEffect(() => {
         dispatch(setPageTitle('Users Table'));
@@ -32,42 +32,38 @@ const UsersList = () => {
 
     const isRtl = useSelector((state: IRootState) => state.themeConfig.rtlClass) === 'rtl' ? true : false;
 
-    interface User {
+    interface Category {
         id: number;
         image: string;
         name: string;
-        username: string;
-        email: string;
-        phone: string;
-        content: string;
-        role_id: number;
+        slug: string;
 
         // Add more properties if needed...
     }
 
     const {
-        data: Users,
+        data: Categories,
         isLoading,
         isRefetching,
         isFetching,
         refetch,
     } = useFetch<{
         data: {
-            all_users: User[];
+            categories: Category[];
         };
     }>({
-        endpoint: `api/dashboard/user/index`,
-        queryKey: [`All-Users`],
+        endpoint: `api/dashboard/category/index`,
+        queryKey: [`Categories`],
     });
     console.log('🚀 ~ file: UsersList.tsx:49 ~ isFetching:', isFetching);
     console.log('🚀 ~ file: UsersList.tsx:49 ~ isRefetching:', isRefetching);
     console.log('🚀 ~ file: UsersList.tsx:49 ~ isLoading:', isLoading);
-    console.log(Users?.data?.all_users);
+    console.log(Categories?.data?.categories);
 
     const [page, setPage] = useState(1);
     const PAGE_SIZES = [10, 20, 30, 50, 100];
     const [pageSize, setPageSize] = useState(PAGE_SIZES[0]);
-    const [initialRecords, setInitialRecords] = useState<any>(sortBy(Users?.data?.all_users, 'id'));
+    const [initialRecords, setInitialRecords] = useState<any>(sortBy(Categories?.data?.categories, 'id'));
     const [recordsData, setRecordsData] = useState(initialRecords);
     const [showCustomizer, setShowCustomizer] = useState(false);
     const [showEditForm, setShowEditForm] = useState(false);
@@ -75,16 +71,16 @@ const UsersList = () => {
     const [search, setSearch] = useState('');
     const [sortStatus, setSortStatus] = useState<DataTableSortStatus>({ columnAccessor: 'id', direction: 'asc' });
     const [selectValue, setSelectValue] = useState<any>('');
-    const [userData, setUserData] = useState<any>();
+    const [categoryData, setCategoryData] = useState<any>();
 
     useEffect(() => {
-        setInitialRecords(sortBy(Users?.data?.all_users, 'id'));
-    }, [Users?.data?.all_users]);
+        setInitialRecords(sortBy(Categories?.data?.categories, 'id'));
+    }, [Categories?.data?.categories]);
 
     function OpenEditForm(id: any) {
         setShowEditForm(!showEditForm);
-        setUserData(id);
-        console.log(userData, 'idd');
+        setCategoryData(id);
+        console.log(categoryData, 'idd');
     }
 
     useEffect(() => {
@@ -98,25 +94,25 @@ const UsersList = () => {
     }, [page, pageSize, initialRecords]);
 
     // filter
-    useEffect(() => {
-        if (selectValue !== 'Filter Role') {
-            setInitialRecords(() => {
-                return Users?.data?.all_users.filter((item:any) => {
-                    return item.role_id.toString().includes(selectValue.toLowerCase());
-                });
-            });
-        } else {
-            setInitialRecords(Users?.data?.all_users);
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [selectValue]);
+    // useEffect(() => {
+    //     if (selectValue !== 'Filter Role') {
+    //         setInitialRecords(() => {
+    //             return Categories?.data?.categories.filter((item:any) => {
+    //                 return item.role_id.toString().includes(selectValue.toLowerCase());
+    //             });
+    //         });
+    //     } else {
+    //         setInitialRecords(Categories?.data?.categories);
+    //     }
+    //     // eslint-disable-next-line react-hooks/exhaustive-deps
+    // }, [selectValue]);
 
     //search
     useEffect(() => {
         setInitialRecords(() => {
-            return Users?.data?.all_users.filter((item:any) => {
+            return Categories?.data?.categories.filter((item:any) => {
                 return item.name.toLowerCase().includes(search.toLowerCase()) ||
-                item.email.toLowerCase().includes(search.toLowerCase());
+                item.slug.toLowerCase().includes(search.toLowerCase());
             });
         });
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -128,22 +124,23 @@ const UsersList = () => {
         setPage(1);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [sortStatus]);
+    
    const queryClient = useQueryClient();
 
 
-    const [idUser, setUserId] = useState<any>();
-    const { mutate: deleteUser } = useMutate({
-        mutationKey: [`users/id/{id}`],
-        endpoint: `api/dashboard/user/delete/${idUser?.id}`,
+    const [idCategory, setCategoryId] = useState<any>();
+    const { mutate: deleteCategory } = useMutate({
+        mutationKey: [`category/id/{id}`],
+        endpoint: `api/dashboard/category/delete/${idCategory?.id}`,
         onSuccess: (data: any) => {
             console.log('done');
-            Swal.fire({ title: 'Deleted!', text: 'Your file has been deleted.', icon: 'success', customClass: 'sweet-alerts' });
+            Swal.fire({ title: 'Deleted!', text: 'Category has been deleted.', icon: 'success', customClass: 'sweet-alerts' });
             queryClient.refetchQueries(['api/user/index']);
             refetch();
         },
         onError: (err: any) => {
             console.log('error', err);
-            Swal.fire({ title: 'Sorry!', text: 'User can not be Deleted .', icon: "error", customClass: 'sweet-alerts' });
+            Swal.fire({ title: 'Sorry!', text: 'Category can not be Deleted .', icon: "error", customClass: 'sweet-alerts' });
         },
         method: 'delete',
         formData: false,
@@ -163,7 +160,7 @@ const UsersList = () => {
             }).then((result) => {
                 if (result.value) {
                     console.log(id,'id')
-                    deleteUser(id)
+                    deleteCategory(id)
 
                     // axios.delete(`https://dashboard.savvyhost.io/api/user/delete/${id.id}`, {
                     //     headers: {
@@ -186,7 +183,7 @@ const UsersList = () => {
     return (
         <div className="panel">
             <div className="flex md:items-center md:flex-row flex-col mb-5 gap-5">
-                <h5 className="font-semibold text-lg dark:text-white-light">All Users</h5>
+                <h5 className="font-semibold text-lg dark:text-white-light">All Categories</h5>
                 <div className="ltr:ml-auto rtl:mr-auto">
                     <input type="text" className="form-input w-auto" placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} />
                 </div>
@@ -203,10 +200,10 @@ const UsersList = () => {
                 </div>
                 <div>
                     <button type="button" className="bg-primary font-semibold hover:bg-blue-500 text-white py-2 px-5 rounded-lg cursor-pointer" onClick={() => setShowCustomizer(!showCustomizer)}>
-                        Add User
+                        Add Category
                     </button>
 
-                    <AddUser userData={userData} showCustomizer={showCustomizer} setShowCustomizer={setShowCustomizer} />
+                    <AddCategory refetch={refetch} categoryData={categoryData} showCustomizer={showCustomizer} setShowCustomizer={setShowCustomizer} />
                     {/* <EditUser showEditForm={showEditForm} userData={userData} setShowEditForm={setShowEditForm} /> */}
                 </div>
             </div>
@@ -216,17 +213,19 @@ const UsersList = () => {
                     className={`${isRtl ? 'whitespace-nowrap table-hover' : 'whitespace-nowrap table-hover'}`}
                     records={recordsData}
                     columns={[
-                        { accessor: 'id', title: 'ID', sortable: true },
-                        { accessor: 'name', title: 'User', sortable: true },
-                        { accessor: 'email', title: 'Email', sortable: true },
-                        { accessor: 'phone', title: 'Phone No.', sortable: true },
+                        { accessor: 'id', title: 'ID', sortable: true ,width:'80px'},
                         {
-                            accessor: 'role',
-                            title: 'Role',
+                            accessor: 'name',
+                            title: 'Category',
                             sortable: true,
-                            render: (role_id ) =>
-                            <div className="flex items-center w-max">{role_id == 1 ? <div>admin</div> : <div>user</div>}</div>,
+                            render: ({ name, image }:any) => (
+                                <div className="flex items-center w-max">
+                                    <img className="w-9 h-9 rounded-full ltr:mr-2 rtl:ml-2 object-cover" src={image} alt="" />
+                                    <div>{name}</div>
+                                </div>
+                            ),
                         },
+                        { accessor: 'slug', title: 'Slug', sortable: true },
                         {
                             accessor: 'action',
                             title: 'Action',
@@ -236,7 +235,7 @@ const UsersList = () => {
                                     <Tippy>
                                         <button type="button" className="" onClick={() => {
                                             setShowCustomizer(!showCustomizer)
-                                            setUserData(id)
+                                            setCategoryData(id)
                                         }}>
                                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-blue-700">
                                                 <path
@@ -259,7 +258,7 @@ const UsersList = () => {
                                             className=""
                                             onClick={() => {
                                                 showAlert(10, id);
-                                                setUserId(id);
+                                                setCategoryId(id);
                                             }}
                                         >
                                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-red-600">
@@ -304,4 +303,4 @@ const UsersList = () => {
     );
 };
 
-export default UsersList;
+export default CategoriesList;

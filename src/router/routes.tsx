@@ -2,6 +2,7 @@ import { lazy, useContext } from 'react';
 import BlogsList from '../pages/Blogs/BlogsList';
 import EventsList from '../pages/Events/EventsList';
 import { Navigate } from 'react-router-dom';
+import CategoriesList from '../pages/Categories/CategoriesList';
 const Index = lazy(() => import('../pages/Index'));
 // const Analytics = lazy(() => import('../pages/Analytics'));
 // const Finance = lazy(() => import('../pages/Finance'));
@@ -116,10 +117,10 @@ const routes = [
         path: '/login',
         element:  <LoginBoxed />
     },
-      // {
-    //     path: '/index',
-    //     element: <Index />,
-    // },
+      {
+        path: '/categories',
+        element: <CategoriesList />,
+    },
     // {
     //     path: '/index',
     //     element: <Index />,
