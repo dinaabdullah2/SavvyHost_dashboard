@@ -704,3 +704,33 @@
 pre.hljs {
     @apply p-6 rounded-md overflow-x-auto !bg-[#191e3a];
 }
+.form-radio {
+    appearance:unset !important;
+    padding: 0;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    display: inline-block;
+    vertical-align: middle;
+    background-origin: border-box;
+    -webkit-user-select: none;
+    user-select: none;
+    flex-shrink: 0;
+    height: 1rem;
+    width: 1rem;
+    /* color: #2563eb; */
+    background-color: #fff;
+    border-color: #6b7280;
+    border-width: 1px;
+    --tw-shadow: 0 0 #0000;
+}
+input[type="radio"]:checked{
+    background-color: #2445ff !important;
+}
+.text-area
+{
+    border: 1px solid #e1e4eb !important;
+}
+.text-area:focus
+{
+    border: 1px solid #2445ff !important;
+}

@@ -1,5 +1,5 @@
 
-import React, { useEffect } from 'react'
+import React, { useEffect } from 'react';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { IRootState } from '../../store';
@@ -8,50 +8,121 @@ import { toggleAnimation, toggleLayout, toggleMenu, toggleNavbar, toggleRTL, tog
 import ReactQuill from 'react-quill';
 import { Tab } from '@headlessui/react';
 import { Fragment } from 'react';
-
+import axios from 'axios';
+import Swal from 'sweetalert2';
+import * as Yup from 'yup';
+import { Form, Formik } from 'formik';
+import InputCustom from '../../components/atoms/InputCustom';
+import Editor from '../../components/atoms/Editor';
+import SelectCustom from '../../components/atoms/SelectCustom';
+import { useMutate } from '../../hooks/UseMutate';
+import { TextAreaField } from '../../components/atoms/TextAreaField';
+import UploadImage from '../../components/atoms/UploadImage';
+import RadioCustom from '../../components/atoms/RadioCustom';
+import { useQueryClient } from '@tanstack/react-query';
+import DateInput from '../../components/atoms/DateInput';
 const role = [
     { value: 'user', label: 'user' },
     { value: 'admin', label: 'admin' },
 
 ];
-const gender = [
-    { value: 'male', label: 'male' },
-    { value: 'female', label: 'female' },
+const publish = [
+    { value: 'publish', label: 'publish' },
+    { value: 'draft', label: 'draft' },
 
 ];
 const options = [
-    { value: 'yes', label: 'Yes' },
-    { value: 'no', label: 'No' },
+
+    { value: 1, label: 'Yes' },
+    { value: 0, label: 'No' },
 
 ];
-
-
 
 type EventCustom_TP = {
     showAddEventForm?: boolean;
     setShowAddEventForm?:any
+    eventData?: any;
+    refetch?:any
 
   };
 
 const AddEvent = ({
     showAddEventForm,
     setShowAddEventForm,
+    eventData,
+    refetch
 
   }:EventCustom_TP) => {
 
     const themeConfig = useSelector((state: IRootState) => state.themeConfig);
     const dispatch = useDispatch();
-    const [seoSection,setSeoSection] = useState<any>('yes')
+    const [seoSection, setSeoSection] = useState<any>(1);
     const [currentImage, setCurrentImage] = useState<File>();
     const [previewImage, setPreviewImage] = useState<string>("");
     const[value,setValue]= useState('')
 
-    const selectImage = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const selectedFiles = event.target.files as FileList;
-        setCurrentImage(selectedFiles?.[0]);
-        setPreviewImage(URL.createObjectURL(selectedFiles?.[0]));
-        console.log(previewImage,'hey')
-      };
+
+
+
+    const validatopnSchema = () =>
+        Yup.object({
+            title: Yup.string().trim().required('faild os requerd'),
+        });
+        const initialValues = {
+            title: eventData?.title ? eventData?.title : '',
+            content: eventData?.content ? eventData?.content : '',
+            avatar: eventData?.avatar ? eventData?.avatar : '',
+            image :eventData?.image ? eventData?.image : '',
+            status: eventData?.status ? eventData?.status : '',
+            searchable: eventData?.searchable ? eventData?.searchable : 1,
+            seo_title: eventData?.seo_title ? eventData?.seo_title : '',
+            seo_description: eventData?.seo_description ? eventData?.seo_description : '',
+            seo_image: eventData?.seo_image ? eventData?.seo_image : '',
+            facebook_title: eventData?.facebook_title ? eventData?.facebook_title : '',
+            facebook_image: eventData?.facebook_image ? eventData?.facebook_image : '',
+            facebook_description: eventData?.facebook_description ? eventData?.facebook_description : '',
+            twitter_title: eventData?.twitter_title ? eventData?.twitter_title : '',
+            twitter_image: eventData?.twitter_image ? eventData?.twitter_image : '',
+            twitter_description: eventData?.twitter_description ? eventData?.twitter_description : '',
+            location:eventData?.location ? eventData?.location : '',
+            start_date:eventData?.start_date ? eventData?.start_date : '',
+            end_date:eventData?.end_date ? eventData?.end_date : '',
+        };
+
+
+    const queryClient = useQueryClient();
+    // // post data
+    const { mutate } = useMutate({
+        mutationKey: ['event/id'],
+        endpoint: `api/dashboard/event/store`,
+        onSuccess: (data: any) => {
+            Swal.fire({ title: 'Added!', text: 'Your Event has been added successfully.', icon: 'success', customClass: 'sweet-alerts' });
+            queryClient.refetchQueries(['api/dashboard/event/index']);
+            refetch();
+            setShowAddEventForm(false)
+            console.log('donedsssssssssssssssssssssssafcdfsdfas ');
+        },
+        onError: (err: any) => {
+            Swal.fire({ title: 'Your Event Can not be added.', text: `${err.response.data.message}` ,icon: 'error', customClass: 'sweet-alerts' });
+            console.log('erroooooooooooooooooooooooooooooooor', err);
+        },
+        formData: true,
+    });
+
+    // // update
+    // const { mutate: update } = useMutate({
+    //     mutationKey: ['users/id'],
+    //     endpoint: `/api/user/store`,
+    //     onSuccess: (data: any) => {
+    //         console.log('done');
+    //     },
+    //     onError: (err: any) => {
+    //         console.log('error', err);
+    //     },
+    //     formData: true,
+    // });
+
+
 
   return (
     <div>
@@ -85,206 +156,181 @@ const AddEvent = ({
                 <h4 className="mb-1 dark:text-white font-semibold text-lg">Add New Event </h4>
 
             </div>
-            <form >
-            <div className="border border-dashed border-white-light dark:border-[#1b2e4b] rounded-md mb-3 pb-5">
-              <h5 className="mb-5 w-[100%] text-base font-semibold dark:text-white p-2  border-b border-dashed border-white-light">News content</h5>
-                <div className='grid lg:grid-cols-12 max-sm:grid-cols-1 gap-5 px-3 ' >
-                   <div className='lg:col-span-12 max-sm:col-span-1 '>
-                        <label htmlFor="Name"> Name</label>
-                        <input id="Name" type="text" placeholder="" defaultValue="" className="form-input" />
-                    </div>
-                    <div className='lg:col-span-12 max-sm:col-span-1 '>
-                        <label htmlFor="Bio">Bio</label>
-                        <ReactQuill theme="snow"/>
-                    </div>
-                    <div className='lg:col-span-12 max-sm:col-span-1 '>
-                        <label htmlFor="Location"> Location</label>
-                        <input id="Location" type="text" placeholder="" defaultValue="" className="form-input" />
-                    </div>
-                    <div className='lg:col-span-12 max-sm:col-span-1 '>
-                        <label htmlFor="StartDate"> Start date</label>
-                        <input id="StartDate" type='date' placeholder="mm/dd/yyyy" defaultValue="" className="form-input" />
-                    </div>
-                    <div className='lg:col-span-12 max-sm:col-span-1 '>
-                        <label htmlFor="EndDate"> End date</label>
-                        <input id="EndDate" type='date' placeholder="mm/dd/yyyy" defaultValue="" className="form-input" />
-                    </div>
-                </div>
-            </div>
-
-            <div className="border border-dashed border-white-light dark:border-[#1b2e4b] rounded-md mb-3 ">
-              <h5 className="mb-5 w-[100%] text-base font-semibold dark:text-white p-2  border-b border-dashed border-white-light">Seo Manager</h5>
-              <p className="text-white-dark pb-2 px-2 text-sm">Allow search engines to show this service in search results?</p>
-                <div className='grid lg:grid-cols-12 max-sm:grid-cols-1 gap-5 px-3 ' >
-                   <div className='lg:col-span-12 max-sm:col-span-1 pt-1'>
-                        <Select defaultValue={options[0]} options={options} onChange={(event)=>{setSeoSection(event?.value)}} isSearchable={false} />
-                    </div>
-                    {seoSection === "yes" ?
-                        <div className='lg:col-span-12 max-sm:col-span-1 '>
-                             <Tab.Group>
-                                <Tab.List className="mt-3 flex flex-wrap border-b border-white-light dark:border-[#191e3a]">
-                                    <Tab as={Fragment}>
-                                        {({ selected }) => (
-                                            <button
-                                                className={`${selected ? '!border-white-light !border-b-white  text-primary !outline-none dark:!border-[#191e3a] dark:!border-b-black ' : ''}
-                                                    dark:hover:border-b-black' -mb-[1px] block border border-transparent p-3.5 py-2 hover:text-primary`}
-                                            >
-                                                General
-                                            </button>
-                                        )}
-                                    </Tab>
-                                    <Tab as={Fragment}>
-                                        {({ selected }) => (
-                                            <button
-                                                className={`${selected ? '!border-white-light !border-b-white  text-primary !outline-none dark:!border-[#191e3a] dark:!border-b-black ' : ''}
-                                                    dark:hover:border-b-black' -mb-[1px] block border border-transparent p-3.5 py-2 hover:text-primary`}
-                                            >
-                                                Facebook
-                                            </button>
-                                        )}
-                                    </Tab>
-                                    <Tab as={Fragment}>
-                                        {({ selected }) => (
-                                            <button
-                                                className={`${selected ? '!border-white-light !border-b-white  text-primary !outline-none dark:!border-[#191e3a] dark:!border-b-black ' : ''}
-                                                    dark:hover:border-b-black' -mb-[1px] block border border-transparent p-3.5 py-2 hover:text-primary`}
-                                            >
-                                                Twitter
-                                            </button>
-                                        )}
-                                    </Tab>
-
-                                </Tab.List>
-                                <Tab.Panels>
-                                    <Tab.Panel>
-                                    <div className='grid lg:grid-cols-12 max-sm:grid-cols-1 gap-5 px-3 ' >
-                                        <div className='lg:col-span-12 max-sm:col-span-1 pt-3 '>
-                                            <label htmlFor="SeoTitle"> Seo Title</label>
-                                            <input id="SeoTitle" type="text" placeholder="" defaultValue="" className="form-input" />
-                                        </div>
-                                        <div className='lg:col-span-12 max-sm:col-span-1 '>
-                                            <label htmlFor="SeoDescription">Seo Description</label>
-                                            <textarea id="SeoDescription"  className="form-input" />
-                                        </div>
-                                        <div className='lg:col-span-12 max-sm:col-span-1 '>
-                                           <input className='mb-3 form-input file:py-2 file:px-4 file:border-0 file:font-semibold p-0 file:rounded-s-lg file:bg-primary/90 ltr:file:mr-5 rtl:file:ml-5 file:text-white file:hover:bg-primary ' type="file" accept="image/*" onChange={selectImage} />
-                                           {previewImage ?
-                                                <div>
-                                                <img  className="preview w-[50%] m-auto" src={previewImage} alt="" />
-                                                </div>
-                                                :
-                                                <div>
-                                                <img className="preview w-[50%] m-auto" src="/assets/images/file-preview.svg" alt="" />
-                                                </div>
-                                            }
-                                        </div>
-
+            <Formik
+                    initialValues={initialValues}
+                    validationSchema={validatopnSchema}
+                    onSubmit={(values) => {
+                        mutate({ ...values });
+                        // update({ ...values, _methode: 'put' });
+                    }}
+                    >
+                        <Form>
+                            <div className="border border-dashed border-white-light dark:border-[#1b2e4b] rounded-md mb-3 pb-5">
+                                <h5 className="mb-5 w-[100%] text-base font-semibold dark:text-white p-2  border-b border-dashed border-white-light">News content</h5>
+                                <div className="grid lg:grid-cols-12 max-sm:grid-cols-1 gap-5 px-3 ">
+                                    <div className="lg:col-span-12 max-sm:col-span-1 ">
+                                        <label htmlFor="title"> Title</label>
+                                        <InputCustom name="title" />
                                     </div>
-                                    </Tab.Panel>
-                                    <Tab.Panel>
-                                        <div className='grid lg:grid-cols-12 max-sm:grid-cols-1 gap-5 px-3 ' >
-                                            <div className='lg:col-span-12 max-sm:col-span-1 pt-3 '>
-                                                <label htmlFor="SeoTitle"> Facebook Title</label>
-                                                <input id="SeoTitle" type="text" placeholder="" defaultValue="" className="form-input" />
-                                            </div>
-                                            <div className='lg:col-span-12 max-sm:col-span-1 '>
-                                                <label htmlFor="SeoDescription">Facebook Description</label>
-                                                <textarea id="SeoDescription"  className="form-input" />
-                                            </div>
-                                            <div className='lg:col-span-12 max-sm:col-span-1 '>
-                                           <input className='mb-3 form-input file:py-2 file:px-4 file:border-0 file:font-semibold p-0 file:rounded-s-lg file:bg-primary/90 ltr:file:mr-5 rtl:file:ml-5 file:text-white file:hover:bg-primary ' type="file" accept="image/*" onChange={selectImage} />
-                                           {previewImage ?
-                                                <div>
-                                                <img  className="preview w-[50%] m-auto" src={previewImage} alt="" />
-                                                </div>
-                                                :
-                                                <div>
-                                                <img className="preview w-[50%] m-auto" src="/assets/images/file-preview.svg" alt="" />
-                                                </div>
-                                            }
-                                        </div>
-                                        </div>
-                                    </Tab.Panel>
-                                    <Tab.Panel>
-                                        <div className='grid lg:grid-cols-12 max-sm:grid-cols-1 gap-5 px-3 ' >
-                                                <div className='lg:col-span-12 max-sm:col-span-1 pt-3 '>
-                                                    <label htmlFor="SeoTitle">Twitter Title</label>
-                                                    <input id="SeoTitle" type="text" placeholder="" defaultValue="" className="form-input" />
-                                                </div>
-                                                <div className='lg:col-span-12 max-sm:col-span-1 '>
-                                                    <label htmlFor="SeoDescription">Twitter Description</label>
-                                                    <textarea id="SeoDescription"  className="form-input" />
-                                                </div>
-                                                <div className='lg:col-span-12 max-sm:col-span-1 '>
-                                                <input className='mb-3 form-input file:py-2 file:px-4 file:border-0 file:font-semibold p-0 file:rounded-s-lg file:bg-primary/90 ltr:file:mr-5 rtl:file:ml-5 file:text-white file:hover:bg-primary ' type="file" accept="image/*" onChange={selectImage} />
-                                                {previewImage ?
-                                                        <div>
-                                                        <img  className="preview w-[50%] m-auto" src={previewImage} alt="" />
-                                                        </div>
-                                                        :
-                                                        <div>
-                                                        <img className="preview w-[50%] m-auto" src="/assets/images/file-preview.svg" alt="" />
-                                                        </div>
-                                                    }
-                                            </div>
-                                        </div>
-                                    </Tab.Panel>
-
-                                </Tab.Panels>
-                            </Tab.Group>
-                        </div>
-                    :
-                        null
-                    }
-
-
-                </div>
-            </div>
-
-            <div className="border border-dashed border-white-light dark:border-[#1b2e4b] rounded-md mb-3 pb-5">
-              <h5 className="mb-5 w-[100%] text-base font-semibold dark:text-white p-2  border-b border-dashed border-white-light">Publish</h5>
-                <div className='grid lg:grid-cols-12 max-sm:grid-cols-1 gap-5 px-3 ' >
-                   <div className='lg:col-span-12 max-sm:col-span-1 '>
-                    <div className='flex flex-row items-center'>
-                        <label className="mr-5">
-                            <input type="radio" name="default_radio" className="form-radio" defaultChecked />
-                            <span> Publish</span>
-                        </label>
-                        <label className="">
-                            <input type="radio" name="default_radio" className="form-radio" defaultChecked />
-                            <span> Draft</span>
-                        </label>
-                    </div>
-                    </div>
-
-                </div>
-            </div>
-
-
-            <div className="border border-dashed border-white-light dark:border-[#1b2e4b] rounded-md mb-3 pb-5">
-              <h5 className="mb-5 w-[100%] text-base font-semibold dark:text-white p-2  border-b border-dashed border-white-light">Feature Image</h5>
-                <div className='grid lg:grid-cols-12 max-sm:grid-cols-1 gap-5 px-3 ' >
-                   <div className='lg:col-span-12 max-sm:col-span-1 '>
-                        <input className='mb-3 form-input file:py-2 file:px-4 file:border-0 file:font-semibold p-0 file:rounded-s-lg file:bg-primary/90 ltr:file:mr-5 rtl:file:ml-5 file:text-white file:hover:bg-primary ' type="file" accept="image/*" onChange={selectImage} />
-                        {previewImage ?
-                            <div>
-                                <img  className="preview w-[50%] m-auto" src={previewImage} alt="" />
+                                    <div className="lg:col-span-12 max-sm:col-span-1 ">
+                                        <label htmlFor="content">Content</label>
+                                        <Editor name="content" />
+                                    </div>
+                                    <div className="lg:col-span-12 max-sm:col-span-1 ">
+                                        <label htmlFor="name"> Location</label>
+                                        <InputCustom name="location" type='text' />
+                                    </div>
+                                    <div className="lg:col-span-12 max-sm:col-span-1 ">
+                                        <label htmlFor="start_date"> start Date</label>
+                                        <DateInput name="start_date"  />
+                                    </div>
+                                    <div className="lg:col-span-12 max-sm:col-span-1 ">
+                                        <label htmlFor="end_date"> End Date</label>
+                                        <DateInput name="end_date"  />
+                                    </div>
+                                </div>
                             </div>
-                            :
-                            <div>
-                                <img className="preview w-[50%] m-auto" src="/assets/images/file-preview.svg" alt="" />
+
+                            <div className="border border-dashed border-white-light dark:border-[#1b2e4b] rounded-md mb-3 ">
+                                <h5 className="mb-5 w-[100%] text-base font-semibold dark:text-white p-2  border-b border-dashed border-white-light">Seo Manager</h5>
+                                <p className="text-white-dark pb-2 px-2 text-sm">Allow search engines to show this service in search results?</p>
+                                <div className="grid lg:grid-cols-12 max-sm:grid-cols-1 gap-5 px-3 ">
+                                    <div className="lg:col-span-12 max-sm:col-span-1 pt-1 pb-2">
+                                        <SelectCustom setSeoSection={setSeoSection} options={options} name="searchable"  />
+                                    </div>
+                                    {seoSection == 1 ?
+                                        <div className="lg:col-span-12 max-sm:col-span-1 ">
+                                            <Tab.Group>
+                                                <Tab.List className="mt-3 flex flex-wrap border-b border-white-light dark:border-[#191e3a]">
+                                                    <Tab as={Fragment}>
+                                                        {({ selected }) => (
+                                                            <button
+                                                                className={`${
+                                                                    selected ? '!border-white-light !border-b-white  text-primary !outline-none dark:!border-[#191e3a] dark:!border-b-black ' : ''
+                                                                }
+                                                            dark:hover:border-b-black -mb-[1px] block border border-transparent p-3.5 py-2 hover:text-primary`}
+                                                            >
+                                                                General
+                                                            </button>
+                                                        )}
+                                                    </Tab>
+                                                    <Tab as={Fragment}>
+                                                        {({ selected }) => (
+                                                            <button
+                                                                className={`${
+                                                                    selected ? '!border-white-light !border-b-white  text-primary !outline-none dark:!border-[#191e3a] dark:!border-b-black ' : ''
+                                                                }
+                                                            dark:hover:border-b-black' -mb-[1px] block border border-transparent p-3.5 py-2 hover:text-primary`}
+                                                            >
+                                                                Facebook
+                                                            </button>
+                                                        )}
+                                                    </Tab>
+                                                    <Tab as={Fragment}>
+                                                        {({ selected }) => (
+                                                            <button
+                                                                className={`${
+                                                                    selected ? '!border-white-light !border-b-white  text-primary !outline-none dark:!border-[#191e3a] dark:!border-b-black ' : ''
+                                                                }
+                                                            dark:hover:border-b-black' -mb-[1px] block border border-transparent p-3.5 py-2 hover:text-primary`}
+                                                            >
+                                                                Twitter
+                                                            </button>
+                                                        )}
+                                                    </Tab>
+                                                </Tab.List>
+
+                                                <Tab.Panels>
+                                                    <Tab.Panel>
+                                                        <div className="grid lg:grid-cols-12 max-sm:grid-cols-1 gap-5 px-3 ">
+                                                            <div className="lg:col-span-12 max-sm:col-span-1 pt-3 ">
+                                                                <label htmlFor="seo_title"> Seo Title</label>
+                                                                <InputCustom name="seo_title" />
+                                                            </div>
+                                                            <div className="lg:col-span-12 max-sm:col-span-1 ">
+                                                                <label htmlFor="seo_description">Seo Description</label>
+                                                                 <TextAreaField name="seo_description" />
+                                                            </div>
+                                                            <div className="lg:col-span-12 max-sm:col-span-1 ">
+                                                                 <UploadImage name='seo_image' />
+
+                                                            </div>
+                                                        </div>
+                                                    </Tab.Panel>
+
+                                                    <Tab.Panel>
+                                                        <div className="grid lg:grid-cols-12 max-sm:grid-cols-1 gap-5 px-3 ">
+                                                            <div className="lg:col-span-12 max-sm:col-span-1 pt-3 ">
+                                                                <label htmlFor="facebook_title"> Facebook Title</label>
+                                                                <InputCustom name="facebook_title" />
+                                                            </div>
+                                                            <div className="lg:col-span-12 max-sm:col-span-1 ">
+                                                                <label htmlFor="seo_description">Facebook Description</label>
+                                                                 <TextAreaField name="facebook_description" />
+                                                            </div>
+                                                            <div className="lg:col-span-12 max-sm:col-span-1 ">
+                                                                 <UploadImage name='facebook_image' />
+                                                            </div>
+                                                        </div>
+                                                    </Tab.Panel>
+
+                                                    <Tab.Panel>
+                                                        <div className="grid lg:grid-cols-12 max-sm:grid-cols-1 gap-5 px-3 ">
+                                                            <div className="lg:col-span-12 max-sm:col-span-1 pt-3 ">
+                                                                <label htmlFor="twitter_title"> Twitter Title</label>
+                                                                <InputCustom name="twitter_title" />
+                                                            </div>
+                                                            <div className="lg:col-span-12 max-sm:col-span-1 ">
+                                                                <label htmlFor="twitter_description">Twitter Description</label>
+                                                                 <TextAreaField name="twitter_description" />
+                                                            </div>
+                                                            <div className="lg:col-span-12 max-sm:col-span-1 ">
+                                                                 <UploadImage name='twitter_image' />
+                                                            </div>
+                                                        </div>
+                                                    </Tab.Panel>
+                                                </Tab.Panels>
+                                            </Tab.Group>
+                                        </div>
+                                     : null}
+                                </div>
                             </div>
-                        }
-                    </div>
 
-                </div>
-            </div>
+                            <div className="border border-dashed border-white-light dark:border-[#1b2e4b] rounded-md mb-3 pb-5">
+                                <h5 className="mb-5 w-[100%] text-base font-semibold dark:text-white p-2  border-b border-dashed border-white-light">Publish</h5>
+                                <div className="grid lg:grid-cols-12 max-sm:grid-cols-1 gap-5 px-3 ">
+                                    <div className="lg:col-span-12 max-sm:col-span-1 ">
+                                        <RadioCustom name="status" publish={publish}  />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="border border-dashed border-white-light dark:border-[#1b2e4b] rounded-md mb-3 pb-5">
+                                <h5 className="mb-5 w-[100%] text-base font-semibold dark:text-white p-2  border-b border-dashed border-white-light">Image</h5>
+                                <div className="grid lg:grid-cols-12 max-sm:grid-cols-1 gap-5 px-3 ">
+                                    <div className="lg:col-span-12 max-sm:col-span-1 ">
+                                       <UploadImage name='image'  />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="border border-dashed border-white-light dark:border-[#1b2e4b] rounded-md mb-3 pb-5">
+                                <h5 className="mb-5 w-[100%] text-base font-semibold dark:text-white p-2  border-b border-dashed border-white-light">Avatar</h5>
+                                <div className="grid lg:grid-cols-12 max-sm:grid-cols-1 gap-5 px-3 ">
+                                    <div className="lg:col-span-12 max-sm:col-span-1 ">
+                                       <UploadImage name='avatar'  />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button type="submit" className="btn btn-primary w-full">
+                                Save
+                            </button>
+                        </Form>
+                    </Formik>
 
 
-            <div className='lg:col-span-12 max-sm:col-span-1 '>
-                       <button type="button" className="btn btn-primary w-full"> Save</button>
-                    </div>
-            </form>
+
         </div>
     </nav>
 </div>

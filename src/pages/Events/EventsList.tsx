@@ -11,6 +11,8 @@ import Swal from 'sweetalert2';
 import EditEvent from './EditEvent';
 import AddEvent from './AddEvent';
 import useFetch from '../../hooks/UseFetch';
+import { useMutate } from '../../hooks/UseMutate';
+import { useQueryClient } from '@tanstack/react-query';
 
 
 
@@ -381,16 +383,24 @@ const EventsList = () => {
 
         // Add more properties if needed...
       }
-      const { data: Events } = useFetch<{
+      const {
+        data: Events,
+        isLoading,
+        isRefetching,
+        isFetching,
+        refetch,
+    } = useFetch<{
         data: {
             events: Event[];
         };
-      }>({
-        endpoint: `api/event/index`,
+    }>({
+        endpoint: `api/dashboard/event/index`,
         queryKey: [`All-Events`],
-      });
-      console.log(Events?.data?.events)
-
+    });
+    console.log('🚀 ~ file: PagesList.tsx:49 ~ isFetching:', isFetching);
+    console.log('🚀 ~ file: PagesList.tsx:49 ~ isRefetching:', isRefetching);
+    console.log('🚀 ~ file: PagesList.tsx:49 ~ isLoading:', isLoading);
+    console.log('🚀 ~ file: PagesList.tsx:49 ~ Refetching:',Events?.data?.events);
 
     const [page, setPage] = useState(1);
     const PAGE_SIZES = [10, 20, 30, 50, 100];
@@ -460,26 +470,60 @@ const EventsList = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [sortStatus]);
 
+        const queryClient = useQueryClient();
+        const [idEvent, setEventId] = useState<any>();
 
-const showAlert = async (type: number) => {
-    if (type === 10) {
-        Swal.fire({
-            icon: 'warning',
-            title: 'Are you sure?',
-            text: "You won't be able to revert this!",
-            showCancelButton: true,
-            confirmButtonText: 'Delete',
-            padding: '2em',
-            customClass: 'sweet-alerts',
-
-        }).then((result) => {
-            if (result.value) {
-                //delete
-                Swal.fire({ title: 'Deleted!', text: 'Your file has been deleted.', icon: 'success', customClass: 'sweet-alerts' });
-            }
+        const { mutate: deleteCategory } = useMutate({
+            mutationKey: [`event/id/{id}`],
+            endpoint: `api/dashboard/event/delete/${idEvent?.id}`,
+            onSuccess: (data: any) => {
+                console.log('done');
+                Swal.fire({ title: 'Deleted!', text: 'Event has been deleted.', icon: 'success', customClass: 'sweet-alerts' });
+                queryClient.refetchQueries(['api/dashboard/event/index']);
+                refetch();
+            },
+            onError: (err: any) => {
+                console.log('error', err);
+                Swal.fire({ title: 'Sorry!', text: 'Event can not be Deleted .', icon: "error", customClass: 'sweet-alerts' });
+            },
+            method: 'delete',
+            formData: false,
         });
-    }
-}
+
+        const showAlert = async (type: number,id :any) => {
+            if (type === 10) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    showCancelButton: true,
+                    confirmButtonText: 'Delete',
+                    padding: '2em',
+                    customClass: 'sweet-alerts',
+
+                }).then((result) => {
+                    if (result.value) {
+                        console.log(id,'id')
+                        deleteCategory(id)
+
+                        // axios.delete(`https://dashboard.savvyhost.io/api/user/delete/${id.id}`, {
+                        //     headers: {
+                        //       "Content-Type": "multipart/form-data"
+                        //     }
+                        //   }).then(response => {
+                        //       console.log(response,"deleted")
+                        //       Swal.fire({ title: 'Deleted!', text: 'Your file has been deleted.', icon: 'success', customClass: 'sweet-alerts' });
+                        //     }
+                        //     ).catch((err) => {
+                        //         Swal.fire({ title: 'Sorry!', text: 'User can not be Deleted .', icon: "error", customClass: 'sweet-alerts' });
+                        //         console.log(err,'err')
+                        //      })
+                        //delete
+
+                    }
+                });
+            }
+        }
 
     return (
         <div className="panel">
@@ -499,7 +543,7 @@ const showAlert = async (type: number) => {
                 >
                    Add Event
                 </button>
-                   <AddEvent showAddEventForm={showAddEventForm} setShowAddEventForm={setShowAddEventForm} />
+                   <AddEvent refetch={refetch} showAddEventForm={showAddEventForm} setShowAddEventForm={setShowAddEventForm} />
                    <EditEvent showEditEventForm={showEditEventForm} setShowEditEventsForm={setShowEditEventForm} />
                 </div>
             </div>
@@ -543,10 +587,13 @@ const showAlert = async (type: number) => {
                             accessor: 'action',
                             title: 'Action',
                             titleClassName: '!text-center',
-                            render: () => (
+                            render: (id) => (
                                 <div className="flex items-center w-max mx-auto gap-2">
                                     <Tippy >
-                                        <button type="button" className=""  onClick={() => setShowEditEventForm(!showEditEventForm)}>
+                                        <button type="button" className="" onClick={() => {
+                                            setShowAddEventForm(!showAddEventForm)
+                                            setEventId(id)
+                                        }}>
                                             <svg  width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-blue-700">
                                                 <path
                                                     d="M15.2869 3.15178L14.3601 4.07866L5.83882 12.5999L5.83881 12.5999C5.26166 13.1771 4.97308 13.4656 4.7249 13.7838C4.43213 14.1592 4.18114 14.5653 3.97634 14.995C3.80273 15.3593 3.67368 15.7465 3.41556 16.5208L2.32181 19.8021L2.05445 20.6042C1.92743 20.9852 2.0266 21.4053 2.31063 21.6894C2.59466 21.9734 3.01478 22.0726 3.39584 21.9456L4.19792 21.6782L7.47918 20.5844L7.47919 20.5844C8.25353 20.3263 8.6407 20.1973 9.00498 20.0237C9.43469 19.8189 9.84082 19.5679 10.2162 19.2751C10.5344 19.0269 10.8229 18.7383 11.4001 18.1612L11.4001 18.1612L19.9213 9.63993L20.8482 8.71306C22.3839 7.17735 22.3839 4.68748 20.8482 3.15178C19.3125 1.61607 16.8226 1.61607 15.2869 3.15178Z"
@@ -563,7 +610,12 @@ const showAlert = async (type: number) => {
                                         </button>
                                     </Tippy>
                                     <Tippy >
-                                      <button type="button" className="" onClick={() => showAlert(10)}>
+                                      <button type="button"
+                                            className=""
+                                            onClick={() => {
+                                                showAlert(10, id);
+                                                setEventId(id);
+                                            }}>
                                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-red-600">
                                                 <path
                                                     opacity="0.5"

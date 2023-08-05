@@ -364,7 +364,7 @@ const options = [
 const BlogsList = () => {
     const dispatch = useDispatch();
     useEffect(() => {
-        dispatch(setPageTitle('Order Sorting Table'));
+        dispatch(setPageTitle('Blogs Table'));
     });
     const isRtl = useSelector((state: IRootState) => state.themeConfig.rtlClass) === 'rtl' ? true : false;
 

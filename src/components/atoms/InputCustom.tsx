@@ -15,7 +15,7 @@ type InputCustom_TP = {
 };
 const InputCustom = ({ label, placeholder, description, error, className, value, name, type, handleChange, ...props }: InputCustom_TP) => {
     const { values, setFieldValue } = useFormikContext<any>(); /////////// STATES
-    // console.log("🚀 ~ file: InputCustom.tsx:18 ~ InputCustom ~ values:", values)
+    console.log("🚀 ~ file: InputCustom.tsx:18 ~ InputCustom ~ values:", values)
 
     return (
         <input

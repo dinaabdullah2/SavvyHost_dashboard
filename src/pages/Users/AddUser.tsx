@@ -12,6 +12,9 @@ import Editor from '../../components/atoms/Editor';
 import UploadImage from '../../components/atoms/UploadImage';
 import axios from 'axios';
 import Swal from 'sweetalert2';
+import useFetch from '../../hooks/UseFetch';
+import SelectCustom from '../../components/atoms/SelectCustom';
+import SelectCountries from '../../components/atoms/SelectCountries';
 
 const role = [
     { value: 'user', label: 'user' },
@@ -53,6 +56,35 @@ const AddUser = ({ showCustomizer, setShowCustomizer, userData }: UserCustom_TP)
     });
     editorValue;
 
+    interface Country {
+        id: number;
+        country_code: string,
+        country_name:string
+
+        // Add more properties if needed...
+      }
+
+
+    const {
+        data: Countries,
+        isLoading,
+        isRefetching,
+        isFetching,
+        refetch,
+    } = useFetch<{
+        data: {
+            countries: Country[];
+        };
+    }>({
+        endpoint: `api/dashboard/user/create`,
+        queryKey: [`All-Countries`],
+    });
+    console.log('🚀 ~ file: UsersList.tsx:49 ~ isFetching:', isFetching);
+    console.log('🚀 ~ file: UsersList.tsx:49 ~ isRefetching:', isRefetching);
+    console.log('🚀 ~ file: UsersList.tsx:49 ~ isLoading:', isLoading);
+    console.log(Countries?.data?.countries);
+
+
     console.log(editorValue, 'l');
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -81,7 +113,6 @@ const AddUser = ({ showCustomizer, setShowCustomizer, userData }: UserCustom_TP)
                 avatar: selectedFiles?.[0],
             };
         });
-        console.log(currentImage, 'lll');
     };
 
     const validatopnSchema = () =>
@@ -105,8 +136,8 @@ const AddUser = ({ showCustomizer, setShowCustomizer, userData }: UserCustom_TP)
 
     // post data
     const { mutate } = useMutate({
-        mutationKey: ['teachers/id'],
-        endpoint: `dashboard/user/store`,
+        mutationKey: ['users/id'],
+        endpoint: `api/dashboard/user/store`,
         onSuccess: (data: any) => {
             console.log('done');
         },
@@ -235,6 +266,52 @@ const AddUser = ({ showCustomizer, setShowCustomizer, userData }: UserCustom_TP)
                                         </button>
                                     </div>
                                 </div>
+                                <div className='lg:col-span-6 max-sm:col-span-1 '>
+                                    <label htmlFor="username">Username</label>
+                                    <InputCustom type="text" name="username" />
+                                </div>
+                                <div className='lg:col-span-6 max-sm:col-span-1 '>
+                                   <label htmlFor="email">Email</label>
+                                   <InputCustom type="text" name="email" />
+                                </div>
+                                <div className='lg:col-span-6 max-sm:col-span-1 '>
+                                  <label htmlFor="password">Password</label>
+                                  <InputCustom type="password" name="password" />
+                                </div>
+                                <div className='lg:col-span-6 max-sm:col-span-1 '>
+                                    <label htmlFor="phone">Phone</label>
+                                    <InputCustom type="text" name="phone" />
+                                </div>
+                                <div className='lg:col-span-6 max-sm:col-span-1 '>
+                                    <label htmlFor="Country">Country</label>
+                                     <SelectCountries options={Countries?.data?.countries} name="country" />
+                                </div>
+                                <div className='lg:col-span-6 max-sm:col-span-1 '>
+                                    <label htmlFor="Country">Gender</label>
+                                    <SelectCustom options={gender} name='gender' />
+                                </div>
+                                <div className='lg:col-span-6 max-sm:col-span-1 '>
+                                    <label htmlFor="Role">Role</label>
+                                    <Select defaultValue={role[0]} options={role} isSearchable={false} />
+                                </div>
+                                <div className='lg:col-span-6 max-sm:col-span-1 '>
+                                    <label htmlFor="type">Type</label>
+                                    <InputCustom type="text" name="type" />
+                                </div>
+                                <div className='lg:col-span-12 max-sm:col-span-1 '>
+                                    <label htmlFor="Bio">Bio</label>
+                                    <Editor name='bio' />
+                                </div>
+                                <div className='lg:col-span-12 max-sm:col-span-1 '>
+                                    <label htmlFor="avatar">Image</label>
+                                    <UploadImage name='avatar'/>
+                                </div>
+                                <div className='lg:col-span-12 max-sm:col-span-1 '>
+                                    <button type="submit" className="btn btn-primary w-full">
+                                        Save
+                                    </button>
+                                </div>
+                              </div>
                             </Form>
                         </Formik>
 
