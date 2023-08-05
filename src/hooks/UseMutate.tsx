@@ -8,12 +8,19 @@ type useMutateProps_TP<response_T> = {
     onSuccess?: (data: response_T) => void;
     onError?: (err: unknown) => void;
     formData?: boolean;
-    useCompanyToken?: boolean;
     onMutate?: (err?: unknown) => void;
     method?: 'post' | 'delete'; // Add the method property
 };
 
-export function useMutate<response_T>({ endpoint, mutationKey, onError, onSuccess, formData, useCompanyToken, onMutate,   method = "post", }: useMutateProps_TP<response_T>) {
+export function useMutate<response_T>({
+    endpoint,
+    mutationKey,
+    onError,
+    onSuccess,
+    formData,
+    onMutate,
+    method = 'post', // Set a default value for the method
+}: useMutateProps_TP<response_T>) {
     const user_token = Cookies.get('token');
     const token = user_token;
     const authorizationHeader = `Bearer ${token}`;
@@ -21,21 +28,22 @@ export function useMutate<response_T>({ endpoint, mutationKey, onError, onSucces
     const { data, isLoading, isSuccess, mutate, failureReason, isError } = useMutation({
         mutationKey,
         mutationFn: (values) => {
-            return axios({
+            const requestConfig = {
                 method: method.toUpperCase(), // Use the specified method
                 url: `https://dashboard.savvyhost.io/${endpoint}`,
-                data: method === 'delete'? '' :  values,
+                data: values,
                 headers: formData
-                ? {
+                    ? {
+                          'Content-Type': 'multipart/form-data',
+                          Authorization: authorizationHeader,
+                      }
+                    : {
+                          'Content-Type': 'application/json; charset=utf-8',
+                          Authorization: authorizationHeader,
+                      },
+            };
 
-                    "Content-Type": "multipart/form-data",
-                      Authorization: authorizationHeader,
-                  }
-                : {
-                      'Content-Type': 'application/json; charset=utf-8',
-                      Authorization: authorizationHeader,
-                  },
-            });
+            return axios(requestConfig);
         },
         onSuccess,
         onError,

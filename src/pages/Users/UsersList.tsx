@@ -101,7 +101,7 @@ const UsersList = () => {
     useEffect(() => {
         if (selectValue !== 'Filter Role') {
             setInitialRecords(() => {
-                return Users?.data?.all_users.filter((item:any) => {
+                return Users?.data?.all_users.filter((item: any) => {
                     return item.role_id.toString().includes(selectValue.toLowerCase());
                 });
             });
@@ -114,7 +114,7 @@ const UsersList = () => {
     //search
     useEffect(() => {
         setInitialRecords(() => {
-            return Users?.data?.all_users.filter((item:any) => {
+            return Users?.data?.all_users.filter((item: any) => {
                 return item.name.toLowerCase().includes(search.toLowerCase()) || item.email.toLowerCase().includes(search.toLowerCase());
             });
         });
@@ -127,12 +127,13 @@ const UsersList = () => {
         setPage(1);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [sortStatus]);
-   const queryClient = useQueryClient();
+    const queryClient = useQueryClient();
 
- 
     const [idUser, setUserId] = useState<any>();
+    console.log('🚀 ~ file: UsersList.tsx:134 ~ UsersList ~ idUser:', idUser);
+
     const { mutate: deleteUser } = useMutate({
-        mutationKey: [`users/id/{id}`],
+        mutationKey: [`users/id/${idUser?.id}`],
         endpoint: `dashboard/user/delete/${idUser?.id}`,
         onSuccess: (data: any) => {
             console.log('done');
@@ -142,13 +143,13 @@ const UsersList = () => {
         },
         onError: (err: any) => {
             console.log('error', err);
-            Swal.fire({ title: 'Sorry!', text: 'User can not be Deleted .', icon: "error", customClass: 'sweet-alerts' });
+            Swal.fire({ title: 'Sorry!', text: 'User can not be Deleted .', icon: 'error', customClass: 'sweet-alerts' });
         },
         method: 'delete',
         formData: false,
     });
 
-    const showAlert = async (type: number,id :any) => {
+    const showAlert = async (type: number, id: any) => {
         if (type === 10) {
             Swal.fire({
                 icon: 'warning',
@@ -158,11 +159,11 @@ const UsersList = () => {
                 confirmButtonText: 'Delete',
                 padding: '2em',
                 customClass: 'sweet-alerts',
-
             }).then((result) => {
                 if (result.value) {
-                    console.log(id,'id')
-                    deleteUser(id)
+                    // console.log('🚀 ~ file: UsersList.tsx:155 ~ showAlert ~ id:', id);
+
+                    deleteUser(id?.id);
 
                     // axios.delete(`https://dashboard.savvyhost.io/api/user/delete/${id.id}`, {
                     //     headers: {
@@ -177,11 +178,10 @@ const UsersList = () => {
                     //         console.log(err,'err')
                     //      })
                     //delete
-
                 }
             });
         }
-    }
+    };
     return (
         <div className="panel">
             <div className="flex md:items-center md:flex-row flex-col mb-5 gap-5">
@@ -223,8 +223,7 @@ const UsersList = () => {
                             accessor: 'role',
                             title: 'Role',
                             sortable: true,
-                            render: (role_id ) =>
-                            <div className="flex items-center w-max">{role_id == 1 ? <div>admin</div> : <div>user</div>}</div>,
+                            render: (role_id) => <div className="flex items-center w-max">{role_id == 1 ? <div>admin</div> : <div>user</div>}</div>,
                         },
                         {
                             accessor: 'action',
@@ -233,10 +232,14 @@ const UsersList = () => {
                             render: (id) => (
                                 <div className="flex items-center w-max mx-auto gap-2">
                                     <Tippy>
-                                        <button type="button" className="" onClick={() => {
-                                            setShowCustomizer(!showCustomizer)
-                                            setUserData(id)
-                                        }}>
+                                        <button
+                                            type="button"
+                                            className=""
+                                            onClick={() => {
+                                                setShowCustomizer(!showCustomizer);
+                                                setUserData(id);
+                                            }}
+                                        >
                                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-blue-700">
                                                 <path
                                                     d="M15.2869 3.15178L14.3601 4.07866L5.83882 12.5999L5.83881 12.5999C5.26166 13.1771 4.97308 13.4656 4.7249 13.7838C4.43213 14.1592 4.18114 14.5653 3.97634 14.995C3.80273 15.3593 3.67368 15.7465 3.41556 16.5208L2.32181 19.8021L2.05445 20.6042C1.92743 20.9852 2.0266 21.4053 2.31063 21.6894C2.59466 21.9734 3.01478 22.0726 3.39584 21.9456L4.19792 21.6782L7.47918 20.5844L7.47919 20.5844C8.25353 20.3263 8.6407 20.1973 9.00498 20.0237C9.43469 19.8189 9.84082 19.5679 10.2162 19.2751C10.5344 19.0269 10.8229 18.7383 11.4001 18.1612L11.4001 18.1612L19.9213 9.63993L20.8482 8.71306C22.3839 7.17735 22.3839 4.68748 20.8482 3.15178C19.3125 1.61607 16.8226 1.61607 15.2869 3.15178Z"

@@ -1,17 +1,14 @@
+import Tippy from '@tippyjs/react';
+import sortBy from 'lodash/sortBy';
 import { DataTable, DataTableSortStatus } from 'mantine-datatable';
 import { useEffect, useState } from 'react';
-import sortBy from 'lodash/sortBy';
 import { useDispatch, useSelector } from 'react-redux';
-import { IRootState } from '../../store';
-import { setPageTitle } from '../../store/themeConfigSlice';
-import React from 'react';
-import Tippy from '@tippyjs/react';
 import Select from 'react-select';
 import Swal from 'sweetalert2';
+import useFetch from '../../hooks/UseFetch';
+import { IRootState } from '../../store';
 import AddPage from './AddPage';
 import EditPage from './EditPage';
-import useFetch from '../../hooks/UseFetch';
-import axios from 'axios';
 
 
 const rowData = [
@@ -409,13 +406,11 @@ const PagesList = () => {
             pages: Page[];
         };
     }>({
-        endpoint: `dashboard/page/index`,
+        endpoint: `api/dashboard/page/index`,
         queryKey: [`All-Pages`],
     });
-    console.log('🚀 ~ file: PagesList.tsx:49 ~ isFetching:', isFetching);
-    console.log('🚀 ~ file: PagesList.tsx:49 ~ isRefetching:', isRefetching);
-    console.log('🚀 ~ file: PagesList.tsx:49 ~ isLoading:', isLoading);
-    console.log('🚀 ~ file: PagesList.tsx:49 ~ Refetching:',Pages?.data?.pages);
+
+    console.log('🚀 ~ file: PagesList.tsx:49 ~ Pages:',Pages);
 
 
 
