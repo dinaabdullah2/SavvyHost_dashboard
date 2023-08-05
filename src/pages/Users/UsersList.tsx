@@ -1,22 +1,17 @@
-import { DataTable, DataTableSortStatus } from 'mantine-datatable';
-import { useEffect, useId, useState } from 'react';
-import sortBy from 'lodash/sortBy';
-import { useDispatch, useSelector } from 'react-redux';
-import { IRootState } from '../../store';
-import { setPageTitle } from '../../store/themeConfigSlice';
-import React from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import Tippy from '@tippyjs/react';
+import sortBy from 'lodash/sortBy';
+import { DataTable, DataTableSortStatus } from 'mantine-datatable';
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import Select from 'react-select';
 import Swal from 'sweetalert2';
-import AddUser from './AddUser';
-import EditUser from './EditUser';
 import useFetch from '../../hooks/UseFetch';
-import axios from 'axios';
-import { notifyManager, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useMutate } from '../../hooks/UseMutate';
+import { IRootState } from '../../store';
+import { setPageTitle } from '../../store/themeConfigSlice';
+import AddUser from './AddUser';
 // import SweetAlert from '../Components/SweetAlert';
-import { Form, Formik } from 'formik';
-import { BaseInputField } from '../../components/atoms/BaseInputField';
 
 const options = [
     { value: 'Filter Role', label: 'All' },

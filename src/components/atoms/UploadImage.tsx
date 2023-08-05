@@ -1,6 +1,5 @@
 import { useFormikContext } from 'formik';
 import React, { useState } from 'react';
-
 type ImageCustom_TP = {
     className?: string;
     type?: string;
@@ -8,19 +7,18 @@ type ImageCustom_TP = {
     value?: any;
     name?: any;
 };
-
-const UploadImage = ({ label, placeholder, description, error, className, value, name, type, handleChange, ...props }: ImageCustom_TP) => {
+const UploadImage = ({ className, value, name, type, handleChange, ...props }: ImageCustom_TP) => {
     const { values, setFieldValue } = useFormikContext();
-
     const [currentImage, setCurrentImage] = useState<File>();
-    const [previewImage, setPreحviewImage] = useState<string>('');
+    const [previewImage, setPreviewImage] = useState<any>('');
+    console.log('🚀 ~ file: UploadImage.tsx:17 ~ UploadImage ~ previewImage:', previewImage);
     const selectImage = (event: React.ChangeEvent<HTMLInputElement>) => {
         const selectedFiles = event.target.files as FileList;
+        console.log('🚀 ~ file: UploadImage.tsx:19 ~ selectImage ~ selectedFiles:', selectedFiles);
         setCurrentImage(selectedFiles?.[0]);
-        setPreحviewImage(URL.createObjectURL(selectedFiles?.[0]));
+        setPreviewImage(URL.createObjectURL(selectedFiles?.[0]));
         console.log(previewImage, 'hey');
         setFieldValue(name, selectedFiles?.[0]);
-
         console.log(currentImage, 'lll');
     };
     return (

@@ -5,12 +5,13 @@ import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Select from 'react-select';
 import Swal from 'sweetalert2';
-import useFetch from '../../hooks/UseFetch';
 import { IRootState } from '../../store';
 import AddPage from './AddPage';
 import EditPage from './EditPage';
 import useFetch from '../../hooks/UseFetch';
 import axios from 'axios';
+import { useMutate } from '../../hooks/UseMutate';
+import { useQueryClient } from '@tanstack/react-query';
 
 
 const rowData = [

@@ -1,24 +1,18 @@
-import React, { useEffect } from 'react';
-import { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { IRootState } from '../../store';
-import Select from 'react-select';
-import { toggleAnimation, toggleLayout, toggleMenu, toggleNavbar, toggleRTL, toggleTheme, toggleSemidark } from '../../store/themeConfigSlice';
-import ReactQuill from 'react-quill';
 import { Tab } from '@headlessui/react';
-import { Fragment } from 'react';
-import axios from 'axios';
+import { useQueryClient } from '@tanstack/react-query';
+import { Form, Formik } from 'formik';
+import { Fragment, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import Swal from 'sweetalert2';
 import * as Yup from 'yup';
-import { Form, Formik } from 'formik';
-import InputCustom from '../../components/atoms/InputCustom';
 import Editor from '../../components/atoms/Editor';
+import InputCustom from '../../components/atoms/InputCustom';
+import RadioCustom from '../../components/atoms/RadioCustom';
 import SelectCustom from '../../components/atoms/SelectCustom';
-import { useMutate } from '../../hooks/UseMutate';
 import { TextAreaField } from '../../components/atoms/TextAreaField';
 import UploadImage from '../../components/atoms/UploadImage';
-import RadioCustom from '../../components/atoms/RadioCustom';
-import { useQueryClient } from '@tanstack/react-query';
+import { useMutate } from '../../hooks/UseMutate';
+import { IRootState } from '../../store';
 
 const role = [
     { value: 'user', label: 'user' },
@@ -27,33 +21,26 @@ const role = [
 const publish = [
     { value: 1, label: 'publish' },
     { value: 0, label: 'draft' },
-
 ];
 const options = [
-
     { value: 1, label: 'Yes' },
     { value: 0, label: 'No' },
-
 ];
 
 type PageCustom_TP = {
     showAddForm?: boolean;
     setShowAddForm?: any;
     pageData?: any;
-    refetch?:any
+    refetch?: any;
 };
 
-const AddPage = ({ showAddForm, setShowAddForm, pageData ,refetch}: PageCustom_TP) => {
+const AddPage = ({ showAddForm, setShowAddForm, pageData, refetch }: PageCustom_TP) => {
     console.log('🚀 ~ file: AddPage.tsx:29 ~ AddPage ~ pageData:', pageData);
     const themeConfig = useSelector((state: IRootState) => state.themeConfig);
     const dispatch = useDispatch();
     const [currentImage, setCurrentImage] = useState<File>();
     const [previewImage, setPreviewImage] = useState<string>('');
     const [seoSection, setSeoSection] = useState<any>(1);
-
-
-
-
 
     const validatopnSchema = () =>
         Yup.object({
@@ -86,11 +73,11 @@ const AddPage = ({ showAddForm, setShowAddForm, pageData ,refetch}: PageCustom_T
             Swal.fire({ title: 'Added!', text: 'Your Page has been added.', icon: 'success', customClass: 'sweet-alerts' });
             queryClient.refetchQueries(['api/dashboard/page/index']);
             refetch();
-            setShowAddForm(false)
+            setShowAddForm(false);
             console.log(data);
         },
         onError: (err: any) => {
-            Swal.fire({ title: 'Your Page Can not be added!', text: `${err.response.data.message}` , icon: 'error', customClass: 'sweet-alerts' });
+            Swal.fire({ title: 'Your Page Can not be added!', text: `${err.response.data.message}`, icon: 'error', customClass: 'sweet-alerts' });
             console.log('error', err);
         },
         formData: true,
@@ -108,8 +95,6 @@ const AddPage = ({ showAddForm, setShowAddForm, pageData ,refetch}: PageCustom_T
     //     },
     //     formData: true,
     // });
-
-
 
     return (
         <div>
@@ -169,9 +154,9 @@ const AddPage = ({ showAddForm, setShowAddForm, pageData ,refetch}: PageCustom_T
                                 <p className="text-white-dark pb-2 px-2 text-sm">Allow search engines to show this service in search results?</p>
                                 <div className="grid lg:grid-cols-12 max-sm:grid-cols-1 gap-5 px-3 ">
                                     <div className="lg:col-span-12 max-sm:col-span-1 pt-1">
-                                        <SelectCustom setSeoSection={setSeoSection} options={options} name="searchable"  />
+                                        <SelectCustom setSeoSection={setSeoSection} options={options} name="searchable" />
                                     </div>
-                                    {seoSection == 1 ?
+                                    {seoSection == 1 ? (
                                         <div className="lg:col-span-12 max-sm:col-span-1 ">
                                             <Tab.Group>
                                                 <Tab.List className="mt-3 flex flex-wrap border-b border-white-light dark:border-[#191e3a]">
@@ -222,11 +207,10 @@ const AddPage = ({ showAddForm, setShowAddForm, pageData ,refetch}: PageCustom_T
                                                             </div>
                                                             <div className="lg:col-span-12 max-sm:col-span-1 ">
                                                                 <label htmlFor="seo_description">Seo Description</label>
-                                                                 <TextAreaField name="seo_description" />
+                                                                <TextAreaField name="seo_description" />
                                                             </div>
                                                             <div className="lg:col-span-12 max-sm:col-span-1 ">
-                                                                 <UploadImage name='seo_image' />
-
+                                                                <UploadImage name="seo_image" />
                                                             </div>
                                                         </div>
                                                     </Tab.Panel>
@@ -239,10 +223,10 @@ const AddPage = ({ showAddForm, setShowAddForm, pageData ,refetch}: PageCustom_T
                                                             </div>
                                                             <div className="lg:col-span-12 max-sm:col-span-1 ">
                                                                 <label htmlFor="seo_description">Facebook Description</label>
-                                                                 <TextAreaField name="facebook_description" />
+                                                                <TextAreaField name="facebook_description" />
                                                             </div>
                                                             <div className="lg:col-span-12 max-sm:col-span-1 ">
-                                                                 <UploadImage name='facebook_image' />
+                                                                <UploadImage name="facebook_image" />
                                                             </div>
                                                         </div>
                                                     </Tab.Panel>
@@ -255,17 +239,17 @@ const AddPage = ({ showAddForm, setShowAddForm, pageData ,refetch}: PageCustom_T
                                                             </div>
                                                             <div className="lg:col-span-12 max-sm:col-span-1 ">
                                                                 <label htmlFor="twitter_description">Twitter Description</label>
-                                                                 <TextAreaField name="twitter_description" />
+                                                                <TextAreaField name="twitter_description" />
                                                             </div>
                                                             <div className="lg:col-span-12 max-sm:col-span-1 ">
-                                                                 <UploadImage name='twitter_image' />
+                                                                <UploadImage name="twitter_image" />
                                                             </div>
                                                         </div>
                                                     </Tab.Panel>
                                                 </Tab.Panels>
                                             </Tab.Group>
                                         </div>
-                                     : null}
+                                    ) : null}
                                 </div>
                             </div>
 
@@ -282,7 +266,7 @@ const AddPage = ({ showAddForm, setShowAddForm, pageData ,refetch}: PageCustom_T
                                 <h5 className="mb-5 w-[100%] text-base font-semibold dark:text-white p-2  border-b border-dashed border-white-light">Feature Image</h5>
                                 <div className="grid lg:grid-cols-12 max-sm:grid-cols-1 gap-5 px-3 ">
                                     <div className="lg:col-span-12 max-sm:col-span-1 ">
-                                       <UploadImage name='featured_image'  />
+                                        <UploadImage name="featured_image" />
                                     </div>
                                 </div>
                             </div>
@@ -291,7 +275,7 @@ const AddPage = ({ showAddForm, setShowAddForm, pageData ,refetch}: PageCustom_T
                                 <h5 className="mb-5 w-[100%] text-base font-semibold dark:text-white p-2  border-b border-dashed border-white-light">Logo</h5>
                                 <div className="grid lg:grid-cols-12 max-sm:grid-cols-1 gap-5 px-3 ">
                                     <div className="lg:col-span-12 max-sm:col-span-1 ">
-                                       <UploadImage name='logo'  />
+                                        <UploadImage name="logo" />
                                     </div>
                                 </div>
                             </div>
