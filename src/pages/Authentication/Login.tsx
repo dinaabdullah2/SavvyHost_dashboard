@@ -7,6 +7,9 @@ import axios from 'axios';
 import { Form, Formik } from 'formik';
 import * as Yup from 'yup';
 import InputCustom from '../../components/atoms/InputCustom';
+import { useQueryClient } from '@tanstack/react-query';
+import { useMutate } from '../../hooks/UseMutate';
+import Swal from 'sweetalert2';
 const LoginBoxed = () => {
     const dispatch = useDispatch();
     useEffect(() => {
@@ -33,12 +36,30 @@ const LoginBoxed = () => {
 
         if(localStorage.getItem("token")){
             navigate("/")
-         
+
 
         }else {
             navigate("/login")
         }
      }
+
+
+     const queryClient = useQueryClient();
+     // // post data
+     const { mutate } = useMutate({
+         mutationKey: ['dashboard/login'],
+         endpoint: `api/dashboard/event/store`,
+         onSuccess: (data: any) => {
+             Swal.fire({ title: 'Added!', text: 'Your Event has been added successfully.', icon: 'success', customClass: 'sweet-alerts' });
+             queryClient.refetchQueries(['api/dashboard/event/index']);
+         },
+         onError: (err: any) => {
+             Swal.fire({ title: 'Your Event Can not be added.', text: `${err.response.data.message}` ,icon: 'error', customClass: 'sweet-alerts' });
+             console.log('erroooooooooooooooooooooooooooooooor', err);
+         },
+         formData: true,
+     });
+
     const API_BASE_URL = "https://dashboard.savvyhost.io";
     const handleSubmit = async (values: any) => {
         axios.post(`https://dashboard.savvyhost.io/api/login`,values
@@ -57,10 +78,6 @@ const LoginBoxed = () => {
 
                 console.log(err,'fee')
              })
-
-
-
-
     };
 
 

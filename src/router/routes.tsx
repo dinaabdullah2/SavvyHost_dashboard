@@ -104,7 +104,7 @@ const Index = lazy(() => import('../pages/Index'));
 
 const UsersList = lazy(() => import('../pages/Users/UsersList'));
 const PagesList = lazy(() => import('../pages/Pages/PagesList'));
-const LoginBoxed = lazy(() => import('../pages/Authentication/LoginBoxed'));
+const LoginBoxed = lazy(() => import('../pages/Authentication/Login'));
 
 const routes = [
     // dashboard
