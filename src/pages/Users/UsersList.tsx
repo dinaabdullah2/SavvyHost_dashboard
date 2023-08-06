@@ -190,12 +190,13 @@ const UsersList = () => {
         <div className="panel">
             <div className="flex md:items-center md:flex-row flex-col mb-5 gap-5">
                 <h5 className="font-semibold text-lg dark:text-white-light">All Users</h5>
-                <div className="lg:ltr:ml-auto lg:rtl:mr-auto">
+                <div className="lg:ltr:ml-auto lg:rtl:mr-auto min-md:ltr:mr-auto  min-md:rtl:ml-auto">
                     <input type="text" className="form-input w-[100%]" placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} />
                 </div>
+
                 <div>
                     <Select
-                        className="lg:w-[200px] sm:w-[200px] max-sm:w-[100%]"
+                        className="lg:w-[200px] min-md:w-[200px]"
                         placeholder="Filter Role "
                         options={options}
                         onChange={(event) => {
@@ -205,7 +206,7 @@ const UsersList = () => {
                     />
                 </div>
                 <div>
-                    <button type="button" className="bg-primary font-semibold hover:bg-blue-500 max-sm:w-[100%] text-white py-2 px-5 rounded-lg cursor-pointer" onClick={() => setShowCustomizer(!showCustomizer)}>
+                    <button type="button" className="bg-primary font-semibold hover:bg-blue-500 max-sm:w-[100%] max-md:w-[100%] text-white py-2 px-5 rounded-lg cursor-pointer" onClick={() => setShowCustomizer(!showCustomizer)}>
                         Add User
                     </button>
 

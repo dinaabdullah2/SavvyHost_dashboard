@@ -529,16 +529,16 @@ const EventsList = () => {
         <div className="panel">
             <div className="flex md:items-center md:flex-row flex-col mb-5 gap-5">
                 <h5 className="font-semibold text-lg dark:text-white-light">All Events</h5>
-                <div className="ltr:ml-auto rtl:mr-auto">
-                    <input type="text" className="form-input w-auto" placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} />
+                <div className="lg:ltr:ml-auto lg:rtl:mr-auto min-md:ltr:mr-auto  min-md:rtl:ml-auto">
+                    <input type="text" className="form-input w-[100%]" placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} />
                 </div>
                 <div>
-                 <Select className='w-[200px]' defaultValue={options[0]} options={options} onChange={(event)=>{setSelectValue(event?.value)}} isSearchable={false} />
+                 <Select className="lg:w-[200px] min-md:w-[200px]" defaultValue={options[0]} options={options} onChange={(event)=>{setSelectValue(event?.value)}} isSearchable={false} />
                 </div>
                 <div>
                 <button
                     type="button"
-                    className="bg-primary font-semibold hover:bg-blue-500 text-white py-2 px-5 rounded-lg cursor-pointer"
+                    className="bg-primary font-semibold hover:bg-blue-500 max-sm:w-[100%] max-md:w-[100%] text-white py-2 px-5 rounded-lg cursor-pointer"
                     onClick={() => setShowAddEventForm(!showAddEventForm)}
                 >
                    Add Event

@@ -124,7 +124,7 @@ const CategoriesList = () => {
         setPage(1);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [sortStatus]);
-    
+
    const queryClient = useQueryClient();
 
 
@@ -162,19 +162,6 @@ const CategoriesList = () => {
                     console.log(id,'id')
                     deleteCategory(id)
 
-                    // axios.delete(`https://dashboard.savvyhost.io/api/user/delete/${id.id}`, {
-                    //     headers: {
-                    //       "Content-Type": "multipart/form-data"
-                    //     }
-                    //   }).then(response => {
-                    //       console.log(response,"deleted")
-                    //       Swal.fire({ title: 'Deleted!', text: 'Your file has been deleted.', icon: 'success', customClass: 'sweet-alerts' });
-                    //     }
-                    //     ).catch((err) => {
-                    //         Swal.fire({ title: 'Sorry!', text: 'User can not be Deleted .', icon: "error", customClass: 'sweet-alerts' });
-                    //         console.log(err,'err')
-                    //      })
-                    //delete
 
                 }
             });
@@ -184,12 +171,12 @@ const CategoriesList = () => {
         <div className="panel">
             <div className="flex md:items-center md:flex-row flex-col mb-5 gap-5">
                 <h5 className="font-semibold text-lg dark:text-white-light">All Categories</h5>
-                <div className="ltr:ml-auto rtl:mr-auto">
-                    <input type="text" className="form-input w-auto" placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} />
+                <div className="lg:ltr:ml-auto lg:rtl:mr-auto min-md:ltr:mr-auto  min-md:rtl:ml-auto">
+                    <input type="text" className="form-input w-[100%]" placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} />
                 </div>
                 <div>
                     <Select
-                        className="w-[200px]"
+                        className="lg:w-[200px] min-md:w-[200px]"
                         defaultValue={options[0]}
                         options={options}
                         onChange={(event) => {
@@ -199,7 +186,7 @@ const CategoriesList = () => {
                     />
                 </div>
                 <div>
-                    <button type="button" className="bg-primary font-semibold hover:bg-blue-500 text-white py-2 px-5 rounded-lg cursor-pointer" onClick={() => setShowCustomizer(!showCustomizer)}>
+                    <button type="button" className="bg-primary font-semibold hover:bg-blue-500 max-sm:w-[100%] max-md:w-[100%] text-white py-2 px-5 rounded-lg cursor-pointer" onClick={() => setShowCustomizer(!showCustomizer)}>
                         Add Category
                     </button>
 

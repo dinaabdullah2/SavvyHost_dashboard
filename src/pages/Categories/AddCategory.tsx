@@ -108,7 +108,7 @@ const AddCategory = ({ showCustomizer, setShowCustomizer, categoryData,refetch}:
             <nav
                 className={`${
                     (showCustomizer && 'ltr:!right-0 rtl:!left-0') || ''
-                } bg-white fixed ltr:-right-[50%] rtl:-left-[50%] top-0 bottom-0 w-full max-w-[50%] shadow-[5px_0_25px_0_rgba(94,92,154,0.1)] transition-[right] duration-300 z-[51] dark:bg-black p-4`}
+                } bg-white fixed ltr:-right-[50%] rtl:-left-[50%] top-0 bottom-0 w-full lg:max-w-[50%]  sm:max-w-[80%]  sm:ltr:-right-[80%] max-sm:rtl:-left-[90%]  max-sm:max-w-[90%]  max-sm:ltr:-right-[90%] sm:rtl:-left-[80%]  shadow-[5px_0_25px_0_rgba(94,92,154,0.1)] transition-[right] duration-300 z-[51] dark:bg-black p-4`}
             >
                 <div className="overflow-y-auto overflow-x-hidden perfect-scrollbar h-full">
                     <div className="text-center relative pb-5">

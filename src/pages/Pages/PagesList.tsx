@@ -124,12 +124,12 @@ const PagesList = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [sortStatus]);
 
-    const htmlString: string = "<p>scsdcdsc</p>";
-const parser: DOMParser = new DOMParser();
-const parsedHTML: Document = parser.parseFromString(htmlString, "text/html");
-const htmlElement: HTMLElement = parsedHTML.body.firstChild as HTMLElement;
+// const htmlString: string = "<p>scsdcdsc</p>";
+// const parser: DOMParser = new DOMParser();
+// const parsedHTML: Document = parser.parseFromString(htmlString, "text/html");
+// const htmlElement: HTMLElement = parsedHTML.body.firstChild as HTMLElement;
 
-console.log(htmlElement,'<p>');
+
 
 const queryClient = useQueryClient();
 
@@ -166,21 +166,6 @@ const showAlert = async (type: number,id :any) => {
             if (result.value) {
                 console.log(id,'id')
                 deletePage(id)
-
-                // axios.delete(`https://dashboard.savvyhost.io/api/user/delete/${id.id}`, {
-                //     headers: {
-                //       "Content-Type": "multipart/form-data"
-                //     }
-                //   }).then(response => {
-                //       console.log(response,"deleted")
-                //       Swal.fire({ title: 'Deleted!', text: 'Your file has been deleted.', icon: 'success', customClass: 'sweet-alerts' });
-                //     }
-                //     ).catch((err) => {
-                //         Swal.fire({ title: 'Sorry!', text: 'User can not be Deleted .', icon: "error", customClass: 'sweet-alerts' });
-                //         console.log(err,'err')
-                //      })
-                //delete
-
             }
         });
     }
@@ -190,22 +175,22 @@ const showAlert = async (type: number,id :any) => {
         <div className="panel">
             <div className="flex md:items-center md:flex-row flex-col mb-5 gap-5">
                 <h5 className="font-semibold text-lg dark:text-white-light">All Pages</h5>
-                <div className="ltr:ml-auto rtl:mr-auto">
-                    <input type="text" className="form-input w-auto" placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} />
+                <div className="lg:ltr:ml-auto lg:rtl:mr-auto min-md:ltr:mr-auto  min-md:rtl:ml-auto">
+                    <input type="text" className="form-input w-[100%]" placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} />
                 </div>
                 <div>
-                 <Select className='w-[200px]' defaultValue={options[0]} options={options} onChange={(event)=>{setSelectValue(event?.value)}} isSearchable={false} />
+                 <Select className="lg:w-[200px] min-md:w-[200px]" defaultValue={options[0]} options={options} onChange={(event)=>{setSelectValue(event?.value)}} isSearchable={false} />
                 </div>
                 <div>
                 <button
                     type="button"
-                    className="bg-primary font-semibold hover:bg-blue-500 text-white py-2 px-5 rounded-lg cursor-pointer"
+                    className="bg-primary font-semibold hover:bg-blue-500 max-sm:w-[100%] max-md:w-[100%] text-white py-2 px-5 rounded-lg cursor-pointer"
                     onClick={() => setShowAddForm(!showAddForm)}
                 >
                    Add Page
                 </button>
                    <AddPage  refetch={refetch}  pageData={pageData} showAddForm={showAddForm} setShowAddForm={setShowAddForm} />
-                   <EditPage showEditForm={showEditForm} setShowEditForm={setShowEditForm} />
+                   {/* <EditPage showEditForm={showEditForm} setShowEditForm={setShowEditForm} /> */}
                 </div>
             </div>
             <div className="datatables">

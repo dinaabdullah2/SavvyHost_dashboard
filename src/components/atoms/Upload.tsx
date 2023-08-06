@@ -7,7 +7,7 @@ type ImageCustom_TP = {
     value?: any;
     name?: any;
 };
-const UploadImage = ({ className, value, name, type, handleChange, ...props }: ImageCustom_TP) => {
+const Upload = ({ className, value, name, type, handleChange, ...props }: ImageCustom_TP) => {
     const { values, setFieldValue } = useFormikContext();
     const [currentImage, setCurrentImage] = useState<File>();
     const [previewImage, setPreviewImage] = useState<any>('');
@@ -19,7 +19,17 @@ const UploadImage = ({ className, value, name, type, handleChange, ...props }: I
         setPreviewImage(URL.createObjectURL(selectedFiles?.[0]));
         setFieldValue(name, selectedFiles?.[0]);
 
+
     };
+
+
+    // document.getElementByName(name)?.addEventListener("input", function() {
+    //     document.getElementById(name)?.innerHTML = `
+    //         <img src="${window.URL.createObjectURL(document.getElementById("facebookImg")?.files[0])}" alt="facebookdImg">
+    //         `;
+    // })
+
+
     return (
         <>
             <input
@@ -27,7 +37,7 @@ const UploadImage = ({ className, value, name, type, handleChange, ...props }: I
                 name={name}
                 type="file"
                 accept="image/*"
-                
+
                 onChange={selectImage}
             />
             {previewImage ? (
@@ -43,4 +53,4 @@ const UploadImage = ({ className, value, name, type, handleChange, ...props }: I
     );
 };
 
-export default UploadImage;
+export default Upload;
