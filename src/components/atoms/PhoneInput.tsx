@@ -20,28 +20,23 @@ const PhoneInput2 = ({ name, label, setPhone_country, updateData, setPhoneCode, 
     };
 
     return (
-        <div className="col-span-1">
-            <div className="flex flex-col gap-1 ">
-                <Label htmlFor={name} className="mb-3">
-                    {label}
-                </Label>
 
-                <PhoneInput
-                    country={!resetForm ? updateData?.phone_country : 'eg'}
-                    value={phone}
-                    onChange={handlePhoneChange}
-                    enableSearch
-                    onBlur={handleBlur}
-                    className={{
-                        error: touched[name] && !!errors.phone,
-                    }}
-                    defaultValue={{
-                        value: !resetForm ? updateData?.phone : '',
-                        label: !resetForm ? updateData?.phone : t('choose Type'),
-                    }}
-                />
-            </div>
-        </div>
+        <PhoneInput
+            country={!resetForm ? updateData?.phone_country : 'eg'}
+            value={phone}
+            onChange={(value:any) => setFieldValue(name,value)}
+            enableSearch
+            onBlur={handleBlur}
+            className={{
+                error: touched[name] && !!errors.phone,
+            }}
+            defaultValue={{
+            value: !resetForm ? updateData?.phone : '',
+            label: !resetForm ? updateData?.phone : t('choose Type'),
+
+           }}
+        />
+
     );
 };
 

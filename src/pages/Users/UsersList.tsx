@@ -92,12 +92,36 @@ const UsersList = () => {
         setRecordsData([...initialRecords.slice(from, to)]);
     }, [page, pageSize, initialRecords]);
 
+    interface Role {
+        id: number;
+        role_name: string,
+        // Add more properties if needed...
+      }
+    const {
+        data: Roles,
+    } = useFetch<{
+        data: {
+            roles: Role[];
+        };
+    }>({
+        endpoint: `api/dashboard/user/create`,
+        queryKey: [`All-Roles`],
+    });
+    console.log(Roles?.data?.roles);
+    const options = Roles?.data?.roles?.map((item:any)=>({
+        value:item?.id,
+        label:item?.role_name,
+    }))
+
+
+
+
     // filter
     useEffect(() => {
         if (selectValue !== 'Filter Role') {
             setInitialRecords(() => {
                 return Users?.data?.all_users.filter((item: any) => {
-                    return item.role_id.toString().includes(selectValue.toLowerCase());
+                    return item.role_id == selectValue
                 });
             });
         } else {
@@ -134,7 +158,7 @@ const UsersList = () => {
         onSuccess: (data: any) => {
             console.log('done');
             Swal.fire({ title: 'Deleted!', text: 'Your file has been deleted.', icon: 'success', customClass: 'sweet-alerts' });
-            queryClient.refetchQueries(['api/user/index']);
+            queryClient.refetchQueries(['dashboard/user/index']);
             refetch();
         },
         onError: (err: any) => {
@@ -157,23 +181,7 @@ const UsersList = () => {
                 customClass: 'sweet-alerts',
             }).then((result) => {
                 if (result.value) {
-                    // console.log('🚀 ~ file: UsersList.tsx:155 ~ showAlert ~ id:', id);
-
                     deleteUser(id?.id);
-
-                    // axios.delete(`https://dashboard.savvyhost.io/api/user/delete/${id.id}`, {
-                    //     headers: {
-                    //       "Content-Type": "multipart/form-data"
-                    //     }
-                    //   }).then(response => {
-                    //       console.log(response,"deleted")
-                    //       Swal.fire({ title: 'Deleted!', text: 'Your file has been deleted.', icon: 'success', customClass: 'sweet-alerts' });
-                    //     }
-                    //     ).catch((err) => {
-                    //         Swal.fire({ title: 'Sorry!', text: 'User can not be Deleted .', icon: "error", customClass: 'sweet-alerts' });
-                    //         console.log(err,'err')
-                    //      })
-                    //delete
                 }
             });
         }
@@ -182,13 +190,13 @@ const UsersList = () => {
         <div className="panel">
             <div className="flex md:items-center md:flex-row flex-col mb-5 gap-5">
                 <h5 className="font-semibold text-lg dark:text-white-light">All Users</h5>
-                <div className="ltr:ml-auto rtl:mr-auto">
-                    <input type="text" className="form-input w-auto" placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} />
+                <div className="lg:ltr:ml-auto lg:rtl:mr-auto">
+                    <input type="text" className="form-input w-[100%]" placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} />
                 </div>
                 <div>
                     <Select
-                        className="w-[200px]"
-                        defaultValue={options[0]}
+                        className="lg:w-[200px] sm:w-[200px] max-sm:w-[100%]"
+                        placeholder="Filter Role "
                         options={options}
                         onChange={(event) => {
                             setSelectValue(event?.value);
@@ -197,7 +205,7 @@ const UsersList = () => {
                     />
                 </div>
                 <div>
-                    <button type="button" className="bg-primary font-semibold hover:bg-blue-500 text-white py-2 px-5 rounded-lg cursor-pointer" onClick={() => setShowCustomizer(!showCustomizer)}>
+                    <button type="button" className="bg-primary font-semibold hover:bg-blue-500 max-sm:w-[100%] text-white py-2 px-5 rounded-lg cursor-pointer" onClick={() => setShowCustomizer(!showCustomizer)}>
                         Add User
                     </button>
 

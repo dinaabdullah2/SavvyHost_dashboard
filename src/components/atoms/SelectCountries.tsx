@@ -27,10 +27,10 @@ const SelectCountries = ({ label, placeholder, description, error, className, va
             id={name}
             {...props}
             name={name}
-            // defaultValue={options[0]}
+            // defaultValue={optionVal? optionVal[0]}
             options={optionVal}
-            onChange={(event) => {                
-                setFieldValue(name, event?.value);
+            onChange={(event) => {
+                setFieldValue(name,event?.value);
             }}
             required
         />

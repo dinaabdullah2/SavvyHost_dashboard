@@ -172,21 +172,21 @@ const AddEvent = ({
                                         <label htmlFor="title"> Title</label>
                                         <InputCustom name="title" />
                                     </div>
-                                    <div className="lg:col-span-12 max-sm:col-span-1 ">
-                                        <label htmlFor="content">Content</label>
-                                        <Editor name="content" />
+                                    <div className="lg:col-span-6 max-sm:col-span-1 ">
+                                        <label htmlFor="start_date"> start Date</label>
+                                        <DateInput name="start_date"  />
+                                    </div>
+                                    <div className="lg:col-span-6 max-sm:col-span-1 ">
+                                        <label htmlFor="end_date"> End Date</label>
+                                        <DateInput name="end_date"  />
                                     </div>
                                     <div className="lg:col-span-12 max-sm:col-span-1 ">
                                         <label htmlFor="name"> Location</label>
                                         <InputCustom name="location" type='text' />
                                     </div>
                                     <div className="lg:col-span-12 max-sm:col-span-1 ">
-                                        <label htmlFor="start_date"> start Date</label>
-                                        <DateInput name="start_date"  />
-                                    </div>
-                                    <div className="lg:col-span-12 max-sm:col-span-1 ">
-                                        <label htmlFor="end_date"> End Date</label>
-                                        <DateInput name="end_date"  />
+                                        <label htmlFor="content">Content</label>
+                                        <Editor name="content" />
                                     </div>
                                 </div>
                             </div>

@@ -13,14 +13,15 @@ import { TextAreaField } from '../../components/atoms/TextAreaField';
 import UploadImage from '../../components/atoms/UploadImage';
 import { useMutate } from '../../hooks/UseMutate';
 import { IRootState } from '../../store';
+import SelectSearch from '../../components/atoms/SelectSearchable';
 
 const role = [
     { value: 'user', label: 'user' },
     { value: 'admin', label: 'admin' },
 ];
 const publish = [
-    { value: 1, label: 'publish' },
-    { value: 0, label: 'draft' },
+    { value: 'publish', label: 'publish' },
+    { value:  'draft', label: 'draft' },
 ];
 const options = [
     { value: 1, label: 'Yes' },
@@ -52,7 +53,7 @@ const AddPage = ({ showAddForm, setShowAddForm, pageData, refetch }: PageCustom_
         content: pageData?.content ? pageData?.content : '',
         logo: pageData?.logo ? pageData?.logo : '',
         featured_image: pageData?.featured_image ? pageData?.featured_image : '',
-        publish: pageData?.publish ? pageData?.publish : '',
+        status: pageData?.status ? pageData?.status : '',
         searchable: pageData?.searchable ? pageData?.searchable : 1,
         seo_title: pageData?.seo_title ? pageData?.seo_title : '',
         seo_description: pageData?.seo_description ? pageData?.seo_description : '',
@@ -154,7 +155,7 @@ const AddPage = ({ showAddForm, setShowAddForm, pageData, refetch }: PageCustom_
                                 <p className="text-white-dark pb-2 px-2 text-sm">Allow search engines to show this service in search results?</p>
                                 <div className="grid lg:grid-cols-12 max-sm:grid-cols-1 gap-5 px-3 ">
                                     <div className="lg:col-span-12 max-sm:col-span-1 pt-1">
-                                        <SelectCustom setSeoSection={setSeoSection} options={options} name="searchable" />
+                                        <SelectSearch setSeoSection={setSeoSection}  name="searchable" />
                                     </div>
                                     {seoSection == 1 ? (
                                         <div className="lg:col-span-12 max-sm:col-span-1 ">
@@ -257,7 +258,7 @@ const AddPage = ({ showAddForm, setShowAddForm, pageData, refetch }: PageCustom_
                                 <h5 className="mb-5 w-[100%] text-base font-semibold dark:text-white p-2  border-b border-dashed border-white-light">Publish</h5>
                                 <div className="grid lg:grid-cols-12 max-sm:grid-cols-1 gap-5 px-3 ">
                                     <div className="lg:col-span-12 max-sm:col-span-1 ">
-                                        <RadioCustom name="publish" publish={publish} />
+                                        <RadioCustom name="status" publish={publish} />
                                     </div>
                                 </div>
                             </div>

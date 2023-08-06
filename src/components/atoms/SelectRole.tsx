@@ -1,4 +1,6 @@
 import { useFormikContext } from 'formik';
+import { type } from 'os';
+import React, { FC } from 'react';
 import Select from 'react-select';
 type SelectCustom_TP = {
     label?: string;
@@ -11,24 +13,26 @@ type SelectCustom_TP = {
     value?: any;
     name?: any;
     options?: any;
-    setSeoSection?: any;
 };
-const SelectCustom = ({ label, setSeoSection, placeholder, description, error, className, value, name, type, options, handleChange, ...props }: SelectCustom_TP) => {
+const SelectRole = ({ label, placeholder, description, error, className, value, name, type, options, handleChange, ...props }: SelectCustom_TP) => {
     const { values, setFieldValue } = useFormikContext<any>(); /////////// STATES
+
+    const optionVal = options?.map((item:any)=>({
+        value:item?.id,
+        label:item?.role_name,
+    }))
 
     return (
         <Select
             id={name}
             {...props}
             name={name}
-            defaultValue={options[0]}
-            options={options}
+            options={optionVal}
             onChange={(event) => {
-                // setSeoSection(event?.value)
                 setFieldValue(name, event?.value);
             }}
             required
         />
     );
 };
-export default SelectCustom;
+export default SelectRole;

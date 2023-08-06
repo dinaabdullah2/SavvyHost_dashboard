@@ -1,34 +1,34 @@
 import { Form, Formik } from 'formik';
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import Select from 'react-select';
 import * as Yup from 'yup';
 import InputCustom from '../../components/atoms/InputCustom';
-import { IRootState } from '../../store';
 import { useMutate } from '../../hooks/UseMutate';
-import Select from 'react-select';
-// import ReactQuill from 'react-quill';
-// import UploadImg from '../../components/atoms/UploadImg';
-import Editor from '../../components/atoms/Editor';
-import UploadImage from '../../components/atoms/UploadImage';
-import axios from 'axios';
+import { IRootState } from '../../store';
+import { useQueryClient } from '@tanstack/react-query';
 import Swal from 'sweetalert2';
-import useFetch from '../../hooks/UseFetch';
-import SelectCustom from '../../components/atoms/SelectCustom';
-import SelectCountries from '../../components/atoms/SelectCountries';
+import Editor from '../../components/atoms/Editor';
 import PhoneInput2 from '../../components/atoms/PhoneInput';
+import SelectCountries from '../../components/atoms/SelectCountries';
+import SelectCustom from '../../components/atoms/SelectCustom';
+import UploadImage from '../../components/atoms/UploadImage';
+import useFetch from '../../hooks/UseFetch';
+import SelectRole from '../../components/atoms/SelectRole';
 
 
-const role = [
-    { value: 'user', label: 'user' },
-    { value: 'admin', label: 'admin' },
-];
+
 const gender = [
-    { value: 'male', label: 'male' },
-    { value: 'female', label: 'female' },
+    { value: 1, label: 'Male' },
+    { value: 0, label: 'Female' },
 ];
-const country = [
-    { value: 'egypt', label: 'egypt' },
-    { value: 'korea', label: 'korea' },
+const status = [
+    { value: 'active', label: 'Active' },
+    { value: 'suspend', label: 'Suspend' },
+];
+const type = [
+    { value: 'Traveler', label: 'Traveler' },
+    { value: 'Company', label: 'Company' },
 ];
 
 type UserCustom_TP = {
@@ -104,33 +104,6 @@ const AddUser = ({ showCustomizer, setShowCustomizer , userData }: UserCustom_TP
 
     console.log(editorValue, 'l');
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setFormValues({ ...formValues, [e.currentTarget.name]: e.currentTarget.value });
-        console.log(formValues);
-    };
-
-    const handleQuillEdit = (value: string) => {
-        setFormValues((prev) => {
-            return {
-                ...prev,
-                bio: value,
-            };
-        });
-        console.log(formValues);
-    };
-
-    const selectImage = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const selectedFiles = event.target.files as FileList;
-        setCurrentImage(selectedFiles?.[0]);
-        setPreviewImage(URL.createObjectURL(selectedFiles?.[0]));
-        setFormValues((prev: any) => {
-            return {
-                ...prev,
-                avatar: selectedFiles?.[0],
-            };
-        });
-
-    };
 
     const validatopnSchema = () =>
         Yup.object({
@@ -147,22 +120,32 @@ const AddUser = ({ showCustomizer, setShowCustomizer , userData }: UserCustom_TP
         phone: userData?.phone ? userData?.phone : '',
         password: userData?.password ? userData?.password : '',
         gender: userData?.gender ? userData?.gender : '',
-        country: userData?.country ? userData?.country : '',
+        country_id: userData?.country ? userData?.country : '',
         bio: userData?.bio ? userData?.bio : '',
+        type:userData?.type ? userData?.type : '',
+        role_id:userData?.role ? userData?.role : '',
+
     };
 
+    const queryClient = useQueryClient();
     // post data
     const { mutate } = useMutate({
         mutationKey: ['users/id'],
         endpoint: `api/dashboard/user/store`,
         onSuccess: (data: any) => {
-            console.log('done');
+            Swal.fire({ title: 'Added!', text: 'User has been added.', icon: 'success', customClass: 'sweet-alerts' });
+            queryClient.refetchQueries(['dashboard/user/index']);
+            refetch();
+            setShowCustomizer(false);
+            console.log(data);
         },
         onError: (err: any) => {
+            Swal.fire({ title: 'User Can not be added!', text: `${err.response.data.message}`, icon: 'error', customClass: 'sweet-alerts' });
             console.log('error', err);
         },
         formData: true,
     });
+
     // update
     const { mutate: update } = useMutate({
         mutationKey: ['users/id'],
@@ -176,21 +159,6 @@ const AddUser = ({ showCustomizer, setShowCustomizer , userData }: UserCustom_TP
         formData: true,
     });
 
-    const handleSubmit = (values:any) =>{
-        axios.post(`https://dashboard.savvyhost.io/dashboard/user/store`,values, {
-            headers: {
-              "Content-Type": "multipart/form-data",
-              "Authorization": `Bearer ${localStorage.getItem('token')}`,
-            }
-          })
-            .then(response => {
-              Swal.fire({ title: 'add!', text: 'Your file has been added successfully.', icon: 'success', customClass: 'sweet-alerts' });
-            }
-            ).catch((err) => {
-                Swal.fire({ title: 'Sorry!', text: 'User can not be added .', icon: "error", customClass: 'sweet-alerts' });
-                console.log(err,'err')
-             })
-    }
 
 
     return (
@@ -200,7 +168,7 @@ const AddUser = ({ showCustomizer, setShowCustomizer , userData }: UserCustom_TP
             <nav
                 className={`${
                     (showCustomizer && 'ltr:!right-0 rtl:!left-0') || ''
-                } bg-white fixed ltr:-right-[50%] rtl:-left-[50%] top-0 bottom-0 w-full max-w-[50%] shadow-[5px_0_25px_0_rgba(94,92,154,0.1)] transition-[right] duration-300 z-[51] dark:bg-black p-4`}
+                } bg-white fixed ltr:-right-[50%] rtl:-left-[50%] top-0 bottom-0 w-full lg:max-w-[50%]  sm:max-w-[80%]  sm:ltr:-right-[80%] max-sm:rtl:-left-[90%]  max-sm:max-w-[90%]  max-sm:ltr:-right-[90%] sm:rtl:-left-[80%]  shadow-[5px_0_25px_0_rgba(94,92,154,0.1)] transition-[right] duration-300 z-[51] dark:bg-black p-4`}
             >
                 <div className="overflow-y-auto overflow-x-hidden perfect-scrollbar h-full">
                     <div className="text-center relative pb-5">
@@ -254,12 +222,12 @@ const AddUser = ({ showCustomizer, setShowCustomizer , userData }: UserCustom_TP
                                   <InputCustom type="password" name="password" />
                                 </div>
                                 <div className='lg:col-span-6 max-sm:col-span-1 '>
-                                    <label htmlFor="phone">Phone</label>
-                                    <InputCustom type="text" name="phone" />
+                                    <label htmlFor="phone">Phone Number</label>
+                                    <PhoneInput2 name="phone"  resetForm="resetForm"/>
                                 </div>
                                 <div className='lg:col-span-6 max-sm:col-span-1 '>
                                     <label htmlFor="Country">Country</label>
-                                     <SelectCountries options={Countries?.data?.countries} name="country" />
+                                     <SelectCountries options={Countries?.data?.countries} name="country_id" />
                                 </div>
                                 <div className='lg:col-span-6 max-sm:col-span-1 '>
                                     <label htmlFor="Country">Gender</label>
@@ -267,11 +235,15 @@ const AddUser = ({ showCustomizer, setShowCustomizer , userData }: UserCustom_TP
                                 </div>
                                 <div className='lg:col-span-6 max-sm:col-span-1 '>
                                     <label htmlFor="Role">Role</label>
-                                    <Select defaultValue={role[0]} options={role} isSearchable={false} />
+                                    <SelectRole options={Roles?.data?.roles} name="role_id" />
                                 </div>
                                 <div className='lg:col-span-6 max-sm:col-span-1 '>
                                     <label htmlFor="type">Type</label>
-                                    <InputCustom type="text" name="type" />
+                                    <SelectCustom options={type} name='type' />
+                                </div>
+                                <div className='lg:col-span-6 max-sm:col-span-1 '>
+                                    <label htmlFor="status">Status</label>
+                                    <SelectCustom options={status} name='status' />
                                 </div>
                                 <div className='lg:col-span-12 max-sm:col-span-1 '>
                                     <label htmlFor="Bio">Bio</label>
@@ -281,9 +253,7 @@ const AddUser = ({ showCustomizer, setShowCustomizer , userData }: UserCustom_TP
                                     <label htmlFor="avatar">Image</label>
                                     <UploadImage name='avatar'/>
                                 </div>
-                                <div>
-                                    <PhoneInput2 name="phone" label="phone number" resetForm="resetForm"/>
-                                </div>
+
                                 <div className='lg:col-span-12 max-sm:col-span-1 '>
                                     <button type="submit" className="btn btn-primary w-full">
                                         Save

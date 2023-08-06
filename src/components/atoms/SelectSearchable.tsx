@@ -1,6 +1,6 @@
 import { useFormikContext } from 'formik';
 import Select from 'react-select';
-type SelectCustom_TP = {
+type SelectSearch_TP = {
     label?: string;
     placeholder?: string;
     description?: string;
@@ -10,11 +10,17 @@ type SelectCustom_TP = {
     handleChange?: any;
     value?: any;
     name?: any;
-    options?: any;
     setSeoSection?: any;
 };
-const SelectCustom = ({ label, setSeoSection, placeholder, description, error, className, value, name, type, options, handleChange, ...props }: SelectCustom_TP) => {
+const SelectSearch = ({ label, setSeoSection, placeholder, description, error, className, value, name, type,  handleChange, ...props }: SelectSearch_TP) => {
     const { values, setFieldValue } = useFormikContext<any>(); /////////// STATES
+
+    const options = [
+
+        { value: 1, label: 'Yes' },
+        { value: 0, label: 'No' },
+
+    ];
 
     return (
         <Select
@@ -24,11 +30,11 @@ const SelectCustom = ({ label, setSeoSection, placeholder, description, error, c
             defaultValue={options[0]}
             options={options}
             onChange={(event) => {
-                // setSeoSection(event?.value)
+                setSeoSection(event?.value)
                 setFieldValue(name, event?.value);
             }}
             required
         />
     );
 };
-export default SelectCustom;
+export default SelectSearch;

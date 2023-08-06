@@ -734,3 +734,7 @@ input[type="radio"]:checked{
 {
     border: 1px solid #2445ff !important;
 }
+.react-tel-input .form-control {
+    height: 40px !important;
+    width: 100% !important;
+}
