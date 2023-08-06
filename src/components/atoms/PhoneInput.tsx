@@ -1,15 +1,15 @@
-import React, { useState } from 'react';
-import PhoneInput from 'react-phone-input-2';
-import 'react-phone-input-2/lib/style.css';
 import { useFormikContext } from 'formik';
 import { t } from 'i18next';
-import { Label } from './Label';
+import { useState } from 'react';
+import PhoneInput from 'react-phone-input-2';
+import 'react-phone-input-2/lib/style.css';
 
 const PhoneInput2 = ({ name, label, setPhone_country, updateData, setPhoneCode, resetForm }: any) => {
+    console.log("🚀 ~ file: PhoneInput.tsx:8 ~ PhoneInput2 ~ updateData:", updateData)
     const [phone, setPhone] = useState(!resetForm ? updateData?.phone_all : '');
     const [countryCode, setCountryCode] = useState(); // Add countryCode state
 
-    const { setFieldValue, errors, touched, handleBlur } = useFormikContext<any>();
+    const { setFieldValue, errors, touched, handleBlur , values } = useFormikContext<any>();
 
     const handlePhoneChange = ({ value, selectedCountry,  number }: any) => {
         // setPhoneCode(selectedCountry?.dialCode);
@@ -22,8 +22,8 @@ const PhoneInput2 = ({ name, label, setPhone_country, updateData, setPhoneCode, 
     return (
 
         <PhoneInput
-            country={!resetForm ? updateData?.phone_country : 'eg'}
-            value={phone}
+            country={'eg'}
+            value={values[name]}
             onChange={(value:any) => setFieldValue(name,value)}
             enableSearch
             onBlur={handleBlur}

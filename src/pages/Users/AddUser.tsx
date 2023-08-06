@@ -1,76 +1,34 @@
-import { Form, Formik } from 'formik';
-import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import Select from 'react-select';
-import * as Yup from 'yup';
-import InputCustom from '../../components/atoms/InputCustom';
-import { useMutate } from '../../hooks/UseMutate';
-import { IRootState } from '../../store';
 import { useQueryClient } from '@tanstack/react-query';
+import { Field, Form, Formik } from 'formik';
+import { useState } from 'react';
 import Swal from 'sweetalert2';
+import * as Yup from 'yup';
 import Editor from '../../components/atoms/Editor';
+import InputCustom from '../../components/atoms/InputCustom';
 import PhoneInput2 from '../../components/atoms/PhoneInput';
 import SelectCountries from '../../components/atoms/SelectCountries';
 import SelectCustom from '../../components/atoms/SelectCustom';
+import SelectRole from '../../components/atoms/SelectRole';
 import UploadImage from '../../components/atoms/UploadImage';
 import useFetch from '../../hooks/UseFetch';
-import SelectRole from '../../components/atoms/SelectRole';
+import { useMutate } from '../../hooks/UseMutate';
 
-
-
-const gender = [
-    { value: 1, label: 'Male' },
-    { value: 0, label: 'Female' },
-];
-const status = [
-    { value: 'active', label: 'Active' },
-    { value: 'suspend', label: 'Suspend' },
-];
-const type = [
-    { value: 'Traveler', label: 'Traveler' },
-    { value: 'Company', label: 'Company' },
-];
 
 type UserCustom_TP = {
     showCustomizer?: boolean;
     setShowCustomizer?: any;
-    userData?:any
+    userData?: any;
 };
 
-const AddUser = ({ showCustomizer, setShowCustomizer , userData }: UserCustom_TP) => {
-    console.log("🚀 ~ file: AddUser.tsx:29 ~ AddUser ~ userData:", userData)
-    const themeConfig = useSelector((state: IRootState) => state.themeConfig);
-    const dispatch = useDispatch();
-    const [currentImage, setCurrentImage] = useState<File>();
-    const [previewImage, setPreviewImage] = useState<string>('');
-    const [editorValue, setEditorValue] = useState('');
-    const [formValues, setFormValues] = useState({
-        name: '',
-        username: '',
-        avatar: '',
-        status: '',
-        email: '',
-        phone: '',
-        password: '',
-        gender: '',
-        country: '',
-        bio: '',
-    });
-    editorValue;
-
-
+const AddUser = ({ showCustomizer, setShowCustomizer, userData }: UserCustom_TP) => {
+    console.log('🚀 ~ file: AddUser.tsx:29 ~ AddUser ~ userData:', userData);
     interface Country {
         id: number;
-        country_code: string,
-        country_name:string
-
-        // Add more properties if needed...
-      }
+        country_code: string;
+        country_name: string;
+    }
     const {
         data: Countries,
-        isLoading,
-        isRefetching,
-        isFetching,
         refetch,
     } = useFetch<{
         data: {
@@ -80,18 +38,12 @@ const AddUser = ({ showCustomizer, setShowCustomizer , userData }: UserCustom_TP
         endpoint: `api/dashboard/user/create`,
         queryKey: [`All-Countries`],
     });
-
-
-
-
     interface Role {
         id: number;
-        role_name: string,
+        role_name: string;
         // Add more properties if needed...
-      }
-    const {
-        data: Roles,
-    } = useFetch<{
+    }
+    const { data: Roles } = useFetch<{
         data: {
             roles: Role[];
         };
@@ -99,34 +51,12 @@ const AddUser = ({ showCustomizer, setShowCustomizer , userData }: UserCustom_TP
         endpoint: `api/dashboard/user/create`,
         queryKey: [`All-Roles`],
     });
-    console.log(Roles?.data?.roles);
-
-
-    console.log(editorValue, 'l');
-
 
     const validatopnSchema = () =>
         Yup.object({
             name: Yup.string().trim().required('faild os requerd'),
             email: Yup.string().trim().required('sdrfgv'),
         });
-
-    const initialValues = {
-        name: userData?.name ? userData?.name : '',
-        username: userData?.username ? userData?.username : '',
-        avatar: userData?.avatar ? userData?.avatar : '',
-        status: userData?.status ? userData?.status : '',
-        email: userData?.email ? userData?.email : '',
-        phone: userData?.phone ? userData?.phone : '',
-        password: userData?.password ? userData?.password : '',
-        gender: userData?.gender ? userData?.gender : '',
-        country_id: userData?.country ? userData?.country : '',
-        bio: userData?.bio ? userData?.bio : '',
-        type:userData?.type ? userData?.type : '',
-        role_id:userData?.role ? userData?.role : '',
-
-    };
-
     const queryClient = useQueryClient();
     // post data
     const { mutate } = useMutate({
@@ -145,7 +75,6 @@ const AddUser = ({ showCustomizer, setShowCustomizer , userData }: UserCustom_TP
         },
         formData: true,
     });
-
     // update
     const { mutate: update } = useMutate({
         mutationKey: ['users/id'],
@@ -159,7 +88,37 @@ const AddUser = ({ showCustomizer, setShowCustomizer , userData }: UserCustom_TP
         formData: true,
     });
 
+    const initialValues = {
+        name: userData?.name || '',
+        username: userData?.username ? userData?.username : '',
+        avatar: userData?.avatar ? userData?.avatar : '',
+        status: userData?.status ? userData?.status : '',
+        email: userData?.email ? userData?.email : '',
+        phone: userData?.phone ? userData?.phone : '',
+        password: userData?.password ? userData?.password : '',
+        gender: userData?.gender ? userData?.gender : '',
+        country_id: userData?.country ? userData?.country : '',
+        bio: userData?.bio ? userData?.bio : '',
+        type: userData?.type ? userData?.type : '',
+        role_id: userData?.role ? userData?.role : '',
+    };
 
+
+
+    const gender = [
+        { value: 1, label:  'Male' },
+        { value: 0, label: 'Female' },
+    ];
+    const status = [
+        { value: 'active', label: 'Active' },
+        { value: 'suspend', label: 'Suspend' },
+    ];
+    
+    const type = [
+        { value: 'Traveler', label: 'Traveler' },
+        { value: 'Company', label: 'Company' },
+    ];
+    
 
     return (
         <div>
@@ -196,70 +155,73 @@ const AddUser = ({ showCustomizer, setShowCustomizer , userData }: UserCustom_TP
                         <Formik
                             initialValues={initialValues}
                             validationSchema={validatopnSchema}
+                            enableReinitialize={true} 
                             // onSubmit={(values) => {handleSubmit(values)}}
                             onSubmit={(values) => {
-                                console.log('values', values);
+                                console.log('values', values.bio);
                                 mutate({ ...values });
                                 // update({ ...values, _methode: 'put' });
                             }}
                         >
                             <Form>
-                            <div className='grid lg:grid-cols-12 max-sm:grid-cols-1 gap-5 ' >
-                               <div className='lg:col-span-6 max-sm:col-span-1 '>
-                                    <label htmlFor="name">Full Name</label>
-                                    <InputCustom type="text" name="name" />
-                                </div>
-                                <div className='lg:col-span-6 max-sm:col-span-1 '>
-                                    <label htmlFor="username">Username</label>
-                                    <InputCustom type="text" name="username" />
-                                </div>
-                                <div className='lg:col-span-6 max-sm:col-span-1 '>
-                                   <label htmlFor="email">Email</label>
-                                   <InputCustom type="text" name="email" />
-                                </div>
-                                <div className='lg:col-span-6 max-sm:col-span-1 '>
-                                  <label htmlFor="password">Password</label>
-                                  <InputCustom type="password" name="password" />
-                                </div>
-                                <div className='lg:col-span-6 max-sm:col-span-1 '>
-                                    <label htmlFor="phone">Phone Number</label>
-                                    <PhoneInput2 name="phone"  resetForm="resetForm"/>
-                                </div>
-                                <div className='lg:col-span-6 max-sm:col-span-1 '>
-                                    <label htmlFor="Country">Country</label>
-                                     <SelectCountries options={Countries?.data?.countries} name="country_id" />
-                                </div>
-                                <div className='lg:col-span-6 max-sm:col-span-1 '>
-                                    <label htmlFor="Country">Gender</label>
-                                    <SelectCustom options={gender} name='gender' />
-                                </div>
-                                <div className='lg:col-span-6 max-sm:col-span-1 '>
-                                    <label htmlFor="Role">Role</label>
-                                    <SelectRole options={Roles?.data?.roles} name="role_id" />
-                                </div>
-                                <div className='lg:col-span-6 max-sm:col-span-1 '>
-                                    <label htmlFor="type">Type</label>
-                                    <SelectCustom options={type} name='type' />
-                                </div>
-                                <div className='lg:col-span-6 max-sm:col-span-1 '>
-                                    <label htmlFor="status">Status</label>
-                                    <SelectCustom options={status} name='status' />
-                                </div>
-                                <div className='lg:col-span-12 max-sm:col-span-1 '>
-                                    <label htmlFor="Bio">Bio</label>
-                                    <Editor name='bio' />
-                                </div>
-                                <div className='lg:col-span-12 max-sm:col-span-1 '>
-                                    <label htmlFor="avatar">Image</label>
-                                    <UploadImage name='avatar'/>
-                                </div>
+                                <div className="grid lg:grid-cols-12 max-sm:grid-cols-1 gap-5 ">
 
-                                <div className='lg:col-span-12 max-sm:col-span-1 '>
-                                    <button type="submit" className="btn btn-primary w-full">
-                                        Save
-                                    </button>
+                                    <div className="lg:col-span-6 max-sm:col-span-1 ">
+                                        <label htmlFor="name">Full Name</label>
+                                        <InputCustom  type="text" name="name" />
+
+                                    </div>
+                                    <div className="lg:col-span-6 max-sm:col-span-1 ">
+                                        <label htmlFor="username">Username</label>
+                                        <InputCustom type="text" name="username" />
+                                    </div>
+                                    <div className="lg:col-span-6 max-sm:col-span-1 ">
+                                        <label htmlFor="email">Email</label>
+                                        <InputCustom type="text" name="email" />
+                                    </div>
+                                    <div className="lg:col-span-6 max-sm:col-span-1 ">
+                                        <label htmlFor="password">Password</label>
+                                        <InputCustom type="password" name="password" />
+                                    </div>
+                                    <div className="lg:col-span-6 max-sm:col-span-1 ">
+                                        <label htmlFor="phone">Phone Number</label>
+                                        <PhoneInput2 updateData={userData} name="phone" resetForm="resetForm" />
+                                    </div>
+                                    <div className="lg:col-span-6 max-sm:col-span-1 ">
+                                        <label htmlFor="Country">Country</label>
+                                        <SelectCountries options={Countries?.data?.countries} name="country_id" />
+                                    </div>
+                                    <div className="lg:col-span-6 max-sm:col-span-1 ">
+                                        <label htmlFor="Country">Gender</label>
+                                        <SelectCustom options={gender} name="gender" />
+                                    </div>
+                                    <div className="lg:col-span-6 max-sm:col-span-1 ">
+                                        <label htmlFor="Role">Role</label>
+                                        <SelectRole options={Roles?.data?.roles} name="role_id" />
+                                    </div>
+                                    <div className="lg:col-span-6 max-sm:col-span-1 ">
+                                        <label htmlFor="type">Type</label>
+                                        <SelectCustom options={type} name="type" />
+                                    </div>
+                                    <div className="lg:col-span-6 max-sm:col-span-1 ">
+                                        <label htmlFor="status">Status</label>
+                                        <SelectCustom options={status} name="status" />
+                                    </div>
+                                    <div className="lg:col-span-12 max-sm:col-span-1 ">
+                                        <label htmlFor="Bio">Bio</label>
+                                        <Editor name="bio" />
+                                    </div>
+                                    <div className="lg:col-span-12 max-sm:col-span-1 ">
+                                        <label htmlFor="avatar">Image</label>
+                                        <UploadImage name="avatar" />
+                                    </div>
+
+                                    <div className="lg:col-span-12 max-sm:col-span-1 ">
+                                        <button type="submit" className="btn btn-primary w-full">
+                                            Save
+                                        </button>
+                                    </div>
                                 </div>
-                              </div>
                             </Form>
                         </Formik>
 

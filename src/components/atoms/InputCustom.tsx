@@ -14,20 +14,23 @@ type InputCustom_TP = {
     name?: any;
 };
 const InputCustom = ({ label, placeholder, description, error, className, value, name, type, handleChange, ...props }: InputCustom_TP) => {
+    console.log("🚀 ~ file: InputCustom.tsx:17 ~ InputCustom ~ props:", props)
     const { values, setFieldValue } = useFormikContext<any>(); /////////// STATES
-    console.log("🚀 ~ file: InputCustom.tsx:18 ~ InputCustom ~ values:", values)
+    console.log('🚀 ~ file: InputCustom.tsx:19 ~ InputCustom ~ values:', values);
 
     return (
         <input
             id={name}
             {...props}
             name={name}
-            value={value || values[name]}
+            value={ values[name]}
             type={type}
             placeholder={placeholder}
             onChange={(e) => {
                 // setFieldValueState(e.target.value)
-                setFieldValue(name, e.target.value)
+                if (props?.value === undefined) {
+                    setFieldValue(name, e.target.value);
+                }
             }}
             className="form-input"
             required

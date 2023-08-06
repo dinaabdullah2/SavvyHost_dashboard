@@ -54,10 +54,7 @@ const UsersList = () => {
         endpoint: `api/dashboard/user/index`,
         queryKey: [`All-Users`],
     });
-    console.log('🚀 ~ file: UsersList.tsx:49 ~ isFetching:', isFetching);
-    console.log('🚀 ~ file: UsersList.tsx:49 ~ isRefetching:', isRefetching);
-    console.log('🚀 ~ file: UsersList.tsx:49 ~ isLoading:', isLoading);
-    console.log(Users?.data?.all_users);
+
 
     const [page, setPage] = useState(1);
     const PAGE_SIZES = [10, 20, 30, 50, 100];
@@ -71,16 +68,17 @@ const UsersList = () => {
     const [sortStatus, setSortStatus] = useState<DataTableSortStatus>({ columnAccessor: 'id', direction: 'asc' });
     const [selectValue, setSelectValue] = useState<any>('');
     const [userData, setUserData] = useState<any>();
+    console.log("🚀 ~ file: UsersList.tsx:71 ~ UsersList ~ userData:", userData)
 
     useEffect(() => {
         setInitialRecords(sortBy(Users?.data?.all_users, 'id'));
     }, [Users?.data?.all_users]);
 
-    function OpenEditForm(id: any) {
-        setShowEditForm(!showEditForm);
-        setUserData(id);
-        console.log(userData, 'idd');
-    }
+    // function OpenEditForm(id: any) {
+    //     setShowEditForm(!showEditForm);
+    //     setUserData(id);
+    //     console.log(userData, 'idd');
+    // }
 
     useEffect(() => {
         setPage(1);
@@ -107,7 +105,6 @@ const UsersList = () => {
         endpoint: `api/dashboard/user/create`,
         queryKey: [`All-Roles`],
     });
-    console.log(Roles?.data?.roles);
     const options = Roles?.data?.roles?.map((item:any)=>({
         value:item?.id,
         label:item?.role_name,

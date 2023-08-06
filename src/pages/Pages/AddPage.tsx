@@ -8,12 +8,11 @@ import * as Yup from 'yup';
 import Editor from '../../components/atoms/Editor';
 import InputCustom from '../../components/atoms/InputCustom';
 import RadioCustom from '../../components/atoms/RadioCustom';
-import SelectCustom from '../../components/atoms/SelectCustom';
+import SelectSearch from '../../components/atoms/SelectSearchable';
 import { TextAreaField } from '../../components/atoms/TextAreaField';
 import UploadImage from '../../components/atoms/UploadImage';
 import { useMutate } from '../../hooks/UseMutate';
 import { IRootState } from '../../store';
-import SelectSearch from '../../components/atoms/SelectSearchable';
 
 const role = [
     { value: 'user', label: 'user' },

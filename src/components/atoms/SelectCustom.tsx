@@ -15,13 +15,14 @@ type SelectCustom_TP = {
 };
 const SelectCustom = ({ label, setSeoSection, placeholder, description, error, className, value, name, type, options, handleChange, ...props }: SelectCustom_TP) => {
     const { values, setFieldValue } = useFormikContext<any>(); /////////// STATES
+    console.log('🚀 ~ file: SelectCustom.tsx:18 ~ SelectCustom ~ values:', values);
 
     return (
         <Select
             id={name}
             {...props}
             name={name}
-            defaultValue={options[0]}
+            defaultValue={{ value: values[name], label: values[name] }}
             options={options}
             onChange={(event) => {
                 // setSeoSection(event?.value)
