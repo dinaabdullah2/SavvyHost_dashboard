@@ -32,7 +32,7 @@ const PhoneInput2 = ({ name, label, setPhone_country, updateData, setPhoneCode, 
             }}
             defaultValue={{
             value: !resetForm ? updateData?.phone : '',
-            label: !resetForm ? updateData?.phone : t('choose Type'),
+            label: !resetForm ? updateData?.phone : 'choose Type',
 
            }}
         />

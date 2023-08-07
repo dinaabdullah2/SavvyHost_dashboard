@@ -134,6 +134,7 @@ const AddCategory = ({ showCustomizer, setShowCustomizer, categoryData,refetch}:
                     <Formik
                         initialValues={initialValues}
                         validationSchema={validatopnSchema}
+                        enableReinitialize={true}
                         onSubmit={(values) => {
                             mutate({ ...values });
                             // update({ ...values, _methode: 'put' });

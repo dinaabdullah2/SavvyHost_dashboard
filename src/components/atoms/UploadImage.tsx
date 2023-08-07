@@ -6,12 +6,14 @@ type ImageCustom_TP = {
     handleChange?: any;
     value?: any;
     name?: any;
+    updateData?: any;
+    resetForm?: any;
 };
-const UploadImage = ({ className, value, name, type, handleChange, ...props }: ImageCustom_TP) => {
+const UploadImage = ({ className, value, name, type, handleChange,updateData,resetForm, ...props }: ImageCustom_TP) => {
     const { values, setFieldValue } = useFormikContext();
     const [currentImage, setCurrentImage] = useState<File>();
     const [previewImage, setPreviewImage] = useState<any>('');
-    console.log('🚀 ~ file: UploadImage.tsx:17 ~ UploadImage ~ previewImage:', previewImage);
+    console.log('🚀 ~ file: UploadImage.tsx:17 ~ UploadImage ~ previewImage:', updateData);
     const selectImage = (event: React.ChangeEvent<HTMLInputElement>) => {
         const selectedFiles = event.target.files as FileList;
         console.log('🚀 ~ file: UploadImage.tsx:19 ~ selectImage ~ selectedFiles:', selectedFiles);
@@ -27,19 +29,24 @@ const UploadImage = ({ className, value, name, type, handleChange, ...props }: I
                 name={name}
                 type="file"
                 accept="image/*"
-                
+
                 onChange={selectImage}
             />
-            {previewImage ? (
-                <div>
-                    <img className="preview w-[50%] m-auto" src={previewImage} alt="" />
-                </div>
-            ) : (
-                <div>
-                    <img className="preview w-[50%] m-auto" src="/assets/images/file-preview.svg" alt="" />
-                </div>
-            )}
-        </>
+
+            <>
+                {previewImage ?
+                    <div>
+                        <img className="preview w-[50%] m-auto" src={previewImage} alt="" />
+                    </div>
+                 :
+                    <div>
+                        <img className="preview w-[50%] m-auto" src="/assets/images/file-preview.svg" alt="" />
+                    </div>
+                }
+            </>
+
+
+    </>
     );
 };
 

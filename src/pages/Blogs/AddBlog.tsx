@@ -101,22 +101,7 @@ const AddBlog = ({
     console.log(Categories?.data?.categories);
 
 
-    interface Author {
-        id: number;
-        name: string,
-        // Add more properties if needed...
-      }
-    const {
-        data: Authors,
-    } = useFetch<{
-        data: {
-            admins: Author[];
-        };
-    }>({
-        endpoint: `api/dashboard/blog/create`,
-        queryKey: [`All-Categories`],
-    });
-    console.log(Authors?.data?.admins);
+
 
 
 
@@ -189,6 +174,7 @@ const AddBlog = ({
             </div>
             <Formik
                         initialValues={initialValues}
+                        enableReinitialize={true}
                         validationSchema={validatopnSchema}
                         onSubmit={(values) => {
                             mutate({ ...values });
@@ -217,7 +203,7 @@ const AddBlog = ({
                                 <p className="text-white-dark pb-2 px-2 text-sm">Allow search engines to show this service in search results?</p>
                                 <div className="grid lg:grid-cols-12 max-sm:grid-cols-1 gap-5 px-3 ">
                                     <div className="lg:col-span-12 max-sm:col-span-1 pt-1">
-                                        <SelectSearch setSeoSection={setSeoSection}  name="searchable" />
+                                        <SelectSearch   setSeoSection={setSeoSection}  name="searchable" />
                                     </div>
                                     {seoSection == 1 ? (
                                         <div className="lg:col-span-12 max-sm:col-span-1 ">
@@ -331,12 +317,12 @@ const AddBlog = ({
 
                                         <div className="lg:col-span-12 max-sm:col-span-1 ">
                                             <label htmlFor="tags">Author</label>
-                                            <SelectAuthor name="user_id" options={Authors?.data?.admins} />
+                                            <SelectAuthor name="user_id"  />
 
                                         </div>
                                        <div className="lg:col-span-12 max-sm:col-span-1 ">
                                             <label htmlFor="tags">Category</label>
-                                            <SelectCategory name="category_id" options={Categories?.data?.categories} />
+                                            <SelectCategory name="category_id"  />
 
                                         </div>
                                         {/* <div className="lg:col-span-12 max-sm:col-span-1 ">
@@ -344,11 +330,11 @@ const AddBlog = ({
                                             {/* <Field type="text" name="tags[]" as="textarea"  /> */}
                                             {/* <InputCustom name="tags" />
                                         </div> */}
-
+{/*
                                         <div className="lg:col-span-12 max-sm:col-span-1 ">
                                             <label htmlFor="tags">Choose Tags</label>
                                             <MultiSelection name="tags" />
-                                        </div>
+                                        </div> */}
                                 </div>
                             </div>
 

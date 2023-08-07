@@ -129,6 +129,7 @@ const AddPage = ({ showAddForm, setShowAddForm, pageData, refetch }: PageCustom_
                     <Formik
                         initialValues={initialValues}
                         validationSchema={validatopnSchema}
+                        enableReinitialize={true}
                         onSubmit={(values) => {
                             mutate({ ...values });
                             // update({ ...values, _methode: 'put' });
@@ -211,6 +212,7 @@ const AddPage = ({ showAddForm, setShowAddForm, pageData, refetch }: PageCustom_
                                                             </div>
                                                             <div className="lg:col-span-12 max-sm:col-span-1 ">
                                                                 <UploadImage name="seo_image" />
+
                                                             </div>
                                                         </div>
                                                     </Tab.Panel>
@@ -266,7 +268,8 @@ const AddPage = ({ showAddForm, setShowAddForm, pageData, refetch }: PageCustom_
                                 <h5 className="mb-5 w-[100%] text-base font-semibold dark:text-white p-2  border-b border-dashed border-white-light">Feature Image</h5>
                                 <div className="grid lg:grid-cols-12 max-sm:grid-cols-1 gap-5 px-3 ">
                                     <div className="lg:col-span-12 max-sm:col-span-1 ">
-                                        <UploadImage name="featured_image" />
+                                        <UploadImage updateData={pageData} name="featured_image" />
+
                                     </div>
                                 </div>
                             </div>
@@ -276,6 +279,7 @@ const AddPage = ({ showAddForm, setShowAddForm, pageData, refetch }: PageCustom_
                                 <div className="grid lg:grid-cols-12 max-sm:grid-cols-1 gap-5 px-3 ">
                                     <div className="lg:col-span-12 max-sm:col-span-1 ">
                                         <UploadImage name="logo" />
+                            
                                     </div>
                                 </div>
                             </div>

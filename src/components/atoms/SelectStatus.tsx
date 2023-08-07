@@ -1,13 +1,15 @@
+import Select from 'react-select';
 import { useFormikContext } from "formik";
 import { t } from "i18next";
-import Select from 'react-select';
+
 type SelectType_tp = {
   placeholder?: string;
   onChange?: (option: any) => void;
   label?: string;
   multi?: boolean;
-  name?: any
+//   TypeName?: string | undefined;
   fieldKey?: "id" | "value" | undefined;
+  name?:any
 };
 
 type options_TP = {
@@ -19,7 +21,7 @@ type options_TP = {
   resetForm?: any;
   label: string;
 };
-export default function SelectType({
+export default function SelectStatus({
   placeholder,
   multi,
   name,
@@ -32,17 +34,17 @@ export default function SelectType({
   const { setFieldValue, values } = useFormikContext();
 
   const dataOptions = [
- 
     {
-      id: 1,
-      value: "traveller",
-      label: "Traveller",
+        id: 1,
+        value: 'active',
+        label: "active",
     },
     {
       id: 2,
-      value: "company",
-      label: "Company",
-    },
+      value: 'suspend',
+      label: "suspend",
+    }
+
   ];
 
   return (
@@ -56,10 +58,13 @@ export default function SelectType({
         fieldKey={fieldKey}
         isMulti={multi}
         options={dataOptions}
-        onChange={onChange}
+        onChange={(event) => {
+            setFieldValue(name, event?.value);
+        }}
+
         defaultValue={{
-          value: !resetForm ? updateData?.type : "",
-          label: !resetForm ? updateData?.type : "",
+          value: !resetForm ? updateData?.gender : "",
+          label: !resetForm ? updateData?.gender : "Select gender",
         }}
       />
     </div>

@@ -3,6 +3,7 @@ import BlogsList from '../pages/Blogs/BlogsList';
 import EventsList from '../pages/Events/EventsList';
 import { Navigate } from 'react-router-dom';
 import CategoriesList from '../pages/Categories/CategoriesList';
+import Login from '../pages/Authentication/Login';
 const Index = lazy(() => import('../pages/Index'));
 
 const UsersList = lazy(() => import('../pages/Users/UsersList'));
@@ -18,7 +19,7 @@ const routes = [
     },
     {
         path: '/login',
-        element: <LoginBoxed />,
+        element: <Login />,
     },
     {
         path: '/categories',

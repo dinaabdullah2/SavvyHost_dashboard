@@ -1,13 +1,17 @@
+import Select from 'react-select';
 import { useFormikContext } from "formik";
 import { t } from "i18next";
-import Select from 'react-select';
+
 type SelectType_tp = {
   placeholder?: string;
   onChange?: (option: any) => void;
   label?: string;
   multi?: boolean;
-  name?: any
+//   TypeName?: string | undefined;
   fieldKey?: "id" | "value" | undefined;
+  name?:any;
+  updateData?:any,
+  resetForm?:any
 };
 
 type options_TP = {
@@ -17,9 +21,11 @@ type options_TP = {
   value: string;
   updateData?: any;
   resetForm?: any;
-  label: string;
+  label?: any;
+
+
 };
-export default function SelectType({
+export default function SelectGender({
   placeholder,
   multi,
   name,
@@ -32,36 +38,42 @@ export default function SelectType({
   const { setFieldValue, values } = useFormikContext();
 
   const dataOptions = [
- 
     {
-      id: 1,
-      value: "traveller",
-      label: "Traveller",
+        id: 1,
+        value: 1,
+        label: "Male",
     },
     {
       id: 2,
-      value: "company",
-      label: "Company",
-    },
+      value: 0,
+      label: "Female",
+    }
+
   ];
 
   return (
     <div>
-      <Select
+        <Select
         id="optionStatus"
         label={label}
         placeholder={placeholder}
         name={name}
-        loadingPlaceholder={`${t("loading")}`}
+        // isDisabled={!StatusLoading && !!failureReason}
+        // loadingPlaceholder={`${t("loading")}`}
+        // loading={StatusLoading}
         fieldKey={fieldKey}
         isMulti={multi}
         options={dataOptions}
-        onChange={onChange}
-        defaultValue={{
-          value: !resetForm ? updateData?.type : "",
-          label: !resetForm ? updateData?.type : "",
+        onChange={(event) => {
+            setFieldValue(name, event?.value);
         }}
+          defaultValue={{
+          value: !resetForm ? updateData?.gender : "",
+          label: !resetForm ? updateData?.gender : "Select gender",
+        }}
+        // {...{ ...(value && { value }) }}
       />
+
     </div>
   );
 }

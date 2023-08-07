@@ -21,6 +21,7 @@ import UploadImage from '../../components/atoms/UploadImage';
 import RadioCustom from '../../components/atoms/RadioCustom';
 import { useQueryClient } from '@tanstack/react-query';
 import DateInput from '../../components/atoms/DateInput';
+import SelectSearch from '../../components/atoms/SelectSearchable';
 const role = [
     { value: 'user', label: 'user' },
     { value: 'admin', label: 'admin' },
@@ -159,6 +160,7 @@ const AddEvent = ({
             <Formik
                     initialValues={initialValues}
                     validationSchema={validatopnSchema}
+                    enableReinitialize={true}
                     onSubmit={(values) => {
                         mutate({ ...values });
                         // update({ ...values, _methode: 'put' });
@@ -196,7 +198,7 @@ const AddEvent = ({
                                 <p className="text-white-dark pb-2 px-2 text-sm">Allow search engines to show this service in search results?</p>
                                 <div className="grid lg:grid-cols-12 max-sm:grid-cols-1 gap-5 px-3 ">
                                     <div className="lg:col-span-12 max-sm:col-span-1 pt-1 pb-2">
-                                        <SelectCustom setSeoSection={setSeoSection} options={options} name="searchable"  />
+                                        <SelectSearch setSeoSection={setSeoSection} name="searchable"  />
                                     </div>
                                     {seoSection == 1 ?
                                         <div className="lg:col-span-12 max-sm:col-span-1 ">

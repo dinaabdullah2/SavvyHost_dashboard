@@ -18,6 +18,7 @@ import router from './router/index';
 import { Provider } from 'react-redux';
 import store from './store/index';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { AuthProvider } from './Auth/AuthProvider';
 
 const queryClient = new QueryClient({
     defaultOptions: {
@@ -32,7 +33,9 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
 
             <Suspense>
                 <Provider store={store}>
-                    <RouterProvider router={router} />
+                    <AuthProvider>
+                       <RouterProvider router={router} />
+                    </AuthProvider>
                 </Provider>
             </Suspense>
 
