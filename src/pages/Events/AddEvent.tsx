@@ -70,7 +70,8 @@ const AddEvent = ({
             title: Yup.string().trim().required('faild os requerd'),
         });
         const initialValues = {
-            title: eventData?.title ? eventData?.title : '',
+
+            title: eventData?.title || '',
             content: eventData?.content ? eventData?.content : '',
             avatar: eventData?.avatar ? eventData?.avatar : '',
             image :eventData?.image ? eventData?.image : '',
@@ -101,27 +102,31 @@ const AddEvent = ({
             queryClient.refetchQueries(['api/dashboard/event/index']);
             refetch();
             setShowAddEventForm(false)
-            console.log('donedsssssssssssssssssssssssafcdfsdfas ');
+
         },
         onError: (err: any) => {
             Swal.fire({ title: 'Your Event Can not be added.', text: `${err.response.data.message}` ,icon: 'error', customClass: 'sweet-alerts' });
-            console.log('erroooooooooooooooooooooooooooooooor', err);
+
         },
         formData: true,
     });
 
     // // update
-    // const { mutate: update } = useMutate({
-    //     mutationKey: ['users/id'],
-    //     endpoint: `/api/user/store`,
-    //     onSuccess: (data: any) => {
-    //         console.log('done');
-    //     },
-    //     onError: (err: any) => {
-    //         console.log('error', err);
-    //     },
-    //     formData: true,
-    // });
+    const { mutate: update } = useMutate({
+        mutationKey: ['Events/id'],
+        endpoint: `api/dashboard/event/update/${eventData?.id}`,
+        onSuccess: (data: any) => {
+            Swal.fire({ title: 'Updated!', text: 'Event has been updated.', icon: 'success', customClass: 'sweet-alerts' });
+            queryClient.refetchQueries(['api/dashboard/event/index']);
+            refetch();
+            setShowAddEventForm(false);
+
+        },
+        onError: (err: any) => {
+            Swal.fire({ title: 'Event Can not be Updated!', text: `${err.response.data.message}`, icon: 'error', customClass: 'sweet-alerts' });
+        },
+        formData: true,
+    });
 
 
 
@@ -163,7 +168,7 @@ const AddEvent = ({
                     enableReinitialize={true}
                     onSubmit={(values) => {
                         mutate({ ...values });
-                        // update({ ...values, _methode: 'put' });
+                        update({ ...values, _methode: 'put' });
                     }}
                     >
                         <Form>

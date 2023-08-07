@@ -2,7 +2,7 @@
 // AuthContext.js
 import { createContext, useState } from 'react';
 
-const AuthContext = createContext();
+const AuthContext = createContext<any>('');
 
 const AuthProvider = ({ children }:any) => {
   const [currentUser, setCurrentUser] = useState(localStorage.getItem('token') || null);

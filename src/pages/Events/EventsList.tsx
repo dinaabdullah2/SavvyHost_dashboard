@@ -413,6 +413,7 @@ const EventsList = () => {
     const [search, setSearch] = useState('');
     const [sortStatus, setSortStatus] = useState<DataTableSortStatus>({ columnAccessor: 'id', direction: 'asc' });
     const [selectValue,setSelectValue]=useState<any>('')
+    const [eventData, setEventData] = useState<any>();
 
 
     useEffect(() => {
@@ -539,12 +540,12 @@ const EventsList = () => {
                 <button
                     type="button"
                     className="bg-primary font-semibold hover:bg-blue-500 max-sm:w-[100%] max-md:w-[100%] text-white py-2 px-5 rounded-lg cursor-pointer"
-                    onClick={() => setShowAddEventForm(!showAddEventForm)}
+                    onClick={() => setShowAddEventForm(!showAddEventForm) }
                 >
                    Add Event
                 </button>
-                   <AddEvent refetch={refetch} showAddEventForm={showAddEventForm} setShowAddEventForm={setShowAddEventForm} />
-                   <EditEvent showEditEventForm={showEditEventForm} setShowEditEventsForm={setShowEditEventForm} />
+                   <AddEvent refetch={refetch} eventData={eventData} showAddEventForm={showAddEventForm} setShowAddEventForm={setShowAddEventForm} />
+                   {/* <EditEvent showEditEventForm={showEditEventForm} setShowEditEventsForm={setShowEditEventForm} /> */}
                 </div>
             </div>
             <div className="datatables">
@@ -592,7 +593,7 @@ const EventsList = () => {
                                     <Tippy >
                                         <button type="button" className="" onClick={() => {
                                             setShowAddEventForm(!showAddEventForm)
-                                            setEventId(id)
+                                            setEventData(id)
                                         }}>
                                             <svg  width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-blue-700">
                                                 <path

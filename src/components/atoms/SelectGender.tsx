@@ -55,22 +55,22 @@ export default function SelectGender({
     <div>
         <Select
         id="optionStatus"
-        label={label}
         placeholder={placeholder}
         name={name}
         // isDisabled={!StatusLoading && !!failureReason}
         // loadingPlaceholder={`${t("loading")}`}
         // loading={StatusLoading}
-        fieldKey={fieldKey}
-        isMulti={multi}
+        // fieldKey={fieldKey}
+        // isMulti={multi}
+        
         options={dataOptions}
         onChange={(event) => {
             setFieldValue(name, event?.value);
         }}
-          defaultValue={{
-          value: !resetForm ? updateData?.gender : "",
-          label: !resetForm ? updateData?.gender : "Select gender",
-        }}
+        //   defaultValue={{
+        //   value: !resetForm ? updateData?.gender : "",
+        //   label: !resetForm ? updateData?.gender : "Select gender",
+        // }}
         // {...{ ...(value && { value }) }}
       />
 

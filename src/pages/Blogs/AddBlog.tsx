@@ -128,17 +128,22 @@ const AddBlog = ({
     });
 
     // // update
-    // const { mutate: update } = useMutate({
-    //     mutationKey: ['users/id'],
-    //     endpoint: `/api/user/store`,
-    //     onSuccess: (data: any) => {
-    //         console.log('done');
-    //     },
-    //     onError: (err: any) => {
-    //         console.log('error', err);
-    //     },
-    //     formData: true,
-    // });
+    const { mutate: update } = useMutate({
+        mutationKey: ['Blogs/id'],
+        endpoint: `api/dashboard/blog/${blogData?.id}`,
+        onSuccess: (data: any) => {
+            Swal.fire({ title: 'Updated!', text: 'Blog has been updated.', icon: 'success', customClass: 'sweet-alerts' });
+            queryClient.refetchQueries(['api/dashboard/blog']);
+            refetch();
+            setShowAddBlogForm(false)
+
+        },
+        onError: (err: any) => {
+            Swal.fire({ title: 'Blog Can not be Updated!', text: `${err.response.data.message}`, icon: 'error', customClass: 'sweet-alerts' });
+        },
+        formData: true,
+    });
+
 
   return (
     <div>
@@ -178,7 +183,7 @@ const AddBlog = ({
                         validationSchema={validatopnSchema}
                         onSubmit={(values) => {
                             mutate({ ...values });
-                            // update({ ...values, _methode: 'put' });
+                            update({ ...values, _methode: 'put' });
                         }}
                     >
                         <Form>

@@ -20,7 +20,7 @@ const Editor = ({ label, placeholder, description, error, className, value, name
         <ReactQuill
            id={name}
            placeholder={placeholder}
-           value={ values[name]}
+           value={values[name]}
            onChange={(value) => {
             // setFieldValueState(e.target.value)
             setFieldValue(name, value)

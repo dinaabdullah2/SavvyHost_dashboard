@@ -81,7 +81,7 @@ const AddUser = ({ showCustomizer, setShowCustomizer, userData }: UserCustom_TP)
     // update
     const { mutate: update } = useMutate({
         mutationKey: ['users/id'],
-        endpoint: `/api/user/store`,
+        endpoint: `api/dashboard/user/update/${userData?.id}`,
         onSuccess: (data: any) => {
             Swal.fire({ title: 'Updated!', text: 'User has been updated.', icon: 'success', customClass: 'sweet-alerts' });
             queryClient.refetchQueries(['dashboard/user/index']);
@@ -167,7 +167,7 @@ const AddUser = ({ showCustomizer, setShowCustomizer, userData }: UserCustom_TP)
                             onSubmit={(values) => {
                                 console.log('values', values.bio);
                                 mutate({ ...values });
-                                // update({ ...values, _methode: 'put' });
+                                update({ ...values, _methode: 'put' });
                             }}
                         >
                             <Form>

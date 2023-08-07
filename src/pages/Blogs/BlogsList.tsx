@@ -405,7 +405,7 @@ const BlogsList = () => {
     const [page, setPage] = useState(1);
     const PAGE_SIZES = [10, 20, 30, 50, 100];
     const [pageSize, setPageSize] = useState(PAGE_SIZES[0]);
-    const [initialRecords, setInitialRecords] = useState(sortBy(Blogs?.data?.blogs, 'id'));
+    const [initialRecords, setInitialRecords] = useState<any>(sortBy(Blogs?.data?.blogs, 'id'));
     const [recordsData, setRecordsData] = useState(initialRecords);
     const [showAddBlogForm, setShowAddBlogForm] = useState(false);
     const [showEditBlogForm, setShowEditBlogForm] = useState(false);

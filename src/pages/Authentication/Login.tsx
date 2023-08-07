@@ -1,21 +1,20 @@
-import { Link, Navigate, useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { IRootState } from '../../store';
 import { useContext, useEffect } from 'react';
 import { setPageTitle } from '../../store/themeConfigSlice';
-import axios from 'axios';
 import { Form, Formik } from 'formik';
 import * as Yup from 'yup';
 import InputCustom from '../../components/atoms/InputCustom';
 import { useQueryClient } from '@tanstack/react-query';
 import { useMutate } from '../../hooks/UseMutate';
-
 import Swal from 'sweetalert2';
 import { AuthContext } from '../../Auth/AuthProvider';
+
 const Login = () => {
     const dispatch = useDispatch();
     useEffect(() => {
-        dispatch(setPageTitle('Login Boxed'));
+        dispatch(setPageTitle('Login'));
     });
     const { login } = useContext(AuthContext);
     const navigate = useNavigate();
@@ -45,6 +44,7 @@ const Login = () => {
             //  localStorage.setItem('token',`${data.data.access_token}`)
              login(data?.data?.access_token);
              navigate('/');
+             location.replace("/");
 
          },
          onError: (err: any) => {
