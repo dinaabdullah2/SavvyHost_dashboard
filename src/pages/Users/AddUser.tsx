@@ -1,6 +1,5 @@
 import { useQueryClient } from '@tanstack/react-query';
-import { Field, Form, Formik } from 'formik';
-import { useState } from 'react';
+import { Form, Formik } from 'formik';
 import Swal from 'sweetalert2';
 import * as Yup from 'yup';
 import Editor from '../../components/atoms/Editor';
@@ -12,7 +11,6 @@ import SelectRole from '../../components/atoms/SelectRole';
 import UploadImage from '../../components/atoms/UploadImage';
 import useFetch from '../../hooks/UseFetch';
 import { useMutate } from '../../hooks/UseMutate';
-
 
 type UserCustom_TP = {
     showCustomizer?: boolean;
@@ -27,10 +25,7 @@ const AddUser = ({ showCustomizer, setShowCustomizer, userData }: UserCustom_TP)
         country_code: string;
         country_name: string;
     }
-    const {
-        data: Countries,
-        refetch,
-    } = useFetch<{
+    const { data: Countries, refetch } = useFetch<{
         data: {
             countries: Country[];
         };
@@ -103,22 +98,19 @@ const AddUser = ({ showCustomizer, setShowCustomizer, userData }: UserCustom_TP)
         role_id: userData?.role ? userData?.role : '',
     };
 
-
-
     const gender = [
-        { value: 1, label:  'Male' },
+        { value: 1, label: 'Male' },
         { value: 0, label: 'Female' },
     ];
     const status = [
         { value: 'active', label: 'Active' },
         { value: 'suspend', label: 'Suspend' },
     ];
-    
+
     const type = [
         { value: 'Traveler', label: 'Traveler' },
         { value: 'Company', label: 'Company' },
     ];
-    
 
     return (
         <div>
@@ -155,7 +147,7 @@ const AddUser = ({ showCustomizer, setShowCustomizer, userData }: UserCustom_TP)
                         <Formik
                             initialValues={initialValues}
                             validationSchema={validatopnSchema}
-                            enableReinitialize={true} 
+                            enableReinitialize={true}
                             // onSubmit={(values) => {handleSubmit(values)}}
                             onSubmit={(values) => {
                                 console.log('values', values.bio);
@@ -165,11 +157,9 @@ const AddUser = ({ showCustomizer, setShowCustomizer, userData }: UserCustom_TP)
                         >
                             <Form>
                                 <div className="grid lg:grid-cols-12 max-sm:grid-cols-1 gap-5 ">
-
                                     <div className="lg:col-span-6 max-sm:col-span-1 ">
                                         <label htmlFor="name">Full Name</label>
-                                        <InputCustom  type="text" name="name" />
-
+                                        <InputCustom type="text" name="name" />
                                     </div>
                                     <div className="lg:col-span-6 max-sm:col-span-1 ">
                                         <label htmlFor="username">Username</label>

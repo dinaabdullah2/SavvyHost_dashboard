@@ -1,6 +1,4 @@
 import { useFormikContext } from 'formik';
-import { type } from 'os';
-import React, { FC } from 'react';
 import Select from 'react-select';
 type SelectCustom_TP = {
     label?: string;
@@ -30,6 +28,7 @@ const SelectCountries = ({ label, placeholder, description, error, className, va
             // defaultValue={optionVal? optionVal[0]}
             options={optionVal}
             onChange={(event) => {
+                //@ts-ignore
                 setFieldValue(name,event?.value);
             }}
             required
