@@ -1,38 +1,80 @@
 import { useFormikContext } from 'formik';
 import { type } from 'os';
-import React, { FC } from 'react';
+import React from 'react';
 import Select from 'react-select';
-type SelectCustom_TP = {
-    label?: string;
-    placeholder?: string;
-    description?: string;
-    error?: string;
-    className?: string;
-    type?: string;
-    handleChange?: any;
-    value?: any;
-    name?: any;
-    options?: any;
+import useFetch from '../../hooks/UseFetch';
+
+type  SelectCategory_TP = {
+    placeholder?: string
+    onChange?: (option: any) => void
+    label?: any
+    multi?: boolean
+    name?: any
+    fieldKey?: "id" | "value" | undefined
+
 };
-const SelectCategory = ({ label, placeholder, description, error, className, value, name, type, options, handleChange, ...props }: SelectCustom_TP) => {
-    const { values, setFieldValue } = useFormikContext<any>(); /////////// STATES
 
-    const optionVal = options?.map((item:any)=>({
-        value:item?.id,
-        label:item?.name,
-    }))
+type options_TP = {
+    // [x: string]: any
+    data?: any
+    id?: number
+    value?: any
+    label?: string
+  }
 
+const SelectCategory =({
+    placeholder,
+    multi,
+    name,
+    fieldKey,
+    onChange,
+    label,
+  }: SelectCategory_TP) => {
+    const {
+        data: StatusOptions,
+        isLoading: StatusLoading,
+        failureReason,
+      } = useFetch<options_TP>({
+        endpoint: "api/dashboard/blog/create",
+        queryKey: ["Categories-select"],
+        onSuccess(data) {},
+      })
+      const { values,setFieldValue } = useFormikContext()
+
+      const mapStatusOptions = (options: options_TP) => {
+        return (
+          options?.data?.categories?.map((state: options_TP) => ({
+            id: state?.id,
+            value: state?.id,
+            label: state?.name,
+          })) || []
+        )
+      }
+
+      const dataOptions = [
+        ...mapStatusOptions(StatusOptions),
+        {
+          id: 0,
+          value: 0,
+        },
+      ]
     return (
         <Select
             id={name}
-            {...props}
-            name={name}
-            options={optionVal}
-            onChange={(event) => {
-                setFieldValue(name, event?.value);
-            }}
             required
-        />
+            placeholder={placeholder}
+            name={name}
+            isDisabled={!StatusLoading && !!failureReason}
+            // loadingPlaceholder="loading"
+            // loading={StatusLoading}
+            // fieldKey={fieldKey}
+            isMulti={multi}
+            options={dataOptions}
+            onChange={(event) => {
+            setFieldValue(name, event?.value);
+            }}
+        // {...{ ...(value && { value }) }}
+      />
     );
 };
 export default SelectCategory;

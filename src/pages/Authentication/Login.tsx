@@ -1,20 +1,22 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { IRootState } from '../../store';
-import { useEffect } from 'react';
+import { useContext, useEffect } from 'react';
 import { setPageTitle } from '../../store/themeConfigSlice';
-import axios from 'axios';
 import { Form, Formik } from 'formik';
 import * as Yup from 'yup';
 import InputCustom from '../../components/atoms/InputCustom';
 import { useQueryClient } from '@tanstack/react-query';
 import { useMutate } from '../../hooks/UseMutate';
 import Swal from 'sweetalert2';
-const LoginBoxed = () => {
+import { AuthContext } from '../../Auth/AuthProvider';
+
+const Login = () => {
     const dispatch = useDispatch();
     useEffect(() => {
-        dispatch(setPageTitle('Login Boxed'));
+        dispatch(setPageTitle('Login'));
     });
+    const { login } = useContext(AuthContext);
     const navigate = useNavigate();
     const isDark = useSelector((state: IRootState) => state.themeConfig.theme) === 'dark' ? true : false;
     const initialValues = {
@@ -28,57 +30,30 @@ const LoginBoxed = () => {
 
         });
 
-    // const { login, user } = useAuth();
-
-    const delay = (ms:any) => new Promise(res => setTimeout(res, ms));
-    const handleRedirect = async () => {
-            await delay(7000);
-
-        if(localStorage.getItem("token")){
-            navigate("/")
 
 
-        }else {
-            navigate("/login")
-        }
-     }
 
 
      const queryClient = useQueryClient();
      // // post data
      const { mutate } = useMutate({
          mutationKey: ['dashboard/login'],
-         endpoint: `api/dashboard/event/store`,
+         endpoint: `api/login`,
          onSuccess: (data: any) => {
-             Swal.fire({ title: 'Added!', text: 'Your Event has been added successfully.', icon: 'success', customClass: 'sweet-alerts' });
-             queryClient.refetchQueries(['api/dashboard/event/index']);
+             Swal.fire({ title: 'lOGIN!', text: 'Login successfully.', icon: 'success', customClass: 'sweet-alerts' });
+            //  localStorage.setItem('token',`${data.data.access_token}`)
+             login(data?.data?.access_token);
+             navigate('/');
+             location.replace("/");
+
          },
          onError: (err: any) => {
-             Swal.fire({ title: 'Your Event Can not be added.', text: `${err.response.data.message}` ,icon: 'error', customClass: 'sweet-alerts' });
+             Swal.fire({ title: 'Sorry!', text: `${err.response.data.message}` ,icon: 'error', customClass: 'sweet-alerts' });
              console.log('erroooooooooooooooooooooooooooooooor', err);
          },
          formData: true,
      });
 
-    const API_BASE_URL = "https://dashboard.savvyhost.io";
-    const handleSubmit = async (values: any) => {
-        axios.post(`https://dashboard.savvyhost.io/api/login`,values
-        , {
-            headers: {
-                "Content-Type": "application/json; charset=utf-8",
-                Authorization: "Bearer your-token-here",
-            }
-          })
-            .then(response => {
-              console.log(response,"feee")
-              localStorage.setItem("token",response.data.access_token)
-              handleRedirect()
-            }
-            ).catch((err) => {
-
-                console.log(err,'fee')
-             })
-    };
 
 
 
@@ -86,26 +61,26 @@ const LoginBoxed = () => {
     return (
         <div className="flex justify-center items-center min-h-screen bg-cover bg-center bg-[url('/assets/images/map.svg')] dark:bg-[url('/assets/images/map-dark.svg')]">
             <div className="panel sm:w-[480px] m-6 max-w-lg w-full">
-                <h2 className="font-bold text-2xl mb-3">Sign In</h2>
-                <p className="mb-7">Enter your email and password to login</p>
+                <h2 className="font-bold text-center text-2xl mb-3">Sign In</h2>
+                <p className="mb-7 text-center">Enter your email and password to login</p>
                         <Formik
                             initialValues={initialValues}
                             validationSchema={validatopnSchema}
-                            onSubmit={(values) => {handleSubmit(values)}}
-                            // onSubmit={(values) => {
-                            //     console.log('values', values);
-                            //     mutate({ ...values });
-                            //     // update({ ...values, _methode: 'put' });
-                            // }}
+                            // onSubmit={(values) => {handleSubmit(values)}}
+                            onSubmit={(values) => {
+                                console.log('values', values);
+                                mutate({ ...values });
+                                // update({ ...values, _methode: 'put' });
+                            }}
                         >
                             <Form>
                             <div className='grid lg:grid-cols-12 max-sm:grid-cols-1 gap-5 ' >
 
-                                <div className='lg:col-span-6 max-sm:col-span-1 '>
+                                <div className='lg:col-span-12 max-sm:col-span-1 '>
                                    <label htmlFor="login">Email</label>
                                    <InputCustom type="text" name="login" />
                                 </div>
-                                <div className='lg:col-span-6 max-sm:col-span-1 '>
+                                <div className='lg:col-span-12 max-sm:col-span-1 '>
                                   <label htmlFor="password">Password</label>
                                   <InputCustom type="password" name="password" />
                                 </div>
@@ -200,4 +175,4 @@ const LoginBoxed = () => {
     );
 };
 
-export default LoginBoxed;
+export default Login;

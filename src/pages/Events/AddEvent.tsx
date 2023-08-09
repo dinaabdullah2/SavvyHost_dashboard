@@ -21,6 +21,7 @@ import UploadImage from '../../components/atoms/UploadImage';
 import RadioCustom from '../../components/atoms/RadioCustom';
 import { useQueryClient } from '@tanstack/react-query';
 import DateInput from '../../components/atoms/DateInput';
+import SelectSearch from '../../components/atoms/SelectSearchable';
 const role = [
     { value: 'user', label: 'user' },
     { value: 'admin', label: 'admin' },
@@ -69,7 +70,8 @@ const AddEvent = ({
             title: Yup.string().trim().required('faild os requerd'),
         });
         const initialValues = {
-            title: eventData?.title ? eventData?.title : '',
+
+            title: eventData?.title || '',
             content: eventData?.content ? eventData?.content : '',
             avatar: eventData?.avatar ? eventData?.avatar : '',
             image :eventData?.image ? eventData?.image : '',
@@ -100,27 +102,31 @@ const AddEvent = ({
             queryClient.refetchQueries(['api/dashboard/event/index']);
             refetch();
             setShowAddEventForm(false)
-            console.log('donedsssssssssssssssssssssssafcdfsdfas ');
+
         },
         onError: (err: any) => {
             Swal.fire({ title: 'Your Event Can not be added.', text: `${err.response.data.message}` ,icon: 'error', customClass: 'sweet-alerts' });
-            console.log('erroooooooooooooooooooooooooooooooor', err);
+
         },
         formData: true,
     });
 
     // // update
-    // const { mutate: update } = useMutate({
-    //     mutationKey: ['users/id'],
-    //     endpoint: `/api/user/store`,
-    //     onSuccess: (data: any) => {
-    //         console.log('done');
-    //     },
-    //     onError: (err: any) => {
-    //         console.log('error', err);
-    //     },
-    //     formData: true,
-    // });
+    const { mutate: update } = useMutate({
+        mutationKey: ['Events/id'],
+        endpoint: `api/dashboard/event/update/${eventData?.id}`,
+        onSuccess: (data: any) => {
+            Swal.fire({ title: 'Updated!', text: 'Event has been updated.', icon: 'success', customClass: 'sweet-alerts' });
+            queryClient.refetchQueries(['api/dashboard/event/index']);
+            refetch();
+            setShowAddEventForm(false);
+
+        },
+        onError: (err: any) => {
+            Swal.fire({ title: 'Event Can not be Updated!', text: `${err.response.data.message}`, icon: 'error', customClass: 'sweet-alerts' });
+        },
+        formData: true,
+    });
 
 
 
@@ -159,9 +165,10 @@ const AddEvent = ({
             <Formik
                     initialValues={initialValues}
                     validationSchema={validatopnSchema}
+                    enableReinitialize={true}
                     onSubmit={(values) => {
                         mutate({ ...values });
-                        // update({ ...values, _methode: 'put' });
+                        update({ ...values, _methode: 'put' });
                     }}
                     >
                         <Form>
@@ -196,7 +203,7 @@ const AddEvent = ({
                                 <p className="text-white-dark pb-2 px-2 text-sm">Allow search engines to show this service in search results?</p>
                                 <div className="grid lg:grid-cols-12 max-sm:grid-cols-1 gap-5 px-3 ">
                                     <div className="lg:col-span-12 max-sm:col-span-1 pt-1 pb-2">
-                                        <SelectCustom setSeoSection={setSeoSection} options={options} name="searchable"  />
+                                        <SelectSearch setSeoSection={setSeoSection} name="searchable"  />
                                     </div>
                                     {seoSection == 1 ?
                                         <div className="lg:col-span-12 max-sm:col-span-1 ">

@@ -9,7 +9,6 @@ import Tippy from '@tippyjs/react';
 import Select from 'react-select';
 import Swal from 'sweetalert2';
 import AddCategory from './AddCategory';
-// import EditUser from './EditUser';
 import useFetch from '../../hooks/UseFetch';
 import axios from 'axios';
 import { notifyManager, useMutation, useQueryClient } from '@tanstack/react-query';

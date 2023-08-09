@@ -83,18 +83,21 @@ const AddPage = ({ showAddForm, setShowAddForm, pageData, refetch }: PageCustom_
         formData: true,
     });
 
-    // // update
-    // const { mutate: update } = useMutate({
-    //     mutationKey: ['users/id'],
-    //     endpoint: `/api/user/store`,
-    //     onSuccess: (data: any) => {
-    //         console.log('done');
-    //     },
-    //     onError: (err: any) => {
-    //         console.log('error', err);
-    //     },
-    //     formData: true,
-    // });
+    const { mutate: update } = useMutate({
+        mutationKey: ['pages/id'],
+        endpoint: `api/dashboard/page/update/${pageData?.id}`,
+        onSuccess: (data: any) => {
+            Swal.fire({ title: 'Updated!', text: 'Page has been updated.', icon: 'success', customClass: 'sweet-alerts' });
+            queryClient.refetchQueries(['api/dashboard/page/index']);
+            refetch();
+            setShowAddForm(false);
+            console.log(data);
+        },
+        onError: (err: any) => {
+            Swal.fire({ title: 'Page Can not be Updated!', text: `${err.response.data.message}`, icon: 'error', customClass: 'sweet-alerts' });
+        },
+        formData: true,
+    });
 
     return (
         <div>
@@ -129,9 +132,10 @@ const AddPage = ({ showAddForm, setShowAddForm, pageData, refetch }: PageCustom_
                     <Formik
                         initialValues={initialValues}
                         validationSchema={validatopnSchema}
+                        enableReinitialize={true}
                         onSubmit={(values) => {
                             mutate({ ...values });
-                            // update({ ...values, _methode: 'put' });
+                            update({ ...values, _methode: 'put' });
                         }}
                     >
                         <Form>
@@ -211,6 +215,7 @@ const AddPage = ({ showAddForm, setShowAddForm, pageData, refetch }: PageCustom_
                                                             </div>
                                                             <div className="lg:col-span-12 max-sm:col-span-1 ">
                                                                 <UploadImage name="seo_image" />
+
                                                             </div>
                                                         </div>
                                                     </Tab.Panel>
@@ -266,7 +271,8 @@ const AddPage = ({ showAddForm, setShowAddForm, pageData, refetch }: PageCustom_
                                 <h5 className="mb-5 w-[100%] text-base font-semibold dark:text-white p-2  border-b border-dashed border-white-light">Feature Image</h5>
                                 <div className="grid lg:grid-cols-12 max-sm:grid-cols-1 gap-5 px-3 ">
                                     <div className="lg:col-span-12 max-sm:col-span-1 ">
-                                        <UploadImage name="featured_image" />
+                                        <UploadImage updateData={pageData} name="featured_image" />
+
                                     </div>
                                 </div>
                             </div>
@@ -276,6 +282,7 @@ const AddPage = ({ showAddForm, setShowAddForm, pageData, refetch }: PageCustom_
                                 <div className="grid lg:grid-cols-12 max-sm:grid-cols-1 gap-5 px-3 ">
                                     <div className="lg:col-span-12 max-sm:col-span-1 ">
                                         <UploadImage name="logo" />
+
                                     </div>
                                 </div>
                             </div>

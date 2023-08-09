@@ -35,7 +35,7 @@ const UsersList = () => {
         email: string;
         phone: string;
         content: string;
-        role_id: number;
+        role_id: any;
 
         // Add more properties if needed...
     }
@@ -222,10 +222,10 @@ const UsersList = () => {
                         { accessor: 'email', title: 'Email', sortable: true },
                         { accessor: 'phone', title: 'Phone No.', sortable: true },
                         {
-                            accessor: 'role',
+                            accessor: 'role_id',
                             title: 'Role',
                             sortable: true,
-                            render: (role_id) => <div className="flex items-center w-max">{role_id == 1 ? <div>admin</div> : <div>user</div>}</div>,
+                            render: ({role_id}:any) => <div className="flex items-center w-max">{role_id ==1 ? "Admin":"User" }</div>,
                         },
                         {
                             accessor: 'action',

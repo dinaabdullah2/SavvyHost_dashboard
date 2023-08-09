@@ -1,18 +1,32 @@
-const AuthReducer = (state:any, action:any) => {
-  switch (action.type) {
-    case "LOGIN": {
-      return {
-        currentUser: localStorage.getItem('token')
-      };
-    }
-    case "LOGOUT": {
-      return {
-        currentUser: null,
-      };
-    }
-    default:
-      return state;
+enum AuthActionTypes {
+    LOGIN = "LOGIN",
+    LOGOUT = "LOGOUT",
   }
-};
 
-export default AuthReducer;
+  type AuthState = {
+    currentUser: string | null;
+  };
+
+  type AuthAction = {
+    type: AuthActionTypes;
+    payload?: any; // Modify the payload type if needed
+  };
+
+  const AuthReducer = (state: AuthState, action: AuthAction) => {
+    switch (action.type) {
+      case AuthActionTypes.LOGIN: {
+        return {
+          currentUser: localStorage.getItem("token") || null,
+        };
+      }
+      case AuthActionTypes.LOGOUT: {
+        return {
+          currentUser: null,
+        };
+      }
+      default:
+        return state;
+    }
+  };
+
+  export default AuthReducer;

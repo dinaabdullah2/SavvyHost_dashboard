@@ -1,13 +1,15 @@
+import Select from 'react-select';
 import { useFormikContext } from "formik";
 import { t } from "i18next";
-import { Select } from "../molecules";
+
 type SelectType_tp = {
   placeholder?: string;
   onChange?: (option: any) => void;
   label?: string;
   multi?: boolean;
-  TypeName?: string | undefined;
+//   TypeName?: string | undefined;
   fieldKey?: "id" | "value" | undefined;
+  name?:any
 };
 
 type options_TP = {
@@ -22,7 +24,7 @@ type options_TP = {
 export default function SelectType({
   placeholder,
   multi,
-  TypeName,
+  name,
   fieldKey,
   onChange,
   updateData,
@@ -33,20 +35,16 @@ export default function SelectType({
 
   const dataOptions = [
     {
-      id: 0,
-      value: 0,
-      label: "الكل",
-    },
-    {
-      id: 1,
-      value: "student",
-      label: "طالب",
+        id: 1,
+        value: 'traveller',
+        label: "Traveller",
     },
     {
       id: 2,
-      value: "teacher",
-      label: "معلم",
-    },
+      value: 'company',
+      label: 'Company',
+    }
+
   ];
 
   return (
@@ -55,16 +53,18 @@ export default function SelectType({
         id="optionStatus"
         label={label}
         placeholder={placeholder}
-        name={TypeName}
+        name={name}
         loadingPlaceholder={`${t("loading")}`}
         fieldKey={fieldKey}
         isMulti={multi}
         options={dataOptions}
-        onChange={onChange}
-        defaultValue={{
-          value: !resetForm ? updateData?.type : "",
-          label: !resetForm ? updateData?.type : "اختر النوع",
+        onChange={(event) => {
+            setFieldValue(name, event?.value);
         }}
+        // defaultValue={{
+        //   value: !resetForm ? updateData?.type : "",
+        //   label: !resetForm ? updateData?.type : "Select Type",
+        // }}
       />
     </div>
   );

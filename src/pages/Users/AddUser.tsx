@@ -11,6 +11,9 @@ import SelectRole from '../../components/atoms/SelectRole';
 import UploadImage from '../../components/atoms/UploadImage';
 import useFetch from '../../hooks/UseFetch';
 import { useMutate } from '../../hooks/UseMutate';
+import SelectGender from '../../components/atoms/SelectGender';
+import SelectStatus from '../../components/atoms/SelectStatus';
+import SelectType from '../../components/atoms/SelectType';
 
 type UserCustom_TP = {
     showCustomizer?: boolean;
@@ -73,28 +76,32 @@ const AddUser = ({ showCustomizer, setShowCustomizer, userData }: UserCustom_TP)
     // update
     const { mutate: update } = useMutate({
         mutationKey: ['users/id'],
-        endpoint: `/api/user/store`,
+        endpoint: `api/dashboard/user/update/${userData?.id}`,
         onSuccess: (data: any) => {
-            console.log('done');
+            Swal.fire({ title: 'Updated!', text: 'User has been updated.', icon: 'success', customClass: 'sweet-alerts' });
+            queryClient.refetchQueries(['dashboard/user/index']);
+            refetch();
+            setShowCustomizer(false);
+            console.log(data);
         },
         onError: (err: any) => {
-            console.log('error', err);
+            Swal.fire({ title: 'User Can not be Updated!', text: `${err.response.data.message}`, icon: 'error', customClass: 'sweet-alerts' });
         },
         formData: true,
     });
 
     const initialValues = {
         name: userData?.name || '',
-        username: userData?.username ? userData?.username : '',
-        avatar: userData?.avatar ? userData?.avatar : '',
+        username: userData?.username || '',
+        avatar: userData?.avatar || '',
         status: userData?.status ? userData?.status : '',
         email: userData?.email ? userData?.email : '',
         phone: userData?.phone ? userData?.phone : '',
         password: userData?.password ? userData?.password : '',
-        gender: userData?.gender ? userData?.gender : '',
-        country_id: userData?.country ? userData?.country : '',
+        gender:userData?.gender || '',
+        country_id: userData?.country_id || '',
         bio: userData?.bio ? userData?.bio : '',
-        type: userData?.type ? userData?.type : '',
+        type: userData?.type || '',
         role_id: userData?.role ? userData?.role : '',
     };
 
@@ -152,7 +159,7 @@ const AddUser = ({ showCustomizer, setShowCustomizer, userData }: UserCustom_TP)
                             onSubmit={(values) => {
                                 console.log('values', values.bio);
                                 mutate({ ...values });
-                                // update({ ...values, _methode: 'put' });
+                                update({ ...values, _methode: 'put' });
                             }}
                         >
                             <Form>
@@ -179,31 +186,31 @@ const AddUser = ({ showCustomizer, setShowCustomizer, userData }: UserCustom_TP)
                                     </div>
                                     <div className="lg:col-span-6 max-sm:col-span-1 ">
                                         <label htmlFor="Country">Country</label>
-                                        <SelectCountries options={Countries?.data?.countries} name="country_id" />
+                                        <SelectCountries updateData={userData} name="country_id"  resetForm="resetForm"  />
                                     </div>
                                     <div className="lg:col-span-6 max-sm:col-span-1 ">
                                         <label htmlFor="Country">Gender</label>
-                                        <SelectCustom options={gender} name="gender" />
+                                        <SelectGender  updateData={userData}  name="gender" resetForm="resetForm"  />
                                     </div>
                                     <div className="lg:col-span-6 max-sm:col-span-1 ">
                                         <label htmlFor="Role">Role</label>
-                                        <SelectRole options={Roles?.data?.roles} name="role_id" />
+                                        <SelectRole  name="role_id" />
                                     </div>
                                     <div className="lg:col-span-6 max-sm:col-span-1 ">
                                         <label htmlFor="type">Type</label>
-                                        <SelectCustom options={type} name="type" />
+                                        <SelectType  name="type" />
                                     </div>
                                     <div className="lg:col-span-6 max-sm:col-span-1 ">
                                         <label htmlFor="status">Status</label>
-                                        <SelectCustom options={status} name="status" />
+                                        <SelectStatus  name="status" />
                                     </div>
                                     <div className="lg:col-span-12 max-sm:col-span-1 ">
                                         <label htmlFor="Bio">Bio</label>
                                         <Editor name="bio" />
                                     </div>
                                     <div className="lg:col-span-12 max-sm:col-span-1 ">
-                                        <label htmlFor="avatar">Image</label>
-                                        <UploadImage name="avatar" />
+                                        <label  htmlFor="avatar">Image</label>
+                                        <UploadImage updateData={userData} name="avatar" />
                                     </div>
 
                                     <div className="lg:col-span-12 max-sm:col-span-1 ">
@@ -215,65 +222,7 @@ const AddUser = ({ showCustomizer, setShowCustomizer, userData }: UserCustom_TP)
                             </Form>
                         </Formik>
 
-                        {/* <form>
-                <div className='grid lg:grid-cols-12 max-sm:grid-cols-1 gap-5 ' >
-                   <div className='lg:col-span-6 max-sm:col-span-1 '>
-                        <label htmlFor="name">Full Name</label>
-                         <InputCustom value={formValues.name} type='text' name='name' handleChange={handleChange} />
-                    </div>
-                    <div className='lg:col-span-6 max-sm:col-span-1 '>
-                        <label htmlFor="username">Username</label>
-                        <InputCustom value={formValues.username} type='text' name='username' handleChange={handleChange} />
-                    </div>
-                    <div className='lg:col-span-6 max-sm:col-span-1 '>
-                        <label htmlFor="email">Email</label>
-                        <InputCustom value={formValues.email} type='email' name='email' handleChange={handleChange} />
 
-                    </div>
-                    <div className='lg:col-span-6 max-sm:col-span-1 '>
-                        <label htmlFor="password">Password</label>
-                        <InputCustom value={formValues.password} type='password' name='email' handleChange={handleChange} />
-
-                    </div>
-                    <div className='lg:col-span-6 max-sm:col-span-1 '>
-                        <label htmlFor="phone">Phone</label>
-                        <InputCustom value={formValues.phone} type='text' name='phone' handleChange={handleChange} />
-
-                    </div>
-                    <div className='lg:col-span-6 max-sm:col-span-1 '>
-                        <label htmlFor="Country">Country</label>
-                        <Select defaultValue={country[0]} options={country} isSearchable={false} />
-                    </div>
-                    <div className='lg:col-span-6 max-sm:col-span-1 '>
-                        <label htmlFor="Country">Gender</label>
-                        <Select defaultValue={gender[0]} options={gender} isSearchable={false} />
-                    </div>
-                    <div className='lg:col-span-6 max-sm:col-span-1 '>
-                        <label htmlFor="Role">Role</label>
-                        <Select defaultValue={role[0]} options={role} isSearchable={false} />
-                    </div>
-                    <div className='lg:col-span-12 max-sm:col-span-1 '>
-                        <label htmlFor="Bio">Bio</label>
-                        <ReactQuill value={formValues.bio} onChange={ handleQuillEdit } theme="snow"/>
-                    </div>
-                    <div className='lg:col-span-12 max-sm:col-span-1 '>
-                        <input className='mb-3 form-input file:py-2 file:px-4 file:border-0 file:font-semibold p-0 file:rounded-s-lg file:bg-primary/90 ltr:file:mr-5 rtl:file:ml-5 file:text-white file:hover:bg-primary 'name='avatar' type="file" accept="image/*" onChange={selectImage} />
-                        {previewImage ?
-                            <div>
-                                <img  className="preview w-[50%] m-auto" src={previewImage} alt="" />
-                            </div>
-                            :
-                            <div>
-                                <img className="preview w-[50%] m-auto" src="/assets/images/file-preview.svg" alt="" />
-                            </div>
-                        }
-                    </div>
-                    <div className='lg:col-span-12 max-sm:col-span-1 '>
-                       <button type="button" className="btn btn-primary w-full"> Save</button>
-                    </div>
-
-                </div>
-            </form> */}
                     </div>
                 </div>
             </nav>

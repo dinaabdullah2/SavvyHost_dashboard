@@ -1,4 +1,46 @@
 
+// AuthContext.js
+import { createContext, useState } from 'react';
+
+const AuthContext = createContext<any>('');
+
+const AuthProvider = ({ children }:any) => {
+  const [currentUser, setCurrentUser] = useState(localStorage.getItem('token') || null);
+
+  const login = (token:any) => {
+    localStorage.setItem('token', token);
+    setCurrentUser(token);
+  };
+
+  const logout = () => {
+    localStorage.removeItem('token');
+    setCurrentUser(null);
+  };
+
+  return (
+    <AuthContext.Provider value={{ currentUser, login, logout }}>
+      {children}
+    </AuthContext.Provider>
+  );
+};
+
+export { AuthContext, AuthProvider };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // import { createContext, useEffect, useReducer } from "react";
 // import AuthReducer from "./AuthReducer"
 
