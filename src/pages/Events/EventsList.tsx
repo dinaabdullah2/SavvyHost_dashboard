@@ -1,18 +1,16 @@
+import { useQueryClient } from '@tanstack/react-query';
+import Tippy from '@tippyjs/react';
+import sortBy from 'lodash/sortBy';
 import { DataTable, DataTableSortStatus } from 'mantine-datatable';
 import { useEffect, useState } from 'react';
-import sortBy from 'lodash/sortBy';
 import { useDispatch, useSelector } from 'react-redux';
-import { IRootState } from '../../store';
-import { setPageTitle } from '../../store/themeConfigSlice';
-import React from 'react';
-import Tippy from '@tippyjs/react';
 import Select from 'react-select';
 import Swal from 'sweetalert2';
-import EditEvent from './EditEvent';
-import AddEvent from './AddEvent';
 import useFetch from '../../hooks/UseFetch';
 import { useMutate } from '../../hooks/UseMutate';
-import { useQueryClient } from '@tanstack/react-query';
+import { IRootState } from '../../store';
+import { setPageTitle } from '../../store/themeConfigSlice';
+import AddEvent from './AddEvent';
 
 
 

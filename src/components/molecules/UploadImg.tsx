@@ -1,23 +1,21 @@
-import React, { useState } from "react"
-import { IconUpload } from '@tabler/icons-react';
-import ImageUploading, { ImageListType } from "react-images-uploading"
-import { useFormikContext } from "formik"
-import { IconTrash } from '@tabler/icons-react';
-
-const UploadImg = (name:any) => {
-  const [images, setImages] = React.useState([])
-  const maxNumber = 69
-  const { setFieldValue } = useFormikContext() /////////// STATES
+import React from "react";
+import { IconUpload } from "@tabler/icons-react";
+import { useFormikContext } from "formik";
+import ImageUploading, { ImageListType } from "react-images-uploading";
+const UploadImg = (name:string) => {
+  const [images, setImages] = React.useState([]);
+  const maxNumber = 69;
+  const { setFieldValue } = useFormikContext(); /////////// STATES
 
   const onChange = (
     imageList: ImageListType,
     addUpdateIndex: number[] | undefined
   ) => {
-
-    setFieldValue(name,setImages(imageList as never[]))
-
-    // console.log(images[0],'img')
-  }
+    setFieldValue(
+      name,
+      setImages(imageList as never[])
+    );
+  };
   return (
     <ImageUploading
       multiple
@@ -40,13 +38,13 @@ const UploadImg = (name:any) => {
             <div className="">
               <button
                 type="button"
-                className="px-[100px] py-[100px]"
+                className="px-[300px] py-[100px]"
                 style={isDragging ? { color: "red" } : undefined}
                 onClick={onImageUpload}
                 {...dragProps}
               >
-                <IconUpload />
-
+upload
+                {/* <UploadSvgIcon stroke={"#A0A0A0"} /> */}
               </button>
             </div>
             <div className="absolute w-full">
@@ -73,7 +71,8 @@ const UploadImg = (name:any) => {
                         type="button"
                         onClick={() => onImageRemove(index)}
                       >
-                        <IconTrash />
+                        delete
+                        {/* <SvgDeleteIcon stroke={"#ff0000"} /> */}
                       </button>
                     </div>
                   </div>
@@ -84,7 +83,7 @@ const UploadImg = (name:any) => {
         </div>
       )}
     </ImageUploading>
-  )
-}
+  );
+};
 
-export default UploadImg
+export default UploadImg;

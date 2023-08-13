@@ -5,7 +5,6 @@ import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 
 const PhoneInput2 = ({ name, label, setPhone_country, updateData, setPhoneCode, resetForm }: any) => {
-    console.log("🚀 ~ file: PhoneInput.tsx:8 ~ PhoneInput2 ~ updateData:", updateData)
     const [phone, setPhone] = useState(!resetForm ? updateData?.phone_all : '');
     const [countryCode, setCountryCode] = useState(); // Add countryCode state
 

@@ -1,82 +1,46 @@
-import { useFormikContext } from 'formik';
-import { type } from 'os';
-import React from 'react';
-import Select from 'react-select';
+import { t } from 'i18next';
 import useFetch from '../../hooks/UseFetch';
+import { Select } from '../molecules';
 
-type SelectRoles_TP = {
-    placeholder?: string
-    onChange?: (option: any) => void
-    label?: any
-    multi?: boolean
-    name?: any
-    fieldKey?: "id" | "value" | undefined
-
+type SelectRole_tp = {
+    setStatus?: any;
+    updateData?: any;
+    resetForm?: any;
+    onChange?: (option: any) => void;
+    name?: string | undefined;
+    label?: string;
+    fieldKey?: any;
+    placeholder?: string;
 };
-
-type options_TP = {
-    // [x: string]: any
-    data?: any
-    id?: number
-    value?: any
-    label?: string
-  }
-const SelectRole =  ({
-    placeholder,
-    multi,
-    name,
-    fieldKey,
-    onChange,
-    label,
-  }: SelectRoles_TP)  => {
+export default function SelectRole({ updateData, resetForm, onChange, name, label }: SelectRole_tp) {
     const {
-        data: StatusOptions,
+        data: CountryOptions,
         isLoading: StatusLoading,
         failureReason,
-      } = useFetch<options_TP>({
-        endpoint: "api/dashboard/user/create",
-        queryKey: ["Roles-select"],
-        onSuccess(data) {},
-      })
-      const { values,setFieldValue } = useFormikContext()
+    } = useFetch<any>({
+        endpoint: 'api/dashboard/user/create',
+        queryKey: ['Role-option'],
+    });
+    console.log('🚀 ~ file: SelectRole.tsx:20 ~ CountryOptions:', CountryOptions);
 
-      const mapStatusOptions = (options: options_TP) => {
-        return (
-          options?.data?.roles?.map((state: options_TP) => ({
-            id: state?.id,
-            value: state?.id,
-            label: state?.role_name,
-          })) || []
-        )
-      }
-
-      const dataOptions = [
-        ...mapStatusOptions(StatusOptions),
-        {
-          id: 0,
-          value: 0,
-        },
-      ]
-
+    const dataOptions = CountryOptions?.data?.roles.map((role: any) => ({
+        label: role.role_name        ,
+        value: role.id,
+    }));
 
     return (
         <Select
-        id={name}
-        required
-        placeholder={placeholder}
-        name={name}
-        isDisabled={!StatusLoading && !!failureReason}
-        // loadingPlaceholder="loading"
-        // loading={StatusLoading}
-        // fieldKey={fieldKey}
-        isMulti={multi}
-        options={dataOptions}
-        onChange={(event) => {
-        setFieldValue(name, event?.value);
-
-     }}
-        // {...{ ...(value && { value }) }}
-    />
+            placeholder={'Role'}
+            label={t(`${label}`).toString()}
+            id="optionStatus"
+            name={name}
+            isDisabled={!StatusLoading && !!failureReason}
+            loadingPlaceholder={`${t('loading')}`}
+            loading={StatusLoading}
+            options={dataOptions}
+            onChange={onChange}
+            fieldKey="id"
+            defaultValue={{ label: !resetForm ? updateData?.role_id == 1 ? "Admin" : "User" : 'Select Role', value: updateData?.role_id }}
+        />
     );
-};
-export default SelectRole;
+}

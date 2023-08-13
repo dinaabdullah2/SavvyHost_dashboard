@@ -1,95 +1,48 @@
-import { useFormikContext } from 'formik';
-import { type } from 'os';
-import React, { useEffect, useState } from 'react';
-import Select from 'react-select';
+import { t } from 'i18next';
 import useFetch from '../../hooks/UseFetch';
-import { use } from 'i18next';
-type SelectCountries_TP = {
-    placeholder?: string
-    onChange?: (option: any) => void
-    label?: any
-    multi?: boolean
-    name?: any
-    fieldKey?: "id" | "value" | undefined,
-    updateData?:any,
-    resetForm?:any
+import { Select } from '../molecules';
 
+type SelectCountries_tp = {
+    setStatus?: any;
+    updateData?: any;
+    resetForm?: any;
+    onChange?: (option: any) => void;
+    CountryName?: string | undefined;
+    label?: string;
+    fieldKey?: any;
+    placeholder?: string;
 };
-
-type options_TP = {
-    // [x: string]: any
-    data?: any
-    id?: number
-    value?: any
-    label?: string
-  }
-const SelectCountries = ({
-    placeholder,
-    multi,
-    name,
-    fieldKey,
-    onChange,
-    label,
-    updateData,
-    resetForm
-  }: SelectCountries_TP) => {
-
-
-
+export default function SelectCountries(
+    { updateData, resetForm, onChange, CountryName, label }
+    : SelectCountries_tp) {
     const {
-        data: StatusOptions,
+        data: CountryOptions,
         isLoading: StatusLoading,
         failureReason,
-      } = useFetch<options_TP>({
-        endpoint: "api/dashboard/user/create",
-        queryKey: ["Countries-select"],
-        onSuccess(data) {},
-      })
-      const { values,setFieldValue } = useFormikContext()
+    } = useFetch<any>({
+        endpoint: 'api/dashboard/user/create',
+        queryKey: ['Countries-select-option'],
+    });
 
-      const mapStatusOptions = (options: options_TP) => {
-        return (
-          options?.data?.countries?.map((state: options_TP) => ({
-            id: state?.id,
-            value: state?.id,
-            label: state?.country_name,
-          })) || []
-        )
-
-      }
-
-      const dataOptions = [
-        ...mapStatusOptions(StatusOptions),
-        {
-          id: 0,
-          value: 0,
-        },
-      ]
-
+    const dataOptions = CountryOptions?.data?.countries.map((country: any) => ({
+        label: country.name,
+        value: country.id,
+    }));
 
 
     return (
         <Select
-        id={name}
-        required
-        placeholder={placeholder}
-        name={name}
-        isDisabled={!StatusLoading && !!failureReason}
-        loadingPlaceholder="loading"
-        loading={StatusLoading}
-        fieldKey={fieldKey}
-        options={dataOptions}
-        onChange={(event) => {
-            setFieldValue(name, event?.value);
-        }}
-        defaultValue={{
-            value: !resetForm ? updateData?.country?.id : '',
-            label: !resetForm ? updateData?.country?.country_name : 'choose country',
-
-        }}
-
-    // {...{ ...(value && { value }) }}
-  />
+            placeholder={"country"}
+            label={t(`${label}`).toString()}
+            id="optionStatus"
+            name={CountryName}
+            isDisabled={!StatusLoading && !!failureReason}
+            loadingPlaceholder={`${t('loading')}`}
+            loading={StatusLoading}
+            options={dataOptions}
+            onChange={onChange}
+            fieldKey="id"
+            defaultValue={{ label: !resetForm ? updateData?.country?.name : 'Select Country', value: updateData?.country?.id }}
+        />
     );
-};
-export default SelectCountries;
+}
