@@ -15,22 +15,22 @@ type SelectCustom_TP = {
     options?: any;
 };
 const MultiSelection = ({ label, placeholder, description, error, className, value, name, type, options, handleChange, ...props }: SelectCustom_TP) => {
-
     const { values, setFieldValue } = useFormikContext<any>(); /////////// STATES
 
-    const optionVal = options?.map((item:any)=>({
-        value:item?.id,
-        label:item?.role_name,
-    }))
+    const optionVal = options?.map((item: any) => ({
+        value: item?.id,
+        label: item?.role_name,
+    }));
 
     return (
         <Select
             id={name}
             {...props}
             name={name}
-            isMulti ={true}
+            isMulti={true}
             options={optionVal}
             onChange={(event) => {
+                //@ts-ignore
                 setFieldValue(name, event?.value);
             }}
             required
@@ -38,6 +38,4 @@ const MultiSelection = ({ label, placeholder, description, error, className, val
     );
 };
 
-
-
-export default MultiSelection
+export default MultiSelection;

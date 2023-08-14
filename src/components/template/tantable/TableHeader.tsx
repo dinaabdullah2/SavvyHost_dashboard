@@ -19,7 +19,7 @@ export const TableHeader = ({
   showFilter=true,
   pageSize,
   setPageSize,
-}) => {
+}:any) => {
   /////////// VARIABLES
   ///
 

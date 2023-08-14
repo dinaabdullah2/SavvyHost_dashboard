@@ -83,8 +83,8 @@ const UsersList = () => {
                             <GiCancel
                                 className="!w-[20px] !h-[20px] m-auto cursor-pointer text-red-700"
                                 onClick={() => {
-                                    setUserId(info.row.original.id)
-                                    showAlert(10,info.row.original.id)
+                                    setUserId(info.row.original.id);
+                                    showAlert(10, info.row.original.id);
                                 }}
                             />
                         </div>
@@ -92,6 +92,8 @@ const UsersList = () => {
                             <EditIcon
                                 action={() => {
                                     setOpen(true);
+                                    //@ts-ignore
+
                                     setEditData(info.row.original);
                                     setResetForm(false);
                                 }}
@@ -169,11 +171,15 @@ const UsersList = () => {
     useEffect(() => {
         if (selectValue !== 'Filter Role') {
             setInitialRecords(() => {
+                //@ts-ignore
+
                 return Users?.data?.all_users.filter((item: any) => {
                     return item.role_id == selectValue;
                 });
             });
         } else {
+            //@ts-ignore
+
             setInitialRecords(Users?.data?.all_users);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -182,6 +188,8 @@ const UsersList = () => {
     //search
     useEffect(() => {
         setInitialRecords(() => {
+            //@ts-ignore
+
             return Users?.data?.all_users.filter((item: any) => {
                 return item.name.toLowerCase().includes(search.toLowerCase()) || item.email.toLowerCase().includes(search.toLowerCase());
             });
@@ -196,7 +204,6 @@ const UsersList = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [sortStatus]);
     const queryClient = useQueryClient();
-
 
     const { mutate: deleteUser } = useMutate({
         mutationKey: [`users/id/${idUser}`],
