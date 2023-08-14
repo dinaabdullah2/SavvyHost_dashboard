@@ -1,6 +1,4 @@
 import { useFormikContext } from 'formik';
-import { type } from 'os';
-import React from 'react';
 import Select from 'react-select';
 import useFetch from '../../hooks/UseFetch';
 
@@ -46,12 +44,16 @@ const SelectCategory =({
           options?.data?.categories?.map((state: options_TP) => ({
             id: state?.id,
             value: state?.id,
+                      //@ts-ignore
+
             label: state?.name,
           })) || []
         )
       }
 
       const dataOptions = [
+                  //@ts-ignore
+
         ...mapStatusOptions(StatusOptions),
         {
           id: 0,

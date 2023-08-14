@@ -13,7 +13,7 @@ type SelectCountries_tp = {
     placeholder?: string;
 };
 export default function SelectGender({ updateData, resetForm, onChange, name, label }: SelectCountries_tp) {
-    console.log("🚀 ~ file: SelectGender.tsx:16 ~ SelectGender ~ updateData:", updateData)
+    console.log('🚀 ~ file: SelectGender.tsx:16 ~ SelectGender ~ updateData:', updateData);
     const dataOptions = [
         {
             id: 1,
@@ -38,7 +38,9 @@ export default function SelectGender({ updateData, resetForm, onChange, name, la
                 options={dataOptions}
                 onChange={onChange}
                 fieldKey="id"
-                defaultValue={{ label: !resetForm ? updateData?.gender : 'Select Gender', value: updateData?.gender ? 1 : 0 }}
+                defaultValue={{ 
+                    label: !resetForm ? updateData?.gender : 'Select Gender', 
+                value: !resetForm ? (updateData?.gender === 'Male' ? 1 : 0) : '' }}
             />
         </div>
     );

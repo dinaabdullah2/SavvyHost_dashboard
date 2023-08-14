@@ -52,7 +52,8 @@ export default function UserMainData({ userData, resetForm }: any) {
                     label="Gender"
                     resetForm={resetForm}
                     onChange={(option) => {
-                        setFieldValue('gender', option?.value);
+                        console.log("🚀 ~ file: UserMainData.tsx:55 ~ UserMainData ~ option:", option)
+                        setFieldValue('gender', option?.value === "Male" ? 1 : 2);
                     }}
                 />
             </div>

@@ -1,6 +1,4 @@
 import { useFormikContext } from 'formik';
-import { type } from 'os';
-import React, { FC } from 'react';
 
 type InputCustom_TP = {
     label?: string;
@@ -28,6 +26,8 @@ const InputCustom = ({ label, placeholder, description, error, className, value,
             placeholder={placeholder}
             onChange={(e) => {
                 // setFieldValueState(e.target.value)
+                          //@ts-ignore
+
                 if (props?.value === undefined) {
                     setFieldValue(name, e.target.value);
                 }

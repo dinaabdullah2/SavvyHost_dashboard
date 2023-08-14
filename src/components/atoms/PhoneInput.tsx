@@ -8,9 +8,9 @@ const PhoneInput2 = ({ name, label, setPhone_country, updateData, setPhoneCode, 
     const [phone, setPhone] = useState(!resetForm ? updateData?.phone_all : '');
     const [countryCode, setCountryCode] = useState(); // Add countryCode state
 
-    const { setFieldValue, errors, touched, handleBlur , values } = useFormikContext<any>();
+    const { setFieldValue, errors, touched, handleBlur, values } = useFormikContext<any>();
 
-    const handlePhoneChange = ({ value, selectedCountry,  number }: any) => {
+    const handlePhoneChange = ({ value, selectedCountry, number }: any) => {
         // setPhoneCode(selectedCountry?.dialCode);
         // setPhone(value);
         // setCountryCode(selectedCountry?.countryCode);
@@ -19,23 +19,22 @@ const PhoneInput2 = ({ name, label, setPhone_country, updateData, setPhoneCode, 
     };
 
     return (
-
         <PhoneInput
             country={'eg'}
             value={values[name]}
-            onChange={(value:any) => setFieldValue(name,value)}
+            onChange={(value: any) => setFieldValue(name, value)}
             enableSearch
             onBlur={handleBlur}
+            //@ts-ignore
+
             className={{
                 error: touched[name] && !!errors.phone,
             }}
             defaultValue={{
-            value: !resetForm ? updateData?.phone : '',
-            label: !resetForm ? updateData?.phone : 'choose Type',
-
-           }}
+                value: !resetForm ? updateData?.phone : '',
+                label: !resetForm ? updateData?.phone : 'choose Type',
+            }}
         />
-
     );
 };
 

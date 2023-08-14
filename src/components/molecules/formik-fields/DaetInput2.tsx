@@ -63,7 +63,7 @@ export default function DateInput2({
     increaseMonth,
     prevMonthButtonDisabled,
     nextMonthButtonDisabled,
-  }) => (
+  }:any) => (
     <div style={{ margin: 10, display: "flex", justifyContent: "center" }}>
       <button onClick={decreaseMonth} disabled={prevMonthButtonDisabled}>
         {"<"}
@@ -101,7 +101,12 @@ export default function DateInput2({
   return (
     <div className="col-span-1">
       <div className="flex flex-col gap-1">
-        <Label htmlFor={name} {...labelProps} className="mb-3">
+      //@ts-ignore
+
+        <Label htmlFor={name} 
+                  //@ts-ignore
+
+        {...labelProps} className="mb-3">
           {label}
         </Label>
         <DatePicker

@@ -1,12 +1,11 @@
 import { useFormikContext } from "formik"
 import { useEffect } from "react"
-import { PermissionGroup_TP } from "../../../pages/administrativeStructure/types-and-schemas"
 import { FormikError } from "../../atoms"
 import { Checkbox } from "../Checkbox"
 
 // props type
 type Props_TP = {
-  editData?: PermissionGroup_TP | undefined
+  editData?: any | undefined
   [key: string]: any
 }
 
@@ -21,13 +20,13 @@ export const CheckBoxField = ({
     [key: string]: any
   }>()
 
- useEffect(() => {
-  if(!!editData){
-    editData?.permissions?.map(permission=>{
-       setFieldValue(permission.id , true)
-    })
-  }
- }, [JSON.stringify(editData)])
+//  useEffect(() => {
+//   if(!!editData){
+//     editData?.permissions?.map(permission=>{
+//        setFieldValue(permission.id , true)
+//     })
+//   }
+//  }, [JSON.stringify(editData)])
  
 
   return (
