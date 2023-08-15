@@ -9,7 +9,7 @@ const spinner = tv({
   base: "animate-spin rounded-full",
   variants: {
     color: {
-      primary: "border-mainGreen",
+      primary: "border border-red-500",
       danger: "border-mainRed",
     },
     size: {

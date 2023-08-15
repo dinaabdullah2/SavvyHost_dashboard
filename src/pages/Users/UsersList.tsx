@@ -15,6 +15,8 @@ import { useMutate } from '../../hooks/UseMutate';
 import { IRootState } from '../../store';
 import { setPageTitle } from '../../store/themeConfigSlice';
 import AddUser from './AddUser';
+import { Loader } from '@mantine/core';
+import Loading from '../../components/atoms/loading';
 
 const options = [
     { value: 'Filter Role', label: 'All' },
@@ -282,13 +284,16 @@ const UsersList = () => {
                 </div>
             </div>
             <div className="datatables">
-                <Table
-                    columns={cols ? cols : []}
-                    //@ts-ignore
-
-                    data={Users?.data?.all_users ? Users?.data?.all_users : []}
-                    showNavigation
-                />
+                {isLoading || isRefetching ? (
+                    <Loading />
+                ) : (
+                    <Table
+                        columns={cols ? cols : []}
+                        //@ts-ignore
+                        data={Users?.data?.all_users ? Users?.data?.all_users : []}
+                        showNavigation
+                    />
+                )}
             </div>
         </div>
     );

@@ -1,5 +1,5 @@
 import React, { Suspense } from 'react';
-import ReactDOM from 'react-dom/client'
+import ReactDOM from 'react-dom/client';
 
 // Perfect Scrollbar
 import 'react-perfect-scrollbar/dist/css/styles.css';
@@ -22,24 +22,20 @@ import { AuthProvider } from './Auth/AuthProvider';
 
 const queryClient = new QueryClient({
     defaultOptions: {
-      queries: { refetchOnWindowFocus: false },
+        queries: { refetchOnWindowFocus: false },
     },
-  });
+});
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
-
     <React.StrictMode>
-       <QueryClientProvider client={queryClient}>
-
+        <QueryClientProvider client={queryClient}>
             <Suspense>
                 <Provider store={store}>
                     <AuthProvider>
-                       <RouterProvider router={router} />
+                        <RouterProvider router={router} />
                     </AuthProvider>
                 </Provider>
             </Suspense>
-
         </QueryClientProvider>
     </React.StrictMode>
 );
-

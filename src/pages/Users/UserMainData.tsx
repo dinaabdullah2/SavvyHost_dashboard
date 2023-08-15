@@ -9,8 +9,9 @@ import Editor from '../../components/atoms/Editor';
 import UploadImage from '../../components/atoms/UploadImage';
 import SelectCountries from '../../components/atoms/SelectCountries';
 import { useFormikContext } from 'formik';
+import { Button } from '../../components/atoms';
 
-export default function UserMainData({ userData, resetForm }: any) {
+export default function UserMainData({ userData, resetForm , loadingUpdate , postLoading }: any) {
     const { setFieldValue } = useFormikContext();
     return (
         <div className="grid lg:grid-cols-12 max-sm:grid-cols-1 gap-5">
@@ -53,7 +54,7 @@ export default function UserMainData({ userData, resetForm }: any) {
                     resetForm={resetForm}
                     onChange={(option) => {
                         console.log("🚀 ~ file: UserMainData.tsx:55 ~ UserMainData ~ option:", option)
-                        setFieldValue('gender', option?.value === "Male" ? 1 : 2);
+                        setFieldValue('gender', option?.value );
                     }}
                 />
             </div>
@@ -64,6 +65,7 @@ export default function UserMainData({ userData, resetForm }: any) {
                     updateData={userData}
                     resetForm={resetForm}
                     onChange={(option) => {
+                        console.log("🚀 ~ file: UserMainData.tsx:67 ~ UserMainData ~ option:", option)
                         setFieldValue('role_id', option?.value);
                     }}
                 />
@@ -100,9 +102,9 @@ export default function UserMainData({ userData, resetForm }: any) {
             </div>
 
             <div className="lg:col-span-12 max-sm:col-span-1 ">
-                <button type="submit" className="btn btn-primary w-full">
-                    Save
-                </button>
+                <Button variant='primary' type='submit' loading={loadingUpdate || postLoading}>
+                    submit
+                </Button>
             </div>
         </div>
     );

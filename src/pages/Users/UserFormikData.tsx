@@ -18,19 +18,20 @@ export default function UserFormikData({ userData, resetForm, setOpen }: any) {
         email: !resetForm ? userData?.email : '',
         phone: !resetForm ? userData?.phone : '',
         password: !resetForm ? userData?.password : '',
-        gender: !resetForm ? userData?.gender : '',
+        //@ts-ignore
+        gender: !resetForm ? userData?.gender ==="Male" ? 1 : 0 : '',
         country_id: !resetForm ? userData?.country?.id : '',
         bio: !resetForm ? userData?.bio : '',
         type: !resetForm ? userData?.type : '',
-        role_id: !resetForm ? userData?.role : '',
+        role_id: !resetForm ? userData?.role_id : '',
     };
     // post data
-    const { mutate } = useMutate({
+    const { mutate , isLoading:postLoading } = useMutate({
         mutationKey: ['users/id'],
         endpoint: `api/dashboard/user/store`,
         onSuccess: (data: any) => {
-            Swal.fire({ title: 'Added!', text: 'User has been added.', icon: 'success', customClass: 'sweet-alerts' });
             queryClient.refetchQueries(['All-Users']);
+            Swal.fire({ title: 'Added!', text: 'User has been added.', icon: 'success', customClass: 'sweet-alerts' });
             // setShowCustomizer(false);
             setOpen(false);
         },
@@ -40,12 +41,12 @@ export default function UserFormikData({ userData, resetForm, setOpen }: any) {
         },
         formData: true,
     });
-    const { mutate: update } = useMutate({
+    const { mutate: update , isLoading:loadingUpdate } = useMutate({
         mutationKey: ['users/id'],
         endpoint: `api/dashboard/user/update/${userData?.id}`,
         onSuccess: (data: any) => {
+            queryClient.refetchQueries(['All-Users']);
             Swal.fire({ title: 'Updated!', text: 'User has been updated.', icon: 'success', customClass: 'sweet-alerts' });
-            queryClient.refetchQueries(['All-Userse']);
             // setShowCustomizer(false);
             setOpen(false);
         },
@@ -68,7 +69,7 @@ export default function UserFormikData({ userData, resetForm, setOpen }: any) {
             >
                 {({ setFieldValue }) => (
                     <Form>
-                        <UserMainData userData={userData} resetForm={resetForm} />
+                        <UserMainData userData={userData} resetForm={resetForm}  loadingUpdate={loadingUpdate} postLoading={postLoading}/>
                     </Form>
                 )}
             </Formik>

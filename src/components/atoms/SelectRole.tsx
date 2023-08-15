@@ -24,9 +24,10 @@ export default function SelectRole({ updateData, resetForm, onChange, name, labe
     console.log('🚀 ~ file: SelectRole.tsx:20 ~ CountryOptions:', CountryOptions);
 
     const dataOptions = CountryOptions?.data?.roles.map((role: any) => ({
-        label: role.role_name        ,
+        label: role.role_name,
         value: role.id,
     }));
+    console.log("🚀 ~ file: SelectRole.tsx:30 ~ dataOptions ~ dataOptions:", dataOptions)
 
     return (
         <Select
@@ -40,7 +41,10 @@ export default function SelectRole({ updateData, resetForm, onChange, name, labe
             options={dataOptions}
             onChange={onChange}
             fieldKey="id"
-            defaultValue={{ label: !resetForm ? updateData?.role_id == 1 ? "Admin" : "User" : 'Select Role', value: updateData?.role_id }}
+            defaultValue={{
+                label: !resetForm ? (updateData?.role_id == 1 ? 'Admin' : 'User') : 'Select Role',
+                value: !resetForm ? updateData?.role_id : '',
+            }}
         />
     );
 }

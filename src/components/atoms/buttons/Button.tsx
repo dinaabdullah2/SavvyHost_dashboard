@@ -7,7 +7,7 @@ const buttonVars = tv({
   base: "relative active:top-[1px] py-2 px-8 font-bold rounded-md text-white",
   variants: {
     color: {
-      primary: "bg-mainGreen",
+      primary: "bg-primary ",
       danger: "bg-mainRed",
     },
     disabled: {
