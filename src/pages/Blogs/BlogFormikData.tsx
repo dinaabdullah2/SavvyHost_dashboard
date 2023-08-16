@@ -68,8 +68,7 @@ export default function BlogFormikData({ blogData, resetForm, setOpen }: any) {
                 // validationSchema={validatopnSchema}
                 enableReinitialize={true}
                 onSubmit={(values) => {
-                    console.log('🚀 ~ file: blogFormikData.tsx:65 ~ BlogFormikData ~ values:', 
-                    { ...values, tags: values.tags.map((item) => item.value) });
+                    console.log('🚀 ~ file: blogFormikData.tsx:65 ~ BlogFormikData ~ values:', { ...values, tags: values.tags.map((item) => item.value) });
                     resetForm ? mutate({ ...values, tags: values.tags.map((item) => item.value) }) : update({ ...values, _methode: 'put' });
                 }}
             >
