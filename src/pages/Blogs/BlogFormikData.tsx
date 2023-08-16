@@ -4,12 +4,11 @@ import { useMutate } from '../../hooks/UseMutate';
 import { useQueryClient } from '@tanstack/react-query';
 import BlogMainData from './BlogMainData';
 
-
 type InitialValues_TP = {
     [x: string]: string;
 };
 export default function BlogFormikData({ blogData, resetForm, setOpen }: any) {
-    const queryClient = useQueryClient()
+    const queryClient = useQueryClient();
 
     const initialValues: InitialValues_TP = {
         title: !resetForm ? blogData?.title : '',
@@ -29,11 +28,10 @@ export default function BlogFormikData({ blogData, resetForm, setOpen }: any) {
         image: !resetForm ? blogData?.image : '',
         tags: !resetForm ? blogData?.tags : [],
         category_id: !resetForm ? blogData?.category_id : '',
-        user_id:  !resetForm ? blogData?.user_id : '',
-
+        user_id: !resetForm ? blogData?.user_id : '',
     };
     // post data
-    const { mutate , isLoading:postLoading } = useMutate({
+    const { mutate, isLoading: postLoading } = useMutate({
         mutationKey: ['blogs/id'],
         endpoint: `api/dashboard/blog/store`,
         onSuccess: (data: any) => {
@@ -48,7 +46,7 @@ export default function BlogFormikData({ blogData, resetForm, setOpen }: any) {
         },
         formData: true,
     });
-    const { mutate: update , isLoading:loadingUpdate } = useMutate({
+    const { mutate: update, isLoading: loadingUpdate } = useMutate({
         mutationKey: ['blogs/id'],
         endpoint: `api/dashboard/blog/${blogData?.id}`,
         onSuccess: (data: any) => {
@@ -70,13 +68,14 @@ export default function BlogFormikData({ blogData, resetForm, setOpen }: any) {
                 // validationSchema={validatopnSchema}
                 enableReinitialize={true}
                 onSubmit={(values) => {
-                    console.log("🚀 ~ file: blogFormikData.tsx:65 ~ BlogFormikData ~ values:", values)
-                    resetForm ? mutate({ ...values }) : update({ ...values, _methode: 'put' });
+                    console.log('🚀 ~ file: blogFormikData.tsx:65 ~ BlogFormikData ~ values:', 
+                    { ...values, tags: values.tags.map((item) => item.value) });
+                    resetForm ? mutate({ ...values, tags: values.tags.map((item) => item.value) }) : update({ ...values, _methode: 'put' });
                 }}
             >
                 {({ setFieldValue }) => (
                     <Form>
-                        <BlogMainData blogData={blogData} resetForm={resetForm}  loadingUpdate={loadingUpdate} postLoading={postLoading}/>
+                        <BlogMainData blogData={blogData} resetForm={resetForm} loadingUpdate={loadingUpdate} postLoading={postLoading} />
                     </Form>
                 )}
             </Formik>
