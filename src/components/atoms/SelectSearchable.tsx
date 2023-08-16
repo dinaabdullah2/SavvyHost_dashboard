@@ -1,18 +1,17 @@
 import { useFormikContext } from 'formik';
-import Select from 'react-select';
+import { Select } from '../molecules';
 type SelectSearch_TP = {
+    setStatus?: any;
+    updateData?: any;
+    resetForm?: any;
+    onChange?: (option: any) => void;
+    name?: string | undefined;
     label?: string;
+    fieldKey?: any;
     placeholder?: string;
-    description?: string;
-    error?: string;
-    className?: string;
-    type?: string;
-    handleChange?: any;
-    value?: any;
-    name?: any;
     setSeoSection?: any;
 };
-const SelectSearch = ({ label, setSeoSection, placeholder, description, error, className, value, name, type,  handleChange, ...props }: SelectSearch_TP) => {
+const SelectSearch = ({ updateData, resetForm, onChange, name, label }: SelectSearch_TP) => {
     const { values, setFieldValue } = useFormikContext<any>(); /////////// STATES
 
     const options = [
@@ -24,16 +23,20 @@ const SelectSearch = ({ label, setSeoSection, placeholder, description, error, c
 
     return (
         <Select
-            id={name}
-            {...props}
+            placeholder={'updateData?.country?.name'}
+            label={label}
+            id="optionStatus"
             name={name}
-            defaultValue={options[0]}
+            loadingPlaceholder={'loading'}
             options={options}
-            onChange={(event) => {
-                setSeoSection(event?.value)
-                setFieldValue(name, event?.value);
+            onChange={onChange}
+            fieldKey="id"
+            defaultValue={{
+                label: !resetForm ?
+                   updateData?.searchable == 1 ?"Yes":'No'
+                   : 'Yes',
+                value: !resetForm ? (updateData?.searchable == 1 ? 1 : 0) : ''
             }}
-            required
         />
     );
 };

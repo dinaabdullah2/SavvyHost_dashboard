@@ -1,77 +1,47 @@
-import { useFormikContext } from 'formik';
-import { type } from 'os';
-import React from 'react';
-import Select from 'react-select';
+import { t } from 'i18next';
 import useFetch from '../../hooks/UseFetch';
-type SelectAuthor_TP = {
-    placeholder?: string;
-    onChange?: (option: any) => void;
-    label?: any;
-    multi?: boolean;
-    name?: any;
-    fieldKey?: 'id' | 'value' | undefined;
-};
+import { Select } from '../molecules';
 
-type options_TP = {
-    // [x: string]: any
-    data?: any;
-    id?: number;
-    value?: any;
+type SelectAuthor_tp = {
+    setStatus?: any;
+    updateData?: any;
+    resetForm?: any;
+    onChange?: (option: any) => void;
+    name?: string | undefined;
     label?: string;
+    fieldKey?: any;
+    placeholder?: string;
 };
-const SelectAuthor = ({ placeholder, multi, name, fieldKey, onChange, label }: SelectAuthor_TP) => {
+export default function SelectAuthor(
+    { updateData, resetForm, onChange, name, label }
+    : SelectAuthor_tp) {
     const {
-        data: StatusOptions,
+        data: AuthorsOptions,
         isLoading: StatusLoading,
         failureReason,
-    } = useFetch<options_TP>({
+    } = useFetch<any>({
         endpoint: 'api/dashboard/blog/create',
-        queryKey: ['Author-select'],
-        onSuccess(data) {},
+        queryKey: ['Authors-select-option'],
     });
-    const { values, setFieldValue } = useFormikContext();
 
-    const mapStatusOptions = (options: options_TP) => {
-        return (
-            options?.data?.admins?.map((state: options_TP) => ({
-                id: state?.id,
-                value: state?.id,
-                          //@ts-ignore
+    const dataOptions = AuthorsOptions?.data?.admins.map((admin: any) => ({
+        label: admin.name,
+        value: admin.id,
+    }));
 
-                label: state?.name,
-            })) || []
-        );
-    };
-    //@ts-ignore
 
-    const dataOptions = [
-        //@ts-ignore
-
-        ...mapStatusOptions(StatusOptions),
-        {
-            id: 0,
-            value: 0,
-        },
-    ];
     return (
         <Select
-            id={name}
-            required
-            placeholder={placeholder}
+            placeholder={"Author"}
+            id="optionStatus"
             name={name}
             isDisabled={!StatusLoading && !!failureReason}
-            //@ts-ignore
-
-            loadingPlaceholder="loading"
+            loadingPlaceholder={`${t('loading')}`}
             loading={StatusLoading}
-            fieldKey={fieldKey}
-            isMulti={multi}
             options={dataOptions}
-            onChange={(event) => {
-                setFieldValue(name, event?.value);
-            }}
-            // {...{ ...(value && { value }) }}
+            onChange={onChange}
+            fieldKey="id"
+            defaultValue={{ label: !resetForm ? updateData?.country?.name : 'Select Author', value: updateData?.country?.id }}
         />
     );
-};
-export default SelectAuthor;
+}

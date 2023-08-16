@@ -32,7 +32,6 @@ export default function SelectRole({ updateData, resetForm, onChange, name, labe
     return (
         <Select
             placeholder={'Role'}
-            label={t(`${label}`).toString()}
             id="optionStatus"
             name={name}
             isDisabled={!StatusLoading && !!failureReason}

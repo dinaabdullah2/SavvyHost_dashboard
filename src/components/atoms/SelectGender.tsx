@@ -31,17 +31,16 @@ export default function SelectGender({ updateData, resetForm, onChange, name, la
         <div>
             <Select
                 placeholder={'updateData?.country?.name'}
-                label={t(`${label}`).toString()}
-                id="optionStatus"
+                id="option"
                 name={name}
                 loadingPlaceholder={`${t('loading')}`}
                 options={dataOptions}
                 onChange={onChange}
                 fieldKey="id"
-                defaultValue={{ 
-                    label: !resetForm ? updateData?.gender : 'Select Gender', 
-                value: !resetForm ? (updateData?.gender === 'Male' ? 1 : 0) : '' }}
-            />
+                defaultValue={{
+                    label: !resetForm ? updateData?.gender : 'Select Gender',
+                    value: !resetForm ? (updateData?.gender === 'Male' ? 1 : 0) : '' }}
+             />
         </div>
     );
 }

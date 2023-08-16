@@ -17,6 +17,8 @@ import { setPageTitle } from '../../store/themeConfigSlice';
 import AddUser from './AddUser';
 import { Loader } from '@mantine/core';
 import Loading from '../../components/atoms/loading';
+import { SvgDelete } from '../../components/atoms/icons/SvgDelete';
+import { Checkbox } from '../../components/molecules';
 
 const options = [
     { value: 'Filter Role', label: 'All' },
@@ -47,44 +49,59 @@ const UsersList = () => {
 
     const cols = useMemo<ColumnDef<AllUsers>[]>(
         () => [
+          
             {
                 header: 'ID',
-                cell: (info) => info.renderValue(),
+                cell: (info:any) => info.renderValue(),
                 accessorKey: 'id',
             },
             {
-                header: 'name',
-                cell: (info) => info.renderValue(),
+                header: 'User',
+                cell: (info:any) => (
+                    <div className=' inline-flex  items-center'>
+                         <div>
+                            <img className='rounded-full w-[30px] h-[30px] ' src={info?.row?.original?.avatar} alt='avatar' />
+                         </div>
+                         <div className='ml-2  truncate w-[150px]'>
+                           {info?.row?.original?.name }
+                        </div>
+                    </div>
+                ),
                 accessorKey: 'name',
             },
             {
-                header: 'type',
-                cell: (info) => info.renderValue(),
+                header: 'Type',
+                cell: (info:any) => info.renderValue(),
                 accessorKey: 'type',
             },
             {
-                header: 'status',
-                cell: (info) => info.renderValue(),
-                accessorKey: 'status',
+                header: 'Role',
+                cell: (info:any) => (
+                    <div >
+                      {info?.row?.original?.role_id == 2 ? 'User' : 'Admin'}
+                    </div>
+                ),
+                accessorKey: 'role_id',
             },
+
             {
-                header: 'phone',
-                cell: (info) => info.renderValue(),
+                header: 'Phone',
+                cell: (info:any) => info.renderValue(),
                 accessorKey: 'phone',
             },
             {
-                header: 'email',
-                cell: (info) => info.renderValue(),
+                header: 'Mail',
+                cell: (info:any) => info.renderValue(),
                 accessorKey: 'email',
             },
             {
                 header: `${t('action')}`,
-                cell: (info) => (
-                    <div className="flex justify-center gap-2">
+                cell: (info:any) => (
+                    <div className="flex gap-2">
                         <div>
-                            <GiCancel
-                                className="!w-[20px] !h-[20px] m-auto cursor-pointer text-red-700"
-                                onClick={() => {
+                            <SvgDelete
+
+                                action={() => {
                                     setUserId(info.row.original.id);
                                     showAlert(10, info.row.original.id);
                                 }}
@@ -212,7 +229,7 @@ const UsersList = () => {
         endpoint: `api/dashboard/user/delete/${idUser}`,
         onSuccess: (data: any) => {
             console.log('done');
-            Swal.fire({ title: 'Deleted!', text: 'Your file has been deleted.', icon: 'success', customClass: 'sweet-alerts' });
+            Swal.fire({ title: 'Deleted!', text: 'User has been deleted.', icon: 'success', customClass: 'sweet-alerts' });
             queryClient.refetchQueries(['dashboard/user/index']);
             refetch();
         },

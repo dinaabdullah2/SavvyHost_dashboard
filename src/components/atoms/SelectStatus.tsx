@@ -13,7 +13,7 @@ type SelectCountries_tp = {
 };
 export default function SelectStatus({ updateData, resetForm, onChange, name, label }: SelectCountries_tp) {
     console.log("🚀 ~ file: SelectStatus.tsx:16 ~ SelectGender ~ updateData:", updateData)
-  
+
     const dataOptions = [
       {
           id: 1,
@@ -25,14 +25,13 @@ export default function SelectStatus({ updateData, resetForm, onChange, name, la
         value: 'suspend',
         label: "suspend",
       }
-  
+
     ];
 
     return (
         <div>
             <Select
                 placeholder={'Type'}
-                label={t(`${label}`).toString()}
                 id="optionStatus"
                 name={name}
                 loadingPlaceholder={`${t('loading')}`}

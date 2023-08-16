@@ -28,6 +28,7 @@ export const TextAreaField = ({
       <TextAreaInput
         placeholder={placeholder}
         id={id}
+        name={name}
         value={props.value || values[name]}
         className={`${
           touched[name as string] &&

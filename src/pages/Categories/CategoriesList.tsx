@@ -1,21 +1,24 @@
-import { DataTable, DataTableSortStatus } from 'mantine-datatable';
-import { useEffect, useId, useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
+import { ColumnDef } from '@tanstack/react-table';
+import { t } from 'i18next';
 import sortBy from 'lodash/sortBy';
+import { DataTableSortStatus } from 'mantine-datatable';
+import { useEffect, useMemo, useState } from 'react';
+import { GiCancel } from 'react-icons/gi';
 import { useDispatch, useSelector } from 'react-redux';
-import { IRootState } from '../../store';
-import { setPageTitle } from '../../store/themeConfigSlice';
-import React from 'react';
-import Tippy from '@tippyjs/react';
 import Select from 'react-select';
 import Swal from 'sweetalert2';
-import AddCategory from './AddCategory';
+import { EditIcon } from '../../components/atoms/icons';
+import { Table } from '../../components/template/tantable/Table';
 import useFetch from '../../hooks/UseFetch';
-import axios from 'axios';
-import { notifyManager, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useMutate } from '../../hooks/UseMutate';
-// import SweetAlert from '../Components/SweetAlert';
-import { Form, Formik } from 'formik';
-import { BaseInputField } from '../../components/atoms/BaseInputField';
+import { IRootState } from '../../store';
+import { setPageTitle } from '../../store/themeConfigSlice';
+import { Loader } from '@mantine/core';
+import Loading from '../../components/atoms/loading';
+import { SvgDelete } from '../../components/atoms/icons/SvgDelete';
+import AddCategory from './AddCategory';
+
 
 const options = [
     { value: 'Filter Role', label: 'All' },
@@ -23,22 +26,83 @@ const options = [
     { value: '2', label: 'user' },
 ];
 
+type AllCategories = {
+    [x: string]: string;
+};
 const CategoriesList = () => {
     const dispatch = useDispatch();
     useEffect(() => {
-        dispatch(setPageTitle('Users Table'));
+        dispatch(setPageTitle('Categories Table'));
     });
-
     const isRtl = useSelector((state: IRootState) => state.themeConfig.rtlClass) === 'rtl' ? true : false;
-
     interface Category {
         id: number;
         image: string;
         name: string;
         slug: string;
 
-        // Add more properties if needed...
     }
+    const [idCategory, setCategoryId] = useState<any>();
+
+    const cols = useMemo<ColumnDef<AllCategories>[]>(
+        () => [
+            {
+                header: 'ID',
+                cell: (info:any) => info.renderValue(),
+                accessorKey: 'id',
+            },
+            {
+                header: 'Category',
+                cell: (info:any) => (
+                    <div className=' inline-flex  items-center'>
+                         <div>
+                            <img className='rounded-full w-[30px] h-[30px] ' src={info?.row?.original?.image}  />
+                         </div>
+                         <div className='ml-2  truncate '>
+                           {info?.row?.original?.name }
+                        </div>
+                    </div>
+                ),
+                accessorKey: 'name',
+            },
+
+
+             {
+                header: 'Slug',
+                cell: (info:any) => info.renderValue(),
+                accessorKey: 'slug',
+            },
+
+            {
+                header: `Action`,
+                cell: (info:any) => (
+                    <div className="flex gap-2">
+                        <div>
+                            <SvgDelete
+
+                                action={() => {
+                                    setCategoryId(info.row.original.id);
+                                    showAlert(10, info.row.original.id);
+                                }}
+                            />
+                        </div>
+                        <div>
+                            <EditIcon
+                                action={() => {
+                                    setOpen(true);
+                                    //@ts-ignore
+                                    setEditData(info.row.original);
+                                    setResetForm(false);
+                                }}
+                            />
+                        </div>
+                    </div>
+                ),
+                accessorKey: 'join',
+            },
+        ],
+        []
+    );
 
     const {
         data: Categories,
@@ -46,41 +110,30 @@ const CategoriesList = () => {
         isRefetching,
         isFetching,
         refetch,
-    } = useFetch<{
-        data: {
-            categories: Category[];
-        };
-    }>({
+    } = useFetch<AllCategories[]>({
         endpoint: `api/dashboard/category/index`,
-        queryKey: [`Categories`],
+        queryKey: [`All-Categories`],
     });
-    console.log('🚀 ~ file: UsersList.tsx:49 ~ isFetching:', isFetching);
-    console.log('🚀 ~ file: UsersList.tsx:49 ~ isRefetching:', isRefetching);
-    console.log('🚀 ~ file: UsersList.tsx:49 ~ isLoading:', isLoading);
-    console.log(Categories?.data?.categories);
 
     const [page, setPage] = useState(1);
     const PAGE_SIZES = [10, 20, 30, 50, 100];
     const [pageSize, setPageSize] = useState(PAGE_SIZES[0]);
+    //@ts-ignore
     const [initialRecords, setInitialRecords] = useState<any>(sortBy(Categories?.data?.categories, 'id'));
     const [recordsData, setRecordsData] = useState(initialRecords);
     const [showCustomizer, setShowCustomizer] = useState(false);
-    const [showEditForm, setShowEditForm] = useState(false);
-    const [selectedRecords, setSelectedRecords] = useState<any>([]);
     const [search, setSearch] = useState('');
     const [sortStatus, setSortStatus] = useState<DataTableSortStatus>({ columnAccessor: 'id', direction: 'asc' });
     const [selectValue, setSelectValue] = useState<any>('');
-    const [categoryData, setCategoryData] = useState<any>();
-
+    const [editData, setEditData] = useState(false);
+    const [resetForm, setResetForm] = useState(true);
+    const [open, setOpen] = useState(false);
     useEffect(() => {
-        setInitialRecords(sortBy(Categories?.data?.categories, 'id'));
-    }, [Categories?.data?.categories]);
+        //@ts-ignore
 
-    function OpenEditForm(id: any) {
-        setShowEditForm(!showEditForm);
-        setCategoryData(id);
-        console.log(categoryData, 'idd');
-    }
+        setInitialRecords(sortBy(Categories?.data?.categories, 'id'));
+        //@ts-ignore
+    }, [Categories?.data?.categories]);
 
     useEffect(() => {
         setPage(1);
@@ -92,30 +145,53 @@ const CategoriesList = () => {
         setRecordsData([...initialRecords.slice(from, to)]);
     }, [page, pageSize, initialRecords]);
 
+    interface Role {
+        id: number;
+        role_name: string;
+        // Add more properties if needed...
+    }
+    const { data: Roles } = useFetch<{
+        data: {
+            roles: Role[];
+        };
+    }>({
+        endpoint: `api/dashboard/user/create`,
+        queryKey: [`All-Roles`],
+    });
+    const options = Roles?.data?.roles?.map((item: any) => ({
+        value: item?.id,
+        label: item?.role_name,
+    }));
+
     // filter
     // useEffect(() => {
     //     if (selectValue !== 'Filter Role') {
     //         setInitialRecords(() => {
-    //             return Categories?.data?.categories.filter((item:any) => {
-    //                 return item.role_id.toString().includes(selectValue.toLowerCase());
+    //             //@ts-ignore
+
+    //             return Users?.data?.all_users.filter((item: any) => {
+    //                 return item.role_id == selectValue;
     //             });
     //         });
     //     } else {
-    //         setInitialRecords(Categories?.data?.categories);
+    //         //@ts-ignore
+
+    //         setInitialRecords(Users?.data?.all_users);
     //     }
     //     // eslint-disable-next-line react-hooks/exhaustive-deps
     // }, [selectValue]);
 
     //search
-    useEffect(() => {
-        setInitialRecords(() => {
-            return Categories?.data?.categories.filter((item:any) => {
-                return item.name.toLowerCase().includes(search.toLowerCase()) ||
-                item.slug.toLowerCase().includes(search.toLowerCase());
-            });
-        });
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [search]);
+    // useEffect(() => {
+    //     setInitialRecords(() => {
+    //         //@ts-ignore
+
+    //         return Users?.data?.all_users.filter((item: any) => {
+    //             return item.name.toLowerCase().includes(search.toLowerCase()) || item.email.toLowerCase().includes(search.toLowerCase());
+    //         });
+    //     });
+    //     // eslint-disable-next-line react-hooks/exhaustive-deps
+    // }, [search]);
 
     useEffect(() => {
         const data = sortBy(initialRecords, sortStatus.columnAccessor);
@@ -123,29 +199,26 @@ const CategoriesList = () => {
         setPage(1);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [sortStatus]);
+    const queryClient = useQueryClient();
 
-   const queryClient = useQueryClient();
-
-
-    const [idCategory, setCategoryId] = useState<any>();
     const { mutate: deleteCategory } = useMutate({
-        mutationKey: [`category/id/{id}`],
-        endpoint: `api/dashboard/category/delete/${idCategory?.id}`,
+        mutationKey: [`categories/id/${idCategory}`],
+        endpoint: `api/dashboard/category/delete/${idCategory}`,
         onSuccess: (data: any) => {
             console.log('done');
             Swal.fire({ title: 'Deleted!', text: 'Category has been deleted.', icon: 'success', customClass: 'sweet-alerts' });
-            queryClient.refetchQueries(['api/user/index']);
+            queryClient.refetchQueries(['api/dashboard/category/index']);
             refetch();
         },
         onError: (err: any) => {
             console.log('error', err);
-            Swal.fire({ title: 'Sorry!', text: 'Category can not be Deleted .', icon: "error", customClass: 'sweet-alerts' });
+            Swal.fire({ title: 'Sorry!', text: 'Category can not be Deleted .', icon: 'error', customClass: 'sweet-alerts' });
         },
         method: 'delete',
         formData: false,
     });
 
-    const showAlert = async (type: number,id :any) => {
+    const showAlert = async (type: number, id: any) => {
         if (type === 10) {
             Swal.fire({
                 icon: 'warning',
@@ -155,28 +228,26 @@ const CategoriesList = () => {
                 confirmButtonText: 'Delete',
                 padding: '2em',
                 customClass: 'sweet-alerts',
-
             }).then((result) => {
                 if (result.value) {
-                    console.log(id,'id')
-                    deleteCategory(id)
-
-
+                    deleteCategory(id?.id);
                 }
             });
         }
-    }
+    };
+
     return (
         <div className="panel">
             <div className="flex md:items-center md:flex-row flex-col mb-5 gap-5">
-                <h5 className="font-semibold text-lg dark:text-white-light">All Categories</h5>
+                <h5 className="font-semibold text-lg dark:text-white-light">All Pages</h5>
                 <div className="lg:ltr:ml-auto lg:rtl:mr-auto min-md:ltr:mr-auto  min-md:rtl:ml-auto">
                     <input type="text" className="form-input w-[100%]" placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} />
                 </div>
+
                 <div>
                     <Select
                         className="lg:w-[200px] min-md:w-[200px]"
-                        defaultValue={options[0]}
+                        placeholder="Filter Role "
                         options={options}
                         onChange={(event) => {
                             setSelectValue(event?.value);
@@ -185,105 +256,38 @@ const CategoriesList = () => {
                     />
                 </div>
                 <div>
-                    <button type="button" className="bg-primary font-semibold hover:bg-blue-500 max-sm:w-[100%] max-md:w-[100%] text-white py-2 px-5 rounded-lg cursor-pointer" onClick={() => setShowCustomizer(!showCustomizer)}>
+                    <button
+                        type="button"
+                        className="bg-primary font-semibold hover:bg-blue-500 max-sm:w-[100%] max-md:w-[100%] text-white py-2 px-5 rounded-lg cursor-pointer"
+                        onClick={() => {
+                            setOpen(true), setResetForm(true);
+                        }}
+                    >
                         Add Category
                     </button>
 
-                    <AddCategory refetch={refetch} categoryData={categoryData} showCustomizer={showCustomizer} setShowCustomizer={setShowCustomizer} />
-                    {/* <EditUser showEditForm={showEditForm} userData={userData} setShowEditForm={setShowEditForm} /> */}
+                    <AddCategory
+                        resetForm={resetForm}
+                        setOpen={setOpen}
+                        open={open}
+                        setResetForm={setResetForm}
+                        categoryData={editData}
+                        showCustomizer={showCustomizer}
+                        setShowCustomizer={setShowCustomizer}
+                    />
                 </div>
             </div>
             <div className="datatables">
-                <DataTable
-                    highlightOnHover
-                    className={`${isRtl ? 'whitespace-nowrap table-hover' : 'whitespace-nowrap table-hover'}`}
-                    records={recordsData}
-                    columns={[
-                        { accessor: 'id', title: 'ID', sortable: true ,width:'80px'},
-                        {
-                            accessor: 'name',
-                            title: 'Category',
-                            sortable: true,
-                            render: ({ name, image }:any) => (
-                                <div className="flex items-center w-max">
-                                    <img className="w-9 h-9 rounded-full ltr:mr-2 rtl:ml-2 object-cover" src={image} alt="" />
-                                    <div>{name}</div>
-                                </div>
-                            ),
-                        },
-                        { accessor: 'slug', title: 'Slug', sortable: true },
-                        {
-                            accessor: 'action',
-                            title: 'Action',
-                            titleClassName: '!text-center',
-                            render: (id) => (
-                                <div className="flex items-center w-max mx-auto gap-2">
-                                    <Tippy>
-                                        <button type="button" className="" onClick={() => {
-                                            setShowCustomizer(!showCustomizer)
-                                            setCategoryData(id)
-                                        }}>
-                                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-blue-700">
-                                                <path
-                                                    d="M15.2869 3.15178L14.3601 4.07866L5.83882 12.5999L5.83881 12.5999C5.26166 13.1771 4.97308 13.4656 4.7249 13.7838C4.43213 14.1592 4.18114 14.5653 3.97634 14.995C3.80273 15.3593 3.67368 15.7465 3.41556 16.5208L2.32181 19.8021L2.05445 20.6042C1.92743 20.9852 2.0266 21.4053 2.31063 21.6894C2.59466 21.9734 3.01478 22.0726 3.39584 21.9456L4.19792 21.6782L7.47918 20.5844L7.47919 20.5844C8.25353 20.3263 8.6407 20.1973 9.00498 20.0237C9.43469 19.8189 9.84082 19.5679 10.2162 19.2751C10.5344 19.0269 10.8229 18.7383 11.4001 18.1612L11.4001 18.1612L19.9213 9.63993L20.8482 8.71306C22.3839 7.17735 22.3839 4.68748 20.8482 3.15178C19.3125 1.61607 16.8226 1.61607 15.2869 3.15178Z"
-                                                    stroke="currentColor"
-                                                    strokeWidth="1.5"
-                                                />
-                                                <path
-                                                    opacity="0.5"
-                                                    d="M14.36 4.07812C14.36 4.07812 14.4759 6.04774 16.2138 7.78564C17.9517 9.52354 19.9213 9.6394 19.9213 9.6394M4.19789 21.6777L2.32178 19.8015"
-                                                    stroke="currentColor"
-                                                    strokeWidth="1.5"
-                                                />
-                                            </svg>
-                                        </button>
-                                    </Tippy>
-                                    <Tippy>
-                                        <button
-                                            type="button"
-                                            className=""
-                                            onClick={() => {
-                                                showAlert(10, id);
-                                                setCategoryId(id);
-                                            }}
-                                        >
-                                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-red-600">
-                                                <path
-                                                    opacity="0.5"
-                                                    d="M9.17065 4C9.58249 2.83481 10.6937 2 11.9999 2C13.3062 2 14.4174 2.83481 14.8292 4"
-                                                    stroke="currentColor"
-                                                    strokeWidth="1.5"
-                                                    strokeLinecap="round"
-                                                />
-                                                <path d="M20.5001 6H3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-                                                <path
-                                                    d="M18.8334 8.5L18.3735 15.3991C18.1965 18.054 18.108 19.3815 17.243 20.1907C16.378 21 15.0476 21 12.3868 21H11.6134C8.9526 21 7.6222 21 6.75719 20.1907C5.89218 19.3815 5.80368 18.054 5.62669 15.3991L5.16675 8.5"
-                                                    stroke="currentColor"
-                                                    strokeWidth="1.5"
-                                                    strokeLinecap="round"
-                                                />
-                                                <path opacity="0.5" d="M9.5 11L10 16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-                                                <path opacity="0.5" d="M14.5 11L14 16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-                                            </svg>
-                                        </button>
-                                    </Tippy>
-                                </div>
-                            ),
-                        },
-                    ]}
-                    totalRecords={initialRecords.length}
-                    recordsPerPage={pageSize}
-                    page={page}
-                    onPageChange={(p) => setPage(p)}
-                    recordsPerPageOptions={PAGE_SIZES}
-                    onRecordsPerPageChange={setPageSize}
-                    sortStatus={sortStatus}
-                    onSortStatusChange={setSortStatus}
-                    selectedRecords={selectedRecords}
-                    onSelectedRecordsChange={setSelectedRecords}
-                    minHeight={200}
-                    paginationText={({ from, to, totalRecords }) => `Showing  ${from} to ${to} of ${totalRecords} entries`}
-                />
+                {isLoading || isRefetching ? (
+                    <Loading />
+                ) : (
+                    <Table
+                        columns={cols ? cols : []}
+                        //@ts-ignore
+                        data={Categories?.data?.categories? Categories?.data?.categories : []}
+                        showNavigation
+                    />
+                )}
             </div>
         </div>
     );

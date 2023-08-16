@@ -33,7 +33,6 @@ export default function SelectCountries(
     return (
         <Select
             placeholder={"country"}
-            label={t(`${label}`).toString()}
             id="optionStatus"
             name={CountryName}
             isDisabled={!StatusLoading && !!failureReason}

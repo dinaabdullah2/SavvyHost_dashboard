@@ -24,14 +24,13 @@ export default function SelectType({ updateData, resetForm, onChange, name, labe
         value: 'company',
         label: 'Company',
       }
-  
+
     ];
 
     return (
         <div>
             <Select
                 placeholder={'Type'}
-                label={t(`${label}`).toString()}
                 id="optionStatus"
                 name={name}
                 loadingPlaceholder={`${t('loading')}`}

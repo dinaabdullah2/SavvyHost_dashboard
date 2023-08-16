@@ -1,4 +1,5 @@
 import {  AiFillEdit } from "react-icons/ai"
+import EditIconC from "./EditIcon"
 type EditProps_TP = {
   className?: string
   action?: () => void
@@ -12,8 +13,7 @@ export const Edit = ({
 }: EditProps_TP) => {
 
   return (
-    <AiFillEdit
-      size={size}
+    <EditIconC
       className={`cursor-pointer  ${className}`}
       onClick={action}
       {...props}

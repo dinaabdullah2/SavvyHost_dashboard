@@ -54,20 +54,20 @@ const selectTheme = (theme: Theme) => ({
   colors: {
     ...theme.colors,
     neutral80: '#295E56',
-    primary25: '#e9eeed',
-    primary: '#295E56',
+    primary25: '#dde3ff',
+    primary: '#2445ff',
   },
 });
 
 const selectClassNames = (touched: boolean, error: boolean) => ({
   control: ({ menuIsOpen }: { menuIsOpen: boolean }) =>
-    `!rounded-md !shadow-none !shadow-md !border-2 ${
-      touched && error ? ' !border-mainRed' : ''
-    } 
-                  ${menuIsOpen && '!border-mainGreen'}
+    `!rounded-md !shadow-none !shadow-md !border-1 ${
+      touched && error ? ' !border-blue-500' : ''
+    }
+                  ${menuIsOpen && ' !border-blue-500'}
 
                   `,
-  dropdownIndicator: () => `!text-mainGreen`,
+  dropdownIndicator: () => `border-blue-500`,
   valueContainer: () => `!overflow-x-auto !overflow-y-hidden scrollbar`,
 });
 

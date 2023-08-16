@@ -1,82 +1,48 @@
-import { useFormikContext } from 'formik';
-import Select from 'react-select';
+import { t } from 'i18next';
 import useFetch from '../../hooks/UseFetch';
+import { Select } from '../molecules';
 
-type  SelectCategory_TP = {
-    placeholder?: string
-    onChange?: (option: any) => void
-    label?: any
-    multi?: boolean
-    name?: any
-    fieldKey?: "id" | "value" | undefined
-
+type SelectCategory_tp = {
+    setStatus?: any;
+    updateData?: any;
+    resetForm?: any;
+    onChange?: (option: any) => void;
+    name?: string | undefined;
+    label?: string;
+    fieldKey?: any;
+    placeholder?: string;
 };
-
-type options_TP = {
-    // [x: string]: any
-    data?: any
-    id?: number
-    value?: any
-    label?: string
-  }
-
-const SelectCategory =({
-    placeholder,
-    multi,
-    name,
-    fieldKey,
-    onChange,
-    label,
-  }: SelectCategory_TP) => {
+export default function SelectCategory(
+    { updateData, resetForm, onChange, name, label }
+    : SelectCategory_tp) {
     const {
-        data: StatusOptions,
+        data: CategorOptions,
         isLoading: StatusLoading,
         failureReason,
-      } = useFetch<options_TP>({
-        endpoint: "api/dashboard/blog/create",
-        queryKey: ["Categories-select"],
-        onSuccess(data) {},
-      })
-      const { values,setFieldValue } = useFormikContext()
+    } = useFetch<any>({
+        endpoint: 'api/dashboard/blog/create',
+        queryKey: ['catgories-select-option'],
+    });
 
-      const mapStatusOptions = (options: options_TP) => {
-        return (
-          options?.data?.categories?.map((state: options_TP) => ({
-            id: state?.id,
-            value: state?.id,
-                      //@ts-ignore
+    const dataOptions = CategorOptions?.data?.categories.map((category: any) => ({
+        label: category.name,
+        value: category.id,
+    }));
 
-            label: state?.name,
-          })) || []
-        )
-      }
 
-      const dataOptions = [
-                  //@ts-ignore
-
-        ...mapStatusOptions(StatusOptions),
-        {
-          id: 0,
-          value: 0,
-        },
-      ]
     return (
         <Select
-            id={name}
-            required
-            placeholder={placeholder}
+            placeholder={"Author"}
+            id="optionStatus"
             name={name}
             isDisabled={!StatusLoading && !!failureReason}
-            // loadingPlaceholder="loading"
-            // loading={StatusLoading}
-            // fieldKey={fieldKey}
-            isMulti={multi}
+            loadingPlaceholder={`${t('loading')}`}
+            loading={StatusLoading}
             options={dataOptions}
-            onChange={(event) => {
-            setFieldValue(name, event?.value);
-            }}
-        // {...{ ...(value && { value }) }}
-      />
+            onChange={onChange}
+            fieldKey="id"
+            defaultValue={{ label: !resetForm ? updateData?.category?.name : 'Select Category', value: updateData?.category?.id }}
+        />
     );
-};
-export default SelectCategory;
+}
+

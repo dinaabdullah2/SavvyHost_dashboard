@@ -36,10 +36,10 @@ export default function UserMainData({ userData, resetForm , loadingUpdate , pos
                 <PhoneInput2 updateData={userData} name="phone" resetForm="resetForm" />
             </div>
             <div className="lg:col-span-6 max-sm:col-span-1 ">
+                <label htmlFor="country"> Country</label>
                 <SelectCountries
                     updateData={userData}
                     CountryName="country_id"
-                    label="country"
                     resetForm={resetForm}
                     onChange={(option) => {
                         setFieldValue('country_id', option?.value);
@@ -47,10 +47,10 @@ export default function UserMainData({ userData, resetForm , loadingUpdate , pos
                 />
             </div>
             <div className="lg:col-span-6 max-sm:col-span-1 ">
+                <label htmlFor="gender">Gender</label>
                 <SelectGender
                     updateData={userData}
                     name="gender"
-                    label="Gender"
                     resetForm={resetForm}
                     onChange={(option) => {
                         console.log("🚀 ~ file: UserMainData.tsx:55 ~ UserMainData ~ option:", option)
@@ -59,9 +59,9 @@ export default function UserMainData({ userData, resetForm , loadingUpdate , pos
                 />
             </div>
             <div className="lg:col-span-6 max-sm:col-span-1 ">
+               <label htmlFor="role">Role</label>
                 <SelectRole
                     name="role_id"
-                    label="Role"
                     updateData={userData}
                     resetForm={resetForm}
                     onChange={(option) => {
@@ -71,10 +71,10 @@ export default function UserMainData({ userData, resetForm , loadingUpdate , pos
                 />
             </div>
             <div className="lg:col-span-6 max-sm:col-span-1 ">
+                <label htmlFor="type">Type</label>
                 <SelectType
                     name="type"
                     updateData={userData}
-                    label="type"
                     resetForm={resetForm}
                     onChange={(option) => {
                         setFieldValue('type', option?.value);
@@ -82,10 +82,10 @@ export default function UserMainData({ userData, resetForm , loadingUpdate , pos
                 />
             </div>
             <div className="lg:col-span-6 max-sm:col-span-1 ">
+               <label htmlFor="status">Status</label>
                 <SelectStatus
                     name="status"
                     updateData={userData}
-                    label="status"
                     resetForm={resetForm}
                     onChange={(option) => {
                         setFieldValue('status', option?.value);

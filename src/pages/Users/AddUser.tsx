@@ -26,7 +26,7 @@ const AddUser = ({  userData, setResetForm, resetForm, setOpen, open }: UserCust
 
     return (
         <>
-            <Drawer opened={open} onClose={() => setOpen(false)} title={resetForm ? 'Add User' : 'Edit User'} position={right} size="35%" className="overflow-y-scroll p-5">
+            <Drawer opened={open} onClose={() => setOpen(false)} title={resetForm ? 'Add User' : 'Edit User'} position={right} size="40%" className="overflow-y-scroll p-5">
                 <UserFormikData userData={userData} resetForm={resetForm}  setOpen={setOpen}/>
             </Drawer>
         </>
