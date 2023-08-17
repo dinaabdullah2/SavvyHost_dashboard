@@ -190,9 +190,6 @@ export default function BlogMainData({ blogData, resetForm, loadingUpdate, postL
                                 options={[{label:"sdrh" , value:"sfgsrg"}]}
                                 //    resetForm={resetForm}
                                 isMulti
-                                
-                                
-
                                 onChange={(option) => {
                                     console.log("🚀 ~ file: BlogMainData.tsx:197 ~ BlogMainData ~ option:", option)
                                     setFieldValue('tags', option);

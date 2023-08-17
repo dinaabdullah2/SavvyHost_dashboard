@@ -4,7 +4,7 @@ import EventsList from '../pages/Events/EventsList';
 import { Navigate } from 'react-router-dom';
 import CategoriesList from '../pages/Categories/CategoriesList';
 import Login from '../pages/Authentication/Login';
-import PageBuilder from '../pages/Pages/PageBuilder';
+import PageBuilder from '../pages/PageBuilder/PageBuilder';
 const Index = lazy(() => import('../pages/Index'));
 
 const UsersList = lazy(() => import('../pages/Users/UsersList'));
