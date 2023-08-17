@@ -163,7 +163,7 @@ export default function EventMainData({ eventData, resetForm , loadingUpdate , p
                                 <h5 className="mb-5 w-[100%] text-base font-semibold dark:text-white p-2  border-b border-dashed border-white-light"> Image</h5>
                                 <div className="grid lg:grid-cols-12 max-sm:grid-cols-1 gap-5 px-3 ">
                                     <div className="lg:col-span-12 max-sm:col-span-1 ">
-                                        <UploadImage updateData={eventData} name="image" />
+                                        <UploadImage resetForm={resetForm} updateData={eventData} name="image" />
 
                                     </div>
                                 </div>
@@ -173,7 +173,7 @@ export default function EventMainData({ eventData, resetForm , loadingUpdate , p
                                 <h5 className="mb-5 w-[100%] text-base font-semibold dark:text-white p-2  border-b border-dashed border-white-light">Avatar</h5>
                                 <div className="grid lg:grid-cols-12 max-sm:grid-cols-1 gap-5 px-3 ">
                                     <div className="lg:col-span-12 max-sm:col-span-1 ">
-                                        <UploadImage name="avatar" />
+                                        <UploadImage  resetForm={resetForm}  updateData={eventData}  name="avatar" />
 
                                     </div>
                                 </div>

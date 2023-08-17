@@ -16,7 +16,6 @@ type RadioCustom_TP = {
 };
 const RadioCustom = ({ label, publish,placeholder, description, error, className, value, name, type, handleChange, ...props }: RadioCustom_TP) => {
     const { values, setFieldValue } = useFormikContext<any>(); /////////// STATES
-    console.log("🚀 ~ file: InputCustom.tsx:18 ~ InputCustom ~ values:", values)
 
     return (
         <div role="group" className='flex flex-row items-center' aria-labelledby="my-radio-group">

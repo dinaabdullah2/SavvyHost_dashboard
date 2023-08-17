@@ -11,10 +11,8 @@ const Upload = ({ className, value, name, type, handleChange, ...props }: ImageC
     const { values, setFieldValue } = useFormikContext();
     const [currentImage, setCurrentImage] = useState<File>();
     const [previewImage, setPreviewImage] = useState<any>('');
-    console.log('🚀 ~ file: UploadImage.tsx:17 ~ UploadImage ~ previewImage:', previewImage);
     const selectImage = (event: React.ChangeEvent<HTMLInputElement>) => {
         const selectedFiles = event.target.files as FileList;
-        console.log('🚀 ~ file: UploadImage.tsx:19 ~ selectImage ~ selectedFiles:', selectedFiles);
         setCurrentImage(selectedFiles?.[0]);
         setPreviewImage(URL.createObjectURL(selectedFiles?.[0]));
         setFieldValue(name, selectedFiles?.[0]);

@@ -4,21 +4,19 @@ import { useMutate } from '../../hooks/UseMutate';
 import { useQueryClient } from '@tanstack/react-query';
 import CategoryMainData from './CategoryMainData';
 
-
 type InitialValues_TP = {
     [x: string]: string;
 };
 export default function CategoryFormikData({ categoryData, resetForm, setOpen }: any) {
-    const queryClient = useQueryClient()
+    const queryClient = useQueryClient();
 
     const initialValues: InitialValues_TP = {
         name: !resetForm ? categoryData?.name : '',
         image: !resetForm ? categoryData?.image : '',
         slug: !resetForm ? categoryData?.slug : '',
-
     };
     // post data
-    const { mutate , isLoading:postLoading } = useMutate({
+    const { mutate, isLoading: postLoading } = useMutate({
         mutationKey: ['categories/id'],
         endpoint: `api/dashboard/category/store`,
         onSuccess: (data: any) => {
@@ -33,7 +31,7 @@ export default function CategoryFormikData({ categoryData, resetForm, setOpen }:
         },
         formData: true,
     });
-    const { mutate: update , isLoading:loadingUpdate } = useMutate({
+    const { mutate: update, isLoading: loadingUpdate } = useMutate({
         mutationKey: ['categories/id'],
         endpoint: `api/dashboard/category/update/${categoryData?.id}`,
         onSuccess: (data: any) => {
@@ -55,13 +53,17 @@ export default function CategoryFormikData({ categoryData, resetForm, setOpen }:
                 // validationSchema={validatopnSchema}
                 enableReinitialize={true}
                 onSubmit={(values) => {
-                    console.log("🚀 ~ file: pageFormikData.tsx:65 ~ PageFormikData ~ values:", values)
                     resetForm ? mutate({ ...values }) : update({ ...values, _methode: 'put' });
                 }}
             >
                 {({ setFieldValue }) => (
                     <Form>
-                        <CategoryMainData categoryData={categoryData} resetForm={resetForm}  loadingUpdate={loadingUpdate} postLoading={postLoading}/>
+                        <CategoryMainData 
+                        categoryData={categoryData}
+                        pageData={categoryData}
+                         resetForm={resetForm} 
+                         loadingUpdate={loadingUpdate} 
+                         postLoading={postLoading} />
                     </Form>
                 )}
             </Formik>

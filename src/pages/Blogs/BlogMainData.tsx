@@ -1,6 +1,7 @@
 import { Tab } from '@headlessui/react';
 import { useFormikContext } from 'formik';
 import { Fragment, useState } from 'react';
+import CreatableSelect from 'react-select/creatable';
 import { Button } from '../../components/atoms';
 import Editor from '../../components/atoms/Editor';
 import InputCustom from '../../components/atoms/InputCustom';
@@ -10,10 +11,9 @@ import SelectCategory from '../../components/atoms/SelectCategory';
 import SelectSearch from '../../components/atoms/SelectSearchable';
 import { TextAreaField } from '../../components/atoms/TextAreaField';
 import UploadImage from '../../components/atoms/UploadImage';
-import { Select } from '../../components/molecules';
-import CreatableSelect from 'react-select/creatable';
 
 export default function BlogMainData({ blogData, resetForm, loadingUpdate, postLoading }: any) {
+    console.log("🚀 ~ file: BlogMainData.tsx:16 ~ BlogMainData ~ blogData:", blogData)
     const { setFieldValue } = useFormikContext();
     const [seoSection, setSeoSection] = useState<any>(blogData?.searchable);
     const publish = [
@@ -194,7 +194,6 @@ export default function BlogMainData({ blogData, resetForm, loadingUpdate, postL
                                 
 
                                 onChange={(option) => {
-                                    console.log("🚀 ~ file: BlogMainData.tsx:197 ~ BlogMainData ~ option:", option)
                                     setFieldValue('tags', option);
                                 }}
                             />

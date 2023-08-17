@@ -6,12 +6,13 @@ import SelectRole from '../../components/atoms/SelectRole';
 import SelectType from '../../components/atoms/SelectType';
 import SelectStatus from '../../components/atoms/SelectStatus';
 import Editor from '../../components/atoms/Editor';
-import UploadImage from '../../components/atoms/UploadImage';
 import SelectCountries from '../../components/atoms/SelectCountries';
 import { useFormikContext } from 'formik';
 import { Button } from '../../components/atoms';
+import UploadImg from '../../components/molecules/UploadImg';
+import UploadImage from '../../components/atoms/UploadImage';
 
-export default function UserMainData({ userData, resetForm , loadingUpdate , postLoading }: any) {
+export default function UserMainData({ userData, resetForm, loadingUpdate, postLoading }: any) {
     const { setFieldValue } = useFormikContext();
     return (
         <div className="grid lg:grid-cols-12 max-sm:grid-cols-1 gap-5">
@@ -53,19 +54,18 @@ export default function UserMainData({ userData, resetForm , loadingUpdate , pos
                     name="gender"
                     resetForm={resetForm}
                     onChange={(option) => {
-                        console.log("🚀 ~ file: UserMainData.tsx:55 ~ UserMainData ~ option:", option)
-                        setFieldValue('gender', option?.value );
+                        console.log('🚀 ~ file: UserMainData.tsx:55 ~ UserMainData ~ option:', option);
+                        setFieldValue('gender', option?.value);
                     }}
                 />
             </div>
             <div className="lg:col-span-6 max-sm:col-span-1 ">
-               <label htmlFor="role">Role</label>
+                <label htmlFor="role">Role</label>
                 <SelectRole
                     name="role_id"
                     updateData={userData}
                     resetForm={resetForm}
                     onChange={(option) => {
-                        console.log("🚀 ~ file: UserMainData.tsx:67 ~ UserMainData ~ option:", option)
                         setFieldValue('role_id', option?.value);
                     }}
                 />
@@ -82,7 +82,7 @@ export default function UserMainData({ userData, resetForm , loadingUpdate , pos
                 />
             </div>
             <div className="lg:col-span-6 max-sm:col-span-1 ">
-               <label htmlFor="status">Status</label>
+                <label htmlFor="status">Status</label>
                 <SelectStatus
                     name="status"
                     updateData={userData}
@@ -99,10 +99,11 @@ export default function UserMainData({ userData, resetForm , loadingUpdate , pos
             <div className="lg:col-span-12 max-sm:col-span-1 ">
                 <label htmlFor="avatar">Image</label>
                 <UploadImage updateData={userData} name="avatar" />
+                {/* <UploadImg name="avatar" /> */}
             </div>
 
             <div className="lg:col-span-12 max-sm:col-span-1 ">
-                <Button variant='primary' type='submit' loading={loadingUpdate || postLoading}>
+                <Button variant="primary" type="submit" loading={loadingUpdate || postLoading}>
                     submit
                 </Button>
             </div>

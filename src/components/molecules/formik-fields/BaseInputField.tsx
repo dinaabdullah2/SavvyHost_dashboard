@@ -25,7 +25,6 @@ export const BaseInputField = ({
   useFormikContext<{
     [key: string]: any
   }>()
-  console.log("🚀 ~ file: BaseInputField.tsx:27 ~ name:", props.name)
 
   // const [fieldValue, setFieldValueState] = useState(
   //   props.value || values[props.name]

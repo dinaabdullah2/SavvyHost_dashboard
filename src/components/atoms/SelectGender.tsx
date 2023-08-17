@@ -13,7 +13,6 @@ type SelectCountries_tp = {
     placeholder?: string;
 };
 export default function SelectGender({ updateData, resetForm, onChange, name, label }: SelectCountries_tp) {
-    console.log('🚀 ~ file: SelectGender.tsx:16 ~ SelectGender ~ updateData:', updateData);
     const dataOptions = [
         {
             id: 1,

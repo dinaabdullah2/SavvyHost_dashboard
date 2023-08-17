@@ -15,6 +15,7 @@ type EventCustom_TP = {
 };
 
 const AddEvent = ({  eventData, setResetForm, resetForm, setOpen, open }: EventCustom_TP) => {
+console.log("🚀 ~ file: AddEvent.tsx:18 ~ AddEvent ~ eventData:", eventData)
 
 
     const validatopnSchema = () =>
