@@ -162,15 +162,7 @@ export default function PageMainData({ pageData, resetForm , loadingUpdate , pos
                                 </div>
                             </div>
 
-                            <div className="border border-dashed border-white-light dark:border-[#1b2e4b] rounded-md mb-3 pb-5">
-                                <h5 className="mb-5 w-[100%] text-base font-semibold dark:text-white p-2  border-b border-dashed border-white-light">Logo</h5>
-                                <div className="grid lg:grid-cols-12 max-sm:grid-cols-1 gap-5 px-3 ">
-                                    <div className="lg:col-span-12 max-sm:col-span-1 ">
-                                        <UploadImage name="logo" />
-
-                                    </div>
-                                </div>
-                            </div>
+                           
        </div>
 
 

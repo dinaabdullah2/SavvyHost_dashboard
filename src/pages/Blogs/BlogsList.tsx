@@ -53,17 +53,9 @@ const BlogsList = () => {
                 accessorKey: 'id',
             },
             {
-                header: 'Blog',
-                cell: (info:any) => (
-                    <div className=' inline-flex  items-center'>
-                         <div>
-                            <img className='rounded-full w-[30px] h-[30px] ' src={info?.row?.original?.image} alt='image' />
-                         </div>
-                         <div className='ml-2  truncate '>
-                           {info?.row?.original?.title }
-                        </div>
-                    </div>
-                ),
+                header: 'Title',
+                cell: (info:any) => info.renderValue(),
+
                 accessorKey: 'title',
             },
 

@@ -59,10 +59,10 @@ const EventsList = () => {
                 cell: (info:any) => (
                     <div className=' inline-flex  items-center'>
                          <div>
-                            <img className='rounded-full w-[30px] h-[30px] ' src={info?.row?.original?.avatar} alt='avatar' />
+                            <img className='rounded-full w-[30px] h-[30px] ' src={info?.row?.original?.avatar}  />
                          </div>
                          <div className='ml-2  truncate '>
-                           {info?.row?.original?.name }
+                           {info?.row?.original?.title }
                         </div>
                     </div>
                 ),

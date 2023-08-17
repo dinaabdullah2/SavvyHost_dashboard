@@ -25,7 +25,6 @@ export default function PageFormikData({ pageData, resetForm, setOpen }: any) {
         twitter_description: !resetForm ? pageData?.twitter_description : '',
         twitter_image: !resetForm ? pageData?.twitter_image : '',
         //@ts-ignore
-        logo: !resetForm ? pageData?.logo : '',
         featured_image: !resetForm ? pageData?.featured_image : '',
     };
     // post data
