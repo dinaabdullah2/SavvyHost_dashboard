@@ -1,8 +1,7 @@
-import { getCoreRowModel, useReactTable, flexRender, getPaginationRowModel, FilterFn, getFilteredRowModel } from '@tanstack/react-table';
 import type { ColumnDef } from '@tanstack/react-table';
-import { Button } from '../../atoms';
+import { FilterFn, flexRender, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
+import { useState } from 'react';
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight, MdKeyboardDoubleArrowLeft, MdKeyboardDoubleArrowRight } from 'react-icons/md';
-import { BsArrowLeft, BsFillArrowLeftCircleFill, BsFillArrowRightCircleFill } from 'react-icons/bs';
 interface ReactTableProps<T extends object> {
     data: T[];
     columns: ColumnDef<T>[];
@@ -11,10 +10,21 @@ interface ReactTableProps<T extends object> {
     filterFn?: FilterFn<T>;
 }
 
+
+
+
 export const Table = <T extends object>({ data, columns, showNavigation }: ReactTableProps<T>) => {
+    const [rowSelection, setRowSelection] = useState({});
+
     const table = useReactTable({
         data,
         columns,
+        state: {
+            rowSelection,
+        },
+        enableRowSelection: true, //enable row selection for all rows
+
+        onRowSelectionChange: setRowSelection,
         getCoreRowModel: getCoreRowModel(),
         getFilteredRowModel: getFilteredRowModel(),
         getPaginationRowModel: getPaginationRowModel(),
@@ -27,9 +37,7 @@ export const Table = <T extends object>({ data, columns, showNavigation }: React
                     <thead className="border-b  bg-gray-50">
                         {table.getHeaderGroups().map((headerGroup: any) => (
                             <tr key={headerGroup.id}>
-                                <td className="w-[50px]">
-                                    <input value={headerGroup.id} type="checkbox" />{' '}
-                                </td>
+                                <td className="w-[50px]">{/* <input value={headerGroup.id} type="checkbox" />{' '} */}</td>
                                 {headerGroup.headers.map((header: any) => (
                                     <th key={header.id} className="px-6 py-4 text-sm font-medium text-white">
                                         {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
@@ -41,9 +49,7 @@ export const Table = <T extends object>({ data, columns, showNavigation }: React
                     <tbody>
                         {table.getRowModel().rows.map((row: any) => (
                             <tr key={row.id} className='border-b" bg-white'>
-                                <td>
-                                    <input value={row.id} type="checkbox" />{' '}
-                                </td>
+                                <td>{/* <input value={row.id} type="checkbox" />{' '} */}</td>
                                 {row.getVisibleCells().map((cell: any) => (
                                     <>
                                         <td className="whitespace-nowrap px-6 py-4 text-sm font-light text-gray-900" key={cell.id}>
