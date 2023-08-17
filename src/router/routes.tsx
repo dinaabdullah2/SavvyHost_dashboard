@@ -4,6 +4,7 @@ import EventsList from '../pages/Events/EventsList';
 import { Navigate } from 'react-router-dom';
 import CategoriesList from '../pages/Categories/CategoriesList';
 import Login from '../pages/Authentication/Login';
+import PageBuilder from '../pages/Pages/PageBuilder';
 const Index = lazy(() => import('../pages/Index'));
 
 const UsersList = lazy(() => import('../pages/Users/UsersList'));
@@ -33,6 +34,10 @@ const routes = [
     {
         path: '/pages',
         element: <PagesList />,
+    },
+    {
+        path: '/builder',
+        element: <PageBuilder />,
     },
     {
         path: '/blogs',
