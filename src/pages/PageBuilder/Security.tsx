@@ -6,6 +6,7 @@ import { Button } from '../../components/atoms';
 import React from 'react'
 import InputCustom from '../../components/atoms/InputCustom';
 import { TextAreaField } from '../../components/atoms/TextAreaField';
+import ModalCusom from '../../components/template/modal/ModalCusom';
 
 
 
@@ -42,7 +43,8 @@ const Security = () => {
             </button>
         </div>
     </div>
-    <Modal opened={opened}  size='50% ' onClose={close} title="Security Section">
+
+    <ModalCusom opened={opened}  onClose={close}  title="Security Section">
        <Formik
             initialValues={initialValues}
             // validationSchema={validatopnSchema}
@@ -66,7 +68,7 @@ const Security = () => {
                        <label htmlFor="title">Description</label>
                        <TextAreaField name='description' label='sub title'  />
                     </div>
-                    <div className="lg:col-span-12 max-sm:col-span-1 ">
+                    <div className="col-span-12 ">
                         <Button variant="primary" type="submit" >
                             submit
                         </Button>
@@ -76,7 +78,7 @@ const Security = () => {
 
             </Form>
         </Formik>
-    </Modal>
+    </ModalCusom>
 
 </>
   )

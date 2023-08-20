@@ -2,7 +2,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { ColumnDef } from '@tanstack/react-table';
 import { t } from 'i18next';
 import sortBy from 'lodash/sortBy';
-import { DataTableSortStatus } from 'mantine-datatable';
+import { DataTable, DataTableSortStatus } from 'mantine-datatable';
 import { useEffect, useMemo, useState } from 'react';
 import { GiCancel } from 'react-icons/gi';
 import { useDispatch, useSelector } from 'react-redux';
@@ -19,12 +19,8 @@ import { Loader } from '@mantine/core';
 import Loading from '../../components/atoms/loading';
 import { SvgDelete } from '../../components/atoms/icons/SvgDelete';
 import { Checkbox } from '../../components/molecules';
+import Tippy from '@tippyjs/react';
 
-const options = [
-    { value: 'Filter Role', label: 'All' },
-    { value: '1', label: 'admin' },
-    { value: '2', label: 'user' },
-];
 
 type AllUsers = {
     [x: string]: string;
@@ -47,85 +43,7 @@ const UsersList = () => {
     }
     const [idUser, setUserId] = useState<any>();
 
-    const cols = useMemo<ColumnDef<AllUsers>[]>(
-        () => [
 
-            {
-                header: 'ID',
-                cell: (info:any) => info.renderValue(),
-                accessorKey: 'id',
-            },
-            {
-                header: 'User',
-                cell: (info:any) => (
-                    <div className=' inline-flex  items-center'>
-                         <div>
-                            <img className='rounded-full w-[30px] h-[30px] ' src={info?.row?.original?.avatar}  />
-                         </div>
-                         <div className='ml-2  truncate w-[150px]'>
-                           {info?.row?.original?.name }
-                        </div>
-                    </div>
-                ),
-                accessorKey: 'name',
-            },
-            {
-                header: 'Type',
-                cell: (info:any) => info.renderValue(),
-                accessorKey: 'type',
-            },
-            {
-                header: 'Role',
-                cell: (info:any) => (
-                    <div >
-                      {info?.row?.original?.role_id == 2 ? 'User' : 'Admin'}
-                    </div>
-                ),
-                accessorKey: 'role_id',
-            },
-
-            {
-                header: 'Phone',
-                cell: (info:any) => info.renderValue(),
-                accessorKey: 'phone',
-            },
-            {
-                header: 'Mail',
-                cell: (info:any) => info.renderValue(),
-                accessorKey: 'email',
-            },
-            {
-                header: `${t('action')}`,
-                cell: (info:any) => (
-                    <div className="flex gap-2">
-                        <div>
-                            <SvgDelete
-
-                                action={() => {
-                                    setUserId(info.row.original.id);
-                                    showAlert(10, info.row.original.id);
-                                }}
-                            />
-                        </div>
-                        <div>
-                            <EditIcon
-                                action={() => {
-                                    setOpen(true);
-                                    //@ts-ignore
-
-                                    setEditData(info.row.original);
-                                    setResetForm(false);
-                                }}
-                            />
-                        </div>
-                    </div>
-                ),
-
-                accessorKey: 'join',
-            },
-        ],
-        []
-    );
 
     const {
         data: Users,
@@ -151,6 +69,20 @@ const UsersList = () => {
     const [editData, setEditData] = useState(false);
     const [resetForm, setResetForm] = useState(true);
     const [open, setOpen] = useState(false);
+
+
+    const [showEditForm, setShowEditForm] = useState(false);
+    const [selectedRecords, setSelectedRecords] = useState<any>([]);
+    const [userData,setUserData]=useState<any>()
+
+
+
+    useEffect(() => {
+         //@ts-ignore
+        setInitialRecords(sortBy(Users?.data?.all_users, 'id'))
+         //@ts-ignore
+    }, [Users?.data?.all_users]);
+
     useEffect(() => {
         //@ts-ignore
 
@@ -191,7 +123,6 @@ const UsersList = () => {
         if (selectValue !== 'Filter Role') {
             setInitialRecords(() => {
                 //@ts-ignore
-
                 return Users?.data?.all_users.filter((item: any) => {
                     return item.role_id == selectValue;
                 });
@@ -226,7 +157,7 @@ const UsersList = () => {
 
     const { mutate: deleteUser } = useMutate({
         mutationKey: [`users/id/${idUser}`],
-        endpoint: `api/dashboard/user/delete/${idUser}`,
+        endpoint: `api/dashboard/user/delete/${idUser?.id}`,
         onSuccess: (data: any) => {
             console.log('done');
             Swal.fire({ title: 'Deleted!', text: 'User has been deleted.', icon: 'success', customClass: 'sweet-alerts' });
@@ -304,12 +235,91 @@ const UsersList = () => {
                 {isLoading || isRefetching ? (
                     <Loading />
                 ) : (
-                    <Table
-                        columns={cols ? cols : []}
-                        //@ts-ignore
-                        data={Users?.data?.all_users ? Users?.data?.all_users : []}
-                        showNavigation
+                    <div className="datatables">
+                    <DataTable
+                        highlightOnHover
+                        className={`${isRtl ? 'whitespace-nowrap table-hover' : 'whitespace-nowrap table-hover'}`}
+                        records={recordsData}
+                        columns={[
+                            { accessor: 'id', title: 'ID', sortable: true  },
+                            {
+                                accessor: 'name',
+                                title: 'User',
+                                sortable: true,
+                                width:"200px",
+                                render: ({ name }:any) => (
+                                    <div className="flex items-center w-max">
+
+                                        <div>{name}</div>
+                                    </div>
+                                ),
+                            },
+                            { accessor: 'email', title:"Email" ,sortable: true },
+                            { accessor: 'phone', title: 'Phone No.', sortable: true },
+                            {
+                                accessor: 'role',
+                                title: 'Role',
+                                sortable: true,
+                                render: ({role_id }) => (
+                                    <div className="flex items-center w-max">
+                                        {role_id == 1?
+                                          <div>
+                                             admin
+                                          </div>
+                                          :
+                                          <div>
+                                             user
+                                          </div>
+                                        }
+                                    </div>
+                                ),
+                            },
+                            {
+                                accessor: 'action',
+                                title: 'Action',
+                                titleClassName: '!text-center',
+                                render: (id) => (
+                                    <div className="flex items-center w-max mx-auto gap-2">
+                                        <Tippy >
+                                            <EditIcon
+                                            action={() => {
+                                                setOpen(true);
+                                                //@ts-ignore
+
+                                                setEditData(id);
+                                                setResetForm(false);
+                                            }}
+                                           />
+                                        </Tippy>
+                                        <Tippy >
+                                        <div>
+                                            <SvgDelete
+                                                action={() => {
+                                                    showAlert(10, id);
+                                                    setUserId(id);
+                                                }}
+                                            />
+                                        </div>
+                                        </Tippy>
+
+                                    </div>
+                                ),
+                            },
+                        ]}
+                        totalRecords={initialRecords.length}
+                        recordsPerPage={pageSize}
+                        page={page}
+                        onPageChange={(p) => setPage(p)}
+                        recordsPerPageOptions={PAGE_SIZES}
+                        onRecordsPerPageChange={setPageSize}
+                        sortStatus={sortStatus}
+                        onSortStatusChange={setSortStatus}
+                        selectedRecords={selectedRecords}
+                        onSelectedRecordsChange={setSelectedRecords}
+                        minHeight={200}
+                        paginationText={({ from, to, totalRecords }) => `Showing  ${from} to ${to} of ${totalRecords} entries`}
                     />
+                </div>
                 )}
             </div>
         </div>
