@@ -1,26 +1,19 @@
 import { useQueryClient } from '@tanstack/react-query';
-import { ColumnDef } from '@tanstack/react-table';
-import { t } from 'i18next';
+import Tippy from '@tippyjs/react';
 import sortBy from 'lodash/sortBy';
 import { DataTable, DataTableSortStatus } from 'mantine-datatable';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Select from 'react-select';
 import Swal from 'sweetalert2';
 import { EditIcon } from '../../components/atoms/icons';
 import { SvgDelete } from '../../components/atoms/icons/SvgDelete';
 import Loading from '../../components/atoms/loading';
-import { Table } from '../../components/template/tantable/Table';
 import useFetch from '../../hooks/UseFetch';
 import { useMutate } from '../../hooks/UseMutate';
 import { IRootState } from '../../store';
 import { setPageTitle } from '../../store/themeConfigSlice';
 import AddUser from './AddUser';
-import { Loader } from '@mantine/core';
-import Loading from '../../components/atoms/loading';
-import { SvgDelete } from '../../components/atoms/icons/SvgDelete';
-import { Checkbox } from '../../components/molecules';
-import Tippy from '@tippyjs/react';
 
 
 type AllUsers = {
