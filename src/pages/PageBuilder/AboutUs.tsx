@@ -9,6 +9,7 @@ import { TextAreaField } from '../../components/atoms/TextAreaField';
 import { useMutate } from '../../hooks/UseMutate';
 import { useQueryClient } from '@tanstack/react-query';
 import Swal from 'sweetalert2';
+import ModalCusom from '../../components/template/modal/ModalCusom';
 
 
 
@@ -56,7 +57,7 @@ const AboutUs = ({mainData}:any) => {
             </button>
         </div>
     </div>
-    <Modal opened={opened}  size='50% ' onClose={close} title="About us Section">
+    <ModalCusom opened={opened}  onClose={close} title="About us Section">
        <Formik
             initialValues={initialValues}
             // validationSchema={validatopnSchema}
@@ -77,7 +78,7 @@ const AboutUs = ({mainData}:any) => {
                        <label htmlFor="title">Description</label>
                        <TextAreaField name='About_body' label='sub title'  />
                     </div>
-                    <div className="lg:col-span-12 max-sm:col-span-1 ">
+                    <div className="col-span-12  ">
                         <Button variant="primary" type="submit" >
                             submit
                         </Button>
@@ -87,7 +88,7 @@ const AboutUs = ({mainData}:any) => {
 
             </Form>
         </Formik>
-    </Modal>
+    </ModalCusom>
 
 </>
   )

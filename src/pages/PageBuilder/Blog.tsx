@@ -9,6 +9,7 @@ import { TextAreaField } from '../../components/atoms/TextAreaField';
 import { useQueryClient } from '@tanstack/react-query';
 import { useMutate } from '../../hooks/UseMutate';
 import Swal from 'sweetalert2';
+import ModalCusom from '../../components/template/modal/ModalCusom';
 
 
 
@@ -53,7 +54,8 @@ const Blog = ({mainData}:any) => {
             </button>
         </div>
     </div>
-    <Modal opened={opened}  size='50% ' onClose={close} title="Blog Section">
+    <ModalCusom opened={opened}  onClose={close} title="Blog Section">
+
        <Formik
             initialValues={initialValues}
             // validationSchema={validatopnSchema}
@@ -83,7 +85,7 @@ const Blog = ({mainData}:any) => {
 
             </Form>
         </Formik>
-    </Modal>
+    </ModalCusom>
 
 </>
   )

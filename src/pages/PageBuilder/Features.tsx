@@ -6,6 +6,7 @@ import InputCustom from '../../components/atoms/InputCustom';
 import { Form, Formik } from 'formik';
 import { Button } from '../../components/atoms';
 import UploadImage from '../../components/atoms/UploadImage';
+import ModalCusom from '../../components/template/modal/ModalCusom';
 
 type InitialValues_TP = {
     [x: string]: string;
@@ -86,7 +87,8 @@ const Features = () => {
             </button>
         </div>
     </div>
-    <Modal opened={opened}  size='50% ' onClose={close} title="Features Section">
+
+    <ModalCusom opened={opened}  onClose={close} title="Features Section">
        <Formik
             initialValues={initialValues}
             // validationSchema={validatopnSchema}
@@ -186,14 +188,14 @@ const Features = () => {
                         +add Feature
                     </button>
                 </Accordion>
-                <div className="lg:col-span-12 max-sm:col-span-1 ">
+                <div className="col-span-12">
                     <Button variant="primary"  type="submit" >
                         Submit
                     </Button>
                 </div>
             </Form>
         </Formik>
-    </Modal>
+    </ModalCusom>
 
 </>
   )

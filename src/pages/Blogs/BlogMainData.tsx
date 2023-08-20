@@ -184,12 +184,14 @@ export default function BlogMainData({ blogData, resetForm, loadingUpdate, postL
                                                     console.log("🚀 ~ file: UserMainData.tsx:55 ~ UserMainData ~ option:", option)
                                                     setFieldValue('tags', option?.value );
                                                 }}/> */}
+                            <label htmlFor="tags"> Tags</label>
                             <CreatableSelect
                                 id="tags"
                                 name="tags"
                                 options={[{label:"sdrh" , value:"sfgsrg"}]}
                                 //    resetForm={resetForm}
                                 isMulti
+                                placeholder="create or select tags"
                                 onChange={(option) => {
                                     setFieldValue('tags', option);
                                 }}

@@ -8,6 +8,10 @@ import { Button } from '../../components/atoms';
 import InputCustom from '../../components/atoms/InputCustom';
 import { TextAreaField } from '../../components/atoms/TextAreaField';
 import { useMutate } from '../../hooks/UseMutate';
+import ModalCusom from '../../components/template/modal/ModalCusom';
+
+
+
 
 type InitialValues_TP = {
     [x: string]: string;

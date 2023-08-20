@@ -2,7 +2,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { ColumnDef } from '@tanstack/react-table';
 import { t } from 'i18next';
 import sortBy from 'lodash/sortBy';
-import { DataTableSortStatus } from 'mantine-datatable';
+import { DataTable, DataTableSortStatus } from 'mantine-datatable';
 import { useEffect, useMemo, useState } from 'react';
 import { GiCancel } from 'react-icons/gi';
 import { useDispatch, useSelector } from 'react-redux';
@@ -18,13 +18,9 @@ import { Loader } from '@mantine/core';
 import Loading from '../../components/atoms/loading';
 import { SvgDelete } from '../../components/atoms/icons/SvgDelete';
 import AddBlog from './AddBlog';
+import Tippy from '@tippyjs/react';
 
 
-const options = [
-    { value: 'Filter Role', label: 'All' },
-    { value: '1', label: 'admin' },
-    { value: '2', label: 'user' },
-];
 
 type AllBlogs = {
     [x: string]: string;
@@ -45,71 +41,71 @@ const BlogsList = () => {
     }
     const [idBlog, setBlogId] = useState<any>();
 
-    const cols = useMemo<ColumnDef<AllBlogs>[]>(
-        () => [
-            {
-                header: 'ID',
-                cell: (info:any) => info.renderValue(),
-                accessorKey: 'id',
-            },
-            {
-                header: 'Title',
-                cell: (info:any) => info.renderValue(),
+    // const cols = useMemo<ColumnDef<AllBlogs>[]>(
+    //     () => [
+    //         {
+    //             header: 'ID',
+    //             cell: (info:any) => info.renderValue(),
+    //             accessorKey: 'id',
+    //         },
+    //         {
+    //             header: 'Title',
+    //             cell: (info:any) => info.renderValue(),
 
-                accessorKey: 'title',
-            },
+    //             accessorKey: 'title',
+    //         },
 
-            {
-                header: 'Status',
-                cell: (info:any) => info.renderValue(),
-                accessorKey: 'status',
-            },
-            {
-                header: 'Category',
-                cell: (info:any) => (
-                   <div>{info?.row?.original?.category?.name}</div>
-                ),
-                accessorKey: 'category',
-            },
-            {
-                header: 'Searchable',
-                cell: (info:any) => (
-                    <div>
-                      {info.row.original.searchable == 1 ? "Yes" : 'No' }
-                    </div>
-                ),
-                accessorKey: 'searchable',
-            },
-            {
-                header: `Action`,
-                cell: (info:any) => (
-                    <div className="flex gap-2">
-                        <div>
-                            <SvgDelete
+    //         {
+    //             header: 'Status',
+    //             cell: (info:any) => info.renderValue(),
+    //             accessorKey: 'status',
+    //         },
+    //         {
+    //             header: 'Category',
+    //             cell: (info:any) => (
+    //                <div>{info?.row?.original?.category?.name}</div>
+    //             ),
+    //             accessorKey: 'category',
+    //         },
+    //         {
+    //             header: 'Searchable',
+    //             cell: (info:any) => (
+    //                 <div>
+    //                   {info.row.original.searchable == 1 ? "Yes" : 'No' }
+    //                 </div>
+    //             ),
+    //             accessorKey: 'searchable',
+    //         },
+    //         {
+    //             header: `Action`,
+    //             cell: (info:any) => (
+    //                 <div className="flex gap-2">
+    //                     <div>
+    //                         <SvgDelete
 
-                                action={() => {
-                                    setBlogId(info.row.original.id);
-                                    showAlert(10, info.row.original.id);
-                                }}
-                            />
-                        </div>
-                        <div>
-                            <EditIcon
-                                action={() => {
-                                    setOpen(true);
-                                    //@ts-ignore
-                                    setEditData(info.row.original);
-                                    setResetForm(false);
-                                }}
-                            />
-                        </div>
-                    </div>
-                ),
-                accessorKey: 'join',
-            },
-        ],
-        []
-    );
+    //                             action={() => {
+    //                                 setBlogId(info.row.original.id);
+    //                                 showAlert(10, info.row.original.id);
+    //                             }}
+    //                         />
+    //                     </div>
+    //                     <div>
+    //                         <EditIcon
+    //                             action={() => {
+    //                                 setOpen(true);
+    //                                 //@ts-ignore
+    //                                 setEditData(info.row.original);
+    //                                 setResetForm(false);
+    //                             }}
+    //                         />
+    //                     </div>
+    //                 </div>
+    //             ),
+    //             accessorKey: 'join',
+    //         },
+    //     ],
+    //     []
+    // );
 
     const {
         data: Blogs,
@@ -134,6 +130,33 @@ const BlogsList = () => {
     const [selectValue, setSelectValue] = useState<any>('');
     const [editData, setEditData] = useState(false);
     const [resetForm, setResetForm] = useState(true);
+    { accessor: 'id', title: 'ID', sortable: true,width:"71px"  },
+    {
+        accessor: 'title',
+        title: 'Title',
+        width:"200px",
+        sortable: true,
+        render: ({ title, image }) => (
+            <div className="flex items-center ">
+                <img className="w-9 h-9 rounded-full ltr:mr-2 rtl:ml-2 object-cover" src={image} alt="" />
+                <div className='truncate'>{title}</div>
+            </div>
+        ),
+    },
+    {
+        accessor: 'location',
+        title: 'Location',
+        width:"250px",
+        sortable: true,
+        render: ({ location}) => (
+            <div className="truncate  ">
+                {location}
+            </div>
+        ),
+    },
+    // { accessor: 'location',title:'Location', sortable: true },
+    { accessor: 'start_date', title: 'Start Date', sortable: true },
+    { accessor: 'end_date', title: 'End Date', sortable: true },
     const [open, setOpen] = useState(false);
 
     useEffect(() => {
@@ -153,23 +176,7 @@ const BlogsList = () => {
         setRecordsData([...initialRecords.slice(from, to)]);
     }, [page, pageSize, initialRecords]);
 
-    interface Role {
-        id: number;
-        role_name: string;
-        // Add more properties if needed...
-    }
-    const { data: Roles } = useFetch<{
-        data: {
-            roles: Role[];
-        };
-    }>({
-        endpoint: `api/dashboard/user/create`,
-        queryKey: [`All-Roles`],
-    });
-    const options = Roles?.data?.roles?.map((item: any) => ({
-        value: item?.id,
-        label: item?.role_name,
-    }));
+
 
     // filter
     // useEffect(() => {
@@ -189,17 +196,18 @@ const BlogsList = () => {
     //     // eslint-disable-next-line react-hooks/exhaustive-deps
     // }, [selectValue]);
 
-    //search
-    // useEffect(() => {
-    //     setInitialRecords(() => {
-    //         //@ts-ignore
 
-    //         return Users?.data?.all_users.filter((item: any) => {
-    //             return item.name.toLowerCase().includes(search.toLowerCase()) || item.email.toLowerCase().includes(search.toLowerCase());
-    //         });
-    //     });
-    //     // eslint-disable-next-line react-hooks/exhaustive-deps
-    // }, [search]);
+    // search
+    useEffect(() => {
+        setInitialRecords(() => {
+            //@ts-ignore
+
+            return Blogs?.data?.blogs.filter((item: any) => {
+                return item.title.toLowerCase().includes(search.toLowerCase())
+            });
+        });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [search]);
 
     useEffect(() => {
         const data = sortBy(initialRecords, sortStatus.columnAccessor);
@@ -211,7 +219,7 @@ const BlogsList = () => {
 
     const { mutate: deleteBlog } = useMutate({
         mutationKey: [`blogs/id/${idBlog}`],
-        endpoint: `api/dashboard/blog/${idBlog}`,
+        endpoint: `api/dashboard/blog/${idBlog?.id}`,
         onSuccess: (data: any) => {
             console.log('done');
             Swal.fire({ title: 'Deleted!', text: 'Blog has been deleted.', icon: 'success', customClass: 'sweet-alerts' });
@@ -251,18 +259,6 @@ const BlogsList = () => {
                 <div className="lg:ltr:ml-auto lg:rtl:mr-auto min-md:ltr:mr-auto  min-md:rtl:ml-auto">
                     <input type="text" className="form-input w-[100%]" placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} />
                 </div>
-
-                <div>
-                    <Select
-                        className="lg:w-[200px] min-md:w-[200px]"
-                        placeholder="Filter Role "
-                        options={options}
-                        onChange={(event) => {
-                            setSelectValue(event?.value);
-                        }}
-                        isSearchable={false}
-                    />
-                </div>
                 <div>
                     <button
                         type="button"
@@ -289,12 +285,76 @@ const BlogsList = () => {
                 {isLoading || isRefetching ? (
                     <Loading />
                 ) : (
-                    <Table
-                        columns={cols ? cols : []}
-                        //@ts-ignore
-                        data={Blogs?.data?.blogs? Blogs?.data?.blogs : []}
-                        showNavigation
+                    <div className="datatables">
+                    <DataTable
+                        highlightOnHover
+                        className={`${isRtl ? 'whitespace-nowrap table-hover' : 'whitespace-nowrap table-hover'}`}
+                        records={recordsData}
+                        columns={[
+                            { accessor: 'id', title: 'ID', sortable: true , width:"80px"},
+                            {
+                                accessor: 'title',
+                                title: 'Title',
+                                sortable: true,
+
+                            },
+                            // { accessor: 'content', title: 'Content', sortable: true },
+                            { accessor: 'status',
+                              title: 'Status',
+                              sortable: true,
+                            },
+                            {  accessor: 'searchable',
+                               title: 'Searchable',
+                               sortable: true,
+                            render: ({ searchable }:any) => (
+                                    <div>{searchable? "Yes":"No"}</div>
+                            )},
+                                {
+                                    accessor: 'action',
+                                    title: 'Action',
+                                    titleClassName: '!text-center',
+                                    render: (id) => (
+                                        <div className="flex items-center w-max mx-auto gap-2">
+                                            <Tippy >
+                                                <EditIcon
+                                                action={() => {
+                                                    setOpen(true);
+                                                    //@ts-ignore
+
+                                                    setEditData(id);
+                                                    setResetForm(false);
+                                                }}
+                                               />
+                                            </Tippy>
+                                            <Tippy >
+                                            <div>
+                                                <SvgDelete
+                                                    action={() => {
+                                                        setBlogId(id);
+                                                        showAlert(10, id);
+                                                    }}
+                                                />
+                                            </div>
+                                            </Tippy>
+
+                                        </div>
+                                    ),
+                                },
+                        ]}
+                        totalRecords={initialRecords.length}
+                        recordsPerPage={pageSize}
+                        page={page}
+                        onPageChange={(p) => setPage(p)}
+                        recordsPerPageOptions={PAGE_SIZES}
+                        onRecordsPerPageChange={setPageSize}
+                        sortStatus={sortStatus}
+                        onSortStatusChange={setSortStatus}
+                        selectedRecords={selectedRecords}
+                        onSelectedRecordsChange={setSelectedRecords}
+                        minHeight={200}
+                        paginationText={({ from, to, totalRecords }) => `Showing  ${from} to ${to} of ${totalRecords} entries`}
                     />
+                    </div>
                 )}
             </div>
         </div>

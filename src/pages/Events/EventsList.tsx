@@ -2,7 +2,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { ColumnDef } from '@tanstack/react-table';
 import { t } from 'i18next';
 import sortBy from 'lodash/sortBy';
-import { DataTableSortStatus } from 'mantine-datatable';
+import { DataTable, DataTableSortStatus } from 'mantine-datatable';
 import { useEffect, useMemo, useState } from 'react';
 import { GiCancel } from 'react-icons/gi';
 import { useDispatch, useSelector } from 'react-redux';
@@ -18,13 +18,8 @@ import { Loader } from '@mantine/core';
 import Loading from '../../components/atoms/loading';
 import { SvgDelete } from '../../components/atoms/icons/SvgDelete';
 import AddEvent from './AddEvent';
+import Tippy from '@tippyjs/react';
 
-
-const options = [
-    { value: 'Filter Role', label: 'All' },
-    { value: '1', label: 'admin' },
-    { value: '2', label: 'user' },
-];
 
 type AllEvents = {
     [x: string]: string;
@@ -47,86 +42,86 @@ const EventsList = () => {
     }
     const [idEvent, setEventId] = useState<any>();
 
-    const cols = useMemo<ColumnDef<AllEvents>[]>(
-        () => [
-            {
-                header: 'ID',
-                cell: (info:any) => info.renderValue(),
-                accessorKey: 'id',
-            },
-            {
-                header: 'Event',
-                cell: (info:any) => (
-                    <div className=' inline-flex  items-center'>
-                         <div>
-                            <img className='rounded-full w-[30px] h-[30px] ' src={info?.row?.original?.avatar}  />
-                         </div>
-                         <div className='ml-2  truncate '>
-                           {info?.row?.original?.title }
-                        </div>
-                    </div>
-                ),
-                accessorKey: 'avatar',
-            },
+    // const cols = useMemo<ColumnDef<AllEvents>[]>(
+    //     () => [
+    //         {
+    //             header: 'ID',
+    //             cell: (info:any) => info.renderValue(),
+    //             accessorKey: 'id',
+    //         },
+    //         {
+    //             header: 'Event',
+    //             cell: (info:any) => (
+    //                 <div className=' inline-flex  items-center'>
+    //                      <div>
+    //                         <img className='rounded-full w-[30px] h-[30px] ' src={info?.row?.original?.avatar}  />
+    //                      </div>
+    //                      <div className='ml-2  truncate '>
+    //                        {info?.row?.original?.title }
+    //                     </div>
+    //                 </div>
+    //             ),
+    //             accessorKey: 'avatar',
+    //         },
 
-             {
-                header: 'Location',
+    //          {
+    //             header: 'Location',
 
-                cell: (info:any) => (
+    //             cell: (info:any) => (
 
-                    <div className='truncate w-[150px]'>{info?.row?.original?.location}</div>
-                ),
-                accessorKey: 'location',
-            },
-            {
-                header: 'Start Date',
-                cell: (info:any) => info.renderValue(),
-                accessorKey: 'start_date',
-            },
-            {
-                header: 'End Date',
-                cell: (info:any) => info.renderValue(),
-                accessorKey: 'end_date',
-            },
-            {
-                header: 'Searchable',
-                cell: (info:any) => (
-                    <div>
-                      {info.row.original.searchable == 1 ? "Yes" : 'No' }
-                    </div>
-                ),
-                accessorKey: 'searchable',
-            },
-            {
-                header: `Action`,
-                cell: (info:any) => (
-                    <div className="flex gap-2">
-                        <div>
-                            <SvgDelete
+    //                 <div className='truncate w-[150px]'>{info?.row?.original?.location}</div>
+    //             ),
+    //             accessorKey: 'location',
+    //         },
+    //         {
+    //             header: 'Start Date',
+    //             cell: (info:any) => info.renderValue(),
+    //             accessorKey: 'start_date',
+    //         },
+    //         {
+    //             header: 'End Date',
+    //             cell: (info:any) => info.renderValue(),
+    //             accessorKey: 'end_date',
+    //         },
+    //         {
+    //             header: 'Searchable',
+    //             cell: (info:any) => (
+    //                 <div>
+    //                   {info.row.original.searchable == 1 ? "Yes" : 'No' }
+    //                 </div>
+    //             ),
+    //             accessorKey: 'searchable',
+    //         },
+    //         {
+    //             header: `Action`,
+    //             cell: (info:any) => (
+    //                 <div className="flex gap-2">
+    //                     <div>
+    //                         <SvgDelete
 
-                                action={() => {
-                                    setEventId(info.row.original.id);
-                                    showAlert(10, info.row.original.id);
-                                }}
-                            />
-                        </div>
-                        <div>
-                            <EditIcon
-                                action={() => {
-                                    setOpen(true);
-                                    //@ts-ignore
-                                    setEditData(info.row.original);
-                                    setResetForm(false);
-                                }}
-                            />
-                        </div>
-                    </div>
-                ),
-                accessorKey: 'join',
-            },
-        ],
-        []
-    );
+    //                             action={() => {
+    //                                 setEventId(info.row.original.id);
+    //                                 showAlert(10, info.row.original.id);
+    //                             }}
+    //                         />
+    //                     </div>
+    //                     <div>
+    //                         <EditIcon
+    //                             action={() => {
+    //                                 setOpen(true);
+    //                                 //@ts-ignore
+    //                                 setEditData(info.row.original);
+    //                                 setResetForm(false);
+    //                             }}
+    //                         />
+    //                     </div>
+    //                 </div>
+    //             ),
+    //             accessorKey: 'join',
+    //         },
+    //     ],
+    //     []
+    // );
 
     const {
         data: Events,
@@ -152,6 +147,8 @@ const EventsList = () => {
     const [editData, setEditData] = useState(false);
     const [resetForm, setResetForm] = useState(true);
     const [open, setOpen] = useState(false);
+    const [selectedRecords, setSelectedRecords] = useState<any>([]);
+
     useEffect(() => {
         //@ts-ignore
 
@@ -169,23 +166,6 @@ const EventsList = () => {
         setRecordsData([...initialRecords.slice(from, to)]);
     }, [page, pageSize, initialRecords]);
 
-    interface Role {
-        id: number;
-        role_name: string;
-        // Add more properties if needed...
-    }
-    const { data: Roles } = useFetch<{
-        data: {
-            roles: Role[];
-        };
-    }>({
-        endpoint: `api/dashboard/user/create`,
-        queryKey: [`All-Roles`],
-    });
-    const options = Roles?.data?.roles?.map((item: any) => ({
-        value: item?.id,
-        label: item?.role_name,
-    }));
 
     // filter
     // useEffect(() => {
@@ -206,16 +186,16 @@ const EventsList = () => {
     // }, [selectValue]);
 
     //search
-    // useEffect(() => {
-    //     setInitialRecords(() => {
-    //         //@ts-ignore
+    useEffect(() => {
+        setInitialRecords(() => {
+            //@ts-ignore
 
-    //         return Users?.data?.all_users.filter((item: any) => {
-    //             return item.name.toLowerCase().includes(search.toLowerCase()) || item.email.toLowerCase().includes(search.toLowerCase());
-    //         });
-    //     });
-    //     // eslint-disable-next-line react-hooks/exhaustive-deps
-    // }, [search]);
+            return Events?.data?.events.filter((item: any) => {
+                return item.title.toLowerCase().includes(search.toLowerCase()) || item.location.toLowerCase().includes(search.toLowerCase());
+            });
+        });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [search]);
 
     useEffect(() => {
         const data = sortBy(initialRecords, sortStatus.columnAccessor);
@@ -227,7 +207,7 @@ const EventsList = () => {
 
     const { mutate: deleteEvent } = useMutate({
         mutationKey: [`events/id/${idEvent}`],
-        endpoint: `api/dashboard/event/delete/${idEvent}`,
+        endpoint: `api/dashboard/event/delete/${idEvent?.id}`,
         onSuccess: (data: any) => {
             console.log('done');
             Swal.fire({ title: 'Deleted!', text: 'Event has been deleted.', icon: 'success', customClass: 'sweet-alerts' });
@@ -269,17 +249,6 @@ const EventsList = () => {
                 </div>
 
                 <div>
-                    <Select
-                        className="lg:w-[200px] min-md:w-[200px]"
-                        placeholder="Filter Role "
-                        options={options}
-                        onChange={(event) => {
-                            setSelectValue(event?.value);
-                        }}
-                        isSearchable={false}
-                    />
-                </div>
-                <div>
                     <button
                         type="button"
                         className="bg-primary font-semibold hover:bg-blue-500 max-sm:w-[100%] max-md:w-[100%] text-white py-2 px-5 rounded-lg cursor-pointer"
@@ -305,12 +274,84 @@ const EventsList = () => {
                 {isLoading || isRefetching ? (
                     <Loading />
                 ) : (
-                    <Table
-                        columns={cols ? cols : []}
-                        //@ts-ignore
-                        data={Events?.data?.events? Events?.data?.events : []}
-                        showNavigation
+                    <div className="datatables">
+                    <DataTable
+                        highlightOnHover
+                        className={`${isRtl ? 'whitespace-nowrap table-hover' : 'whitespace-nowrap table-hover'}`}
+                        records={recordsData}
+                        columns={[
+                            { accessor: 'id', title: 'ID', sortable: true,width:"71px"  },
+                            {
+                                accessor: 'title',
+                                title: 'Title',
+                                width:"200px",
+                                sortable: true,
+                                render: ({ title, image }:any) => (
+                                    <div className="flex items-center ">
+                                        <img className="w-9 h-9 rounded-full ltr:mr-2 rtl:ml-2 object-cover" src={image} alt="" />
+                                        <div className='truncate'>{title}</div>
+                                    </div>
+                                ),
+                            },
+                            {
+                                accessor: 'location',
+                                title: 'Location',
+                                width:"250px",
+                                sortable: true,
+                                render: ({ location}) => (
+                                    <div className="truncate  ">
+                                        {location}
+                                    </div>
+                                ),
+                            },
+                            { accessor: 'start_date', title: 'Start Date', sortable: true },
+                            { accessor: 'end_date', title: 'End Date', sortable: true },
+                                {
+                                    accessor: 'action',
+                                    title: 'Action',
+                                    titleClassName: '!text-center',
+                                    render: (id) => (
+                                        <div className="flex items-center w-max mx-auto gap-2">
+                                            <Tippy >
+                                                <EditIcon
+                                                action={() => {
+                                                    setOpen(true);
+                                                    //@ts-ignore
+
+                                                    setEditData(id);
+                                                    setResetForm(false);
+                                                }}
+                                               />
+                                            </Tippy>
+                                            <Tippy >
+                                            <div>
+                                                <SvgDelete
+                                                    action={() => {
+                                                        setEventId(id);
+                                                        showAlert(10, id);
+                                                    }}
+                                                />
+                                            </div>
+                                            </Tippy>
+
+                                        </div>
+                                    ),
+                                },
+                        ]}
+                        totalRecords={initialRecords.length}
+                        recordsPerPage={pageSize}
+                        page={page}
+                        onPageChange={(p) => setPage(p)}
+                        recordsPerPageOptions={PAGE_SIZES}
+                        onRecordsPerPageChange={setPageSize}
+                        sortStatus={sortStatus}
+                        onSortStatusChange={setSortStatus}
+                        selectedRecords={selectedRecords}
+                        onSelectedRecordsChange={setSelectedRecords}
+                        minHeight={200}
+                        paginationText={({ from, to, totalRecords }) => `Showing  ${from} to ${to} of ${totalRecords} entries`}
                     />
+                    </div>
                 )}
             </div>
         </div>

@@ -9,6 +9,9 @@ import { TextAreaField } from '../../components/atoms/TextAreaField';
 import { useMutate } from '../../hooks/UseMutate';
 import { useQueryClient } from '@tanstack/react-query';
 import Swal from 'sweetalert2';
+import ModalCusom from '../../components/template/modal/ModalCusom';
+
+
 
 type InitialValues_TP = {
     [x: string]: string;

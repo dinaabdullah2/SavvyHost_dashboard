@@ -2,7 +2,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { ColumnDef } from '@tanstack/react-table';
 import { t } from 'i18next';
 import sortBy from 'lodash/sortBy';
-import { DataTableSortStatus } from 'mantine-datatable';
+import { DataTable, DataTableSortStatus } from 'mantine-datatable';
 import { useEffect, useMemo, useState } from 'react';
 import { GiCancel } from 'react-icons/gi';
 import { useDispatch, useSelector } from 'react-redux';
@@ -18,13 +18,8 @@ import { Loader } from '@mantine/core';
 import Loading from '../../components/atoms/loading';
 import { SvgDelete } from '../../components/atoms/icons/SvgDelete';
 import AddCategory from './AddCategory';
+import Tippy from '@tippyjs/react';
 
-
-const options = [
-    { value: 'Filter Role', label: 'All' },
-    { value: '1', label: 'admin' },
-    { value: '2', label: 'user' },
-];
 
 type AllCategories = {
     [x: string]: string;
@@ -44,65 +39,65 @@ const CategoriesList = () => {
     }
     const [idCategory, setCategoryId] = useState<any>();
 
-    const cols = useMemo<ColumnDef<AllCategories>[]>(
-        () => [
-            {
-                header: 'ID',
-                cell: (info:any) => info.renderValue(),
-                accessorKey: 'id',
-            },
-            {
-                header: 'Category',
-                cell: (info:any) => (
-                    <div className=' inline-flex  items-center'>
-                         <div>
-                            <img className='rounded-full w-[30px] h-[30px] ' src={info?.row?.original?.image}  />
-                         </div>
-                         <div className='ml-2  truncate '>
-                           {info?.row?.original?.name }
-                        </div>
-                    </div>
-                ),
-                accessorKey: 'name',
-            },
+    // const cols = useMemo<ColumnDef<AllCategories>[]>(
+    //     () => [
+    //         {
+    //             header: 'ID',
+    //             cell: (info:any) => info.renderValue(),
+    //             accessorKey: 'id',
+    //         },
+    //         {
+    //             header: 'Category',
+    //             cell: (info:any) => (
+    //                 <div className=' inline-flex  items-center'>
+    //                      <div>
+    //                         <img className='rounded-full w-[30px] h-[30px] ' src={info?.row?.original?.image}  />
+    //                      </div>
+    //                      <div className='ml-2  truncate '>
+    //                        {info?.row?.original?.name }
+    //                     </div>
+    //                 </div>
+    //             ),
+    //             accessorKey: 'name',
+    //         },
 
 
-             {
-                header: 'Slug',
-                cell: (info:any) => info.renderValue(),
-                accessorKey: 'slug',
-            },
+    //          {
+    //             header: 'Slug',
+    //             cell: (info:any) => info.renderValue(),
+    //             accessorKey: 'slug',
+    //         },
 
-            {
-                header: `Action`,
-                cell: (info:any) => (
-                    <div className="flex gap-2">
-                        <div>
-                            <SvgDelete
+    //         {
+    //             header: `Action`,
+    //             cell: (info:any) => (
+    //                 <div className="flex gap-2">
+    //                     <div>
+    //                         <SvgDelete
 
-                                action={() => {
-                                    setCategoryId(info.row.original.id);
-                                    showAlert(10, info.row.original.id);
-                                }}
-                            />
-                        </div>
-                        <div>
-                            <EditIcon
-                                action={() => {
-                                    setOpen(true);
-                                    //@ts-ignore
-                                    setEditData(info.row.original);
-                                    setResetForm(false);
-                                }}
-                            />
-                        </div>
-                    </div>
-                ),
-                accessorKey: 'join',
-            },
-        ],
-        []
-    );
+    //                             action={() => {
+    //                                 setCategoryId(info.row.original.id);
+    //                                 showAlert(10, info.row.original.id);
+    //                             }}
+    //                         />
+    //                     </div>
+    //                     <div>
+    //                         <EditIcon
+    //                             action={() => {
+    //                                 setOpen(true);
+    //                                 //@ts-ignore
+    //                                 setEditData(info.row.original);
+    //                                 setResetForm(false);
+    //                             }}
+    //                         />
+    //                     </div>
+    //                 </div>
+    //             ),
+    //             accessorKey: 'join',
+    //         },
+    //     ],
+    //     []
+    // );
 
     const {
         data: Categories,
@@ -127,7 +122,9 @@ const CategoriesList = () => {
     const [selectValue, setSelectValue] = useState<any>('');
     const [editData, setEditData] = useState(false);
     const [resetForm, setResetForm] = useState(true);
+    const [selectedRecords, setSelectedRecords] = useState<any>([]);
     const [open, setOpen] = useState(false);
+
     useEffect(() => {
         //@ts-ignore
 
@@ -145,23 +142,6 @@ const CategoriesList = () => {
         setRecordsData([...initialRecords.slice(from, to)]);
     }, [page, pageSize, initialRecords]);
 
-    interface Role {
-        id: number;
-        role_name: string;
-        // Add more properties if needed...
-    }
-    const { data: Roles } = useFetch<{
-        data: {
-            roles: Role[];
-        };
-    }>({
-        endpoint: `api/dashboard/user/create`,
-        queryKey: [`All-Roles`],
-    });
-    const options = Roles?.data?.roles?.map((item: any) => ({
-        value: item?.id,
-        label: item?.role_name,
-    }));
 
     // filter
     // useEffect(() => {
@@ -182,16 +162,16 @@ const CategoriesList = () => {
     // }, [selectValue]);
 
     //search
-    // useEffect(() => {
-    //     setInitialRecords(() => {
-    //         //@ts-ignore
+    useEffect(() => {
+        setInitialRecords(() => {
+            //@ts-ignore
 
-    //         return Users?.data?.all_users.filter((item: any) => {
-    //             return item.name.toLowerCase().includes(search.toLowerCase()) || item.email.toLowerCase().includes(search.toLowerCase());
-    //         });
-    //     });
-    //     // eslint-disable-next-line react-hooks/exhaustive-deps
-    // }, [search]);
+            return Categories?.data?.categories.filter((item: any) => {
+                return item.name.toLowerCase().includes(search.toLowerCase()) ;
+            });
+        });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [search]);
 
     useEffect(() => {
         const data = sortBy(initialRecords, sortStatus.columnAccessor);
@@ -203,7 +183,7 @@ const CategoriesList = () => {
 
     const { mutate: deleteCategory } = useMutate({
         mutationKey: [`categories/id/${idCategory}`],
-        endpoint: `api/dashboard/category/delete/${idCategory}`,
+        endpoint: `api/dashboard/category/delete/${idCategory?.id}`,
         onSuccess: (data: any) => {
             console.log('done');
             Swal.fire({ title: 'Deleted!', text: 'Category has been deleted.', icon: 'success', customClass: 'sweet-alerts' });
@@ -239,21 +219,9 @@ const CategoriesList = () => {
     return (
         <div className="panel">
             <div className="flex md:items-center md:flex-row flex-col mb-5 gap-5">
-                <h5 className="font-semibold text-lg dark:text-white-light">All Pages</h5>
+                <h5 className="font-semibold text-lg dark:text-white-light">All Categories</h5>
                 <div className="lg:ltr:ml-auto lg:rtl:mr-auto min-md:ltr:mr-auto  min-md:rtl:ml-auto">
                     <input type="text" className="form-input w-[100%]" placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} />
-                </div>
-
-                <div>
-                    <Select
-                        className="lg:w-[200px] min-md:w-[200px]"
-                        placeholder="Filter Role "
-                        options={options}
-                        onChange={(event) => {
-                            setSelectValue(event?.value);
-                        }}
-                        isSearchable={false}
-                    />
                 </div>
                 <div>
                     <button
@@ -281,12 +249,70 @@ const CategoriesList = () => {
                 {isLoading || isRefetching ? (
                     <Loading />
                 ) : (
-                    <Table
-                        columns={cols ? cols : []}
-                        //@ts-ignore
-                        data={Categories?.data?.categories? Categories?.data?.categories : []}
-                        showNavigation
+                    <div className="datatables">
+                    <DataTable
+                        highlightOnHover
+                        className={`${isRtl ? 'whitespace-nowrap table-hover' : 'whitespace-nowrap table-hover'}`}
+                        records={recordsData}
+                        columns={[
+                                { accessor: 'id', title: 'ID', sortable: true ,width:'80px'},
+                                {
+                                    accessor: 'name',
+                                    title: 'Category',
+                                    sortable: true,
+                                    render: ({ name }:any) => (
+                                        <div className="flex items-center w-max">
+                                            <div>{name}</div>
+                                        </div>
+                                    ),
+                                },
+                                { accessor: 'slug', title: 'Slug', sortable: true },
+                                {
+                                    accessor: 'action',
+                                    title: 'Action',
+                                    titleClassName: '!text-center',
+                                    render: (id) => (
+                                        <div className="flex items-center w-max mx-auto gap-2">
+                                            <Tippy >
+                                                <EditIcon
+                                                action={() => {
+                                                    setOpen(true);
+                                                    //@ts-ignore
+
+                                                    setEditData(id);
+                                                    setResetForm(false);
+                                                }}
+                                               />
+                                            </Tippy>
+                                            <Tippy >
+                                            <div>
+                                                <SvgDelete
+                                                    action={() => {
+                                                        setCategoryId(id);
+                                                        showAlert(10, id);
+                                                    }}
+                                                />
+                                            </div>
+                                            </Tippy>
+
+                                        </div>
+                                    ),
+                                },
+                        ]}
+                        totalRecords={initialRecords.length}
+                        recordsPerPage={pageSize}
+                        page={page}
+                        onPageChange={(p) => setPage(p)}
+                        recordsPerPageOptions={PAGE_SIZES}
+                        onRecordsPerPageChange={setPageSize}
+                        sortStatus={sortStatus}
+                        onSortStatusChange={setSortStatus}
+                        selectedRecords={selectedRecords}
+                        onSelectedRecordsChange={setSelectedRecords}
+                        minHeight={200}
+                        paginationText={({ from, to, totalRecords }) => `Showing  ${from} to ${to} of ${totalRecords} entries`}
                     />
+                    </div>
                 )}
             </div>
         </div>

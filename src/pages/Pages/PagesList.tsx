@@ -2,7 +2,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { ColumnDef } from '@tanstack/react-table';
 import { t } from 'i18next';
 import sortBy from 'lodash/sortBy';
-import { DataTableSortStatus } from 'mantine-datatable';
+import { DataTable, DataTableSortStatus } from 'mantine-datatable';
 import { useEffect, useMemo, useState } from 'react';
 import { GiCancel } from 'react-icons/gi';
 import { useDispatch, useSelector } from 'react-redux';
@@ -19,12 +19,9 @@ import Loading from '../../components/atoms/loading';
 import { SvgDelete } from '../../components/atoms/icons/SvgDelete';
 import AddPage from './AddPage';
 import { Link } from 'react-router-dom';
+import Tippy from '@tippyjs/react';
 
-const options = [
-    { value: 'Filter Role', label: 'All' },
-    { value: '1', label: 'admin' },
-    { value: '2', label: 'user' },
-];
+
 
 type AllPages = {
     [x: string]: string;
@@ -44,63 +41,63 @@ const PagesList = () => {
     }
     const [idPage, setPageId] = useState<any>();
 
-    const cols = useMemo<ColumnDef<AllPages>[]>(
-        () => [
-            {
-                header: 'ID',
-                cell: (info:any) => info.renderValue(),
-                accessorKey: 'id',
-            },
-            {
-                header: 'Name',
-                cell: (info:any) =>  info.renderValue(),
-                accessorKey: 'name',
-            },
+    // const cols = useMemo<ColumnDef<AllPages>[]>(
+    //     () => [
+    //         {
+    //             header: 'ID',
+    //             cell: (info:any) => info.renderValue(),
+    //             accessorKey: 'id',
+    //         },
+    //         {
+    //             header: 'Name',
+    //             cell: (info:any) =>  info.renderValue(),
+    //             accessorKey: 'name',
+    //         },
 
-             {
-                header: 'Status',
-                cell: (info:any) => info.renderValue(),
-                accessorKey: 'status',
-            },
-            {
-                header: 'Searchable',
-                cell: (info:any) => (
-                    <div>
-                      {info.row.original.searchable == 1 ? "Yes" : 'No' }
-                    </div>
-                ),
-                accessorKey: 'searchable',
-            },
-            {
-                header: `Action`,
-                cell: (info:any) => (
-                    <div className="flex gap-2">
-                        <div>
-                            <SvgDelete
+    //          {
+    //             header: 'Status',
+    //             cell: (info:any) => info.renderValue(),
+    //             accessorKey: 'status',
+    //         },
+    //         {
+    //             header: 'Searchable',
+    //             cell: (info:any) => (
+    //                 <div>
+    //                   {info.row.original.searchable == 1 ? "Yes" : 'No' }
+    //                 </div>
+    //             ),
+    //             accessorKey: 'searchable',
+    //         },
+    //         {
+    //             header: `Action`,
+    //             cell: (info:any) => (
+    //                 <div className="flex gap-2">
+    //                     <div>
+    //                         <SvgDelete
 
-                                action={() => {
-                                    setPageId(info.row.original.id);
-                                    showAlert(10, info.row.original.id);
-                                }}
-                            />
-                        </div>
-                        <div>
-                            <EditIcon
-                                action={() => {
-                                    setOpen(true);
-                                    //@ts-ignore
-                                    setEditData(info.row.original);
-                                    setResetForm(false);
-                                }}
-                            />
-                        </div>
-                    </div>
-                ),
-                accessorKey: 'join',
-            },
-        ],
-        []
-    );
+    //                             action={() => {
+    //                                 setPageId(info.row.original.id);
+    //                                 showAlert(10, info.row.original.id);
+    //                             }}
+    //                         />
+    //                     </div>
+    //                     <div>
+    //                         <EditIcon
+    //                             action={() => {
+    //                                 setOpen(true);
+    //                                 //@ts-ignore
+    //                                 setEditData(info.row.original);
+    //                                 setResetForm(false);
+    //                             }}
+    //                         />
+    //                     </div>
+    //                 </div>
+    //             ),
+    //             accessorKey: 'join',
+    //         },
+    //     ],
+    //     []
+    // );
 
     const {
         data: Pages,
@@ -125,6 +122,7 @@ const PagesList = () => {
     const [selectValue, setSelectValue] = useState<any>('');
     const [editData, setEditData] = useState(false);
     const [resetForm, setResetForm] = useState(true);
+    const [selectedRecords, setSelectedRecords] = useState<any>([]);
     const [open, setOpen] = useState(false);
     useEffect(() => {
         //@ts-ignore
@@ -143,53 +141,19 @@ const PagesList = () => {
         setRecordsData([...initialRecords.slice(from, to)]);
     }, [page, pageSize, initialRecords]);
 
-    interface Role {
-        id: number;
-        role_name: string;
-        // Add more properties if needed...
-    }
-    const { data: Roles } = useFetch<{
-        data: {
-            roles: Role[];
-        };
-    }>({
-        endpoint: `api/dashboard/user/create`,
-        queryKey: [`All-Roles`],
-    });
-    const options = Roles?.data?.roles?.map((item: any) => ({
-        value: item?.id,
-        label: item?.role_name,
-    }));
 
-    // filter
-    // useEffect(() => {
-    //     if (selectValue !== 'Filter Role') {
-    //         setInitialRecords(() => {
-    //             //@ts-ignore
 
-    //             return Users?.data?.all_users.filter((item: any) => {
-    //                 return item.role_id == selectValue;
-    //             });
-    //         });
-    //     } else {
-    //         //@ts-ignore
+    search
+    useEffect(() => {
+        setInitialRecords(() => {
+            //@ts-ignore
 
-    //         setInitialRecords(Users?.data?.all_users);
-    //     }
-    //     // eslint-disable-next-line react-hooks/exhaustive-deps
-    // }, [selectValue]);
-
-    //search
-    // useEffect(() => {
-    //     setInitialRecords(() => {
-    //         //@ts-ignore
-
-    //         return Users?.data?.all_users.filter((item: any) => {
-    //             return item.name.toLowerCase().includes(search.toLowerCase()) || item.email.toLowerCase().includes(search.toLowerCase());
-    //         });
-    //     });
-    //     // eslint-disable-next-line react-hooks/exhaustive-deps
-    // }, [search]);
+            return Pages?.data?.pages.filter((item: any) => {
+                return item.name.toLowerCase().includes(search.toLowerCase())
+            });
+        });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [search]);
 
     useEffect(() => {
         const data = sortBy(initialRecords, sortStatus.columnAccessor);
@@ -201,7 +165,7 @@ const PagesList = () => {
 
     const { mutate: deleteUser } = useMutate({
         mutationKey: [`pages/id/${idPage}`],
-        endpoint: `api/dashboard/page/delete/${idPage}`,
+        endpoint: `api/dashboard/page/delete/${idPage?.id}`,
         onSuccess: (data: any) => {
             console.log('done');
             Swal.fire({ title: 'Deleted!', text: 'Page has been deleted.', icon: 'success', customClass: 'sweet-alerts' });
@@ -242,17 +206,6 @@ const PagesList = () => {
                     <input type="text" className="form-input w-[100%]" placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} />
                 </div>
 
-                <div>
-                    <Select
-                        className="lg:w-[200px] min-md:w-[150px]"
-                        placeholder="Filter Role "
-                        options={options}
-                        onChange={(event) => {
-                            setSelectValue(event?.value);
-                        }}
-                        isSearchable={false}
-                    />
-                </div>
                 <div className='flex md:items-center justify-between md:flex-row flex-col'>
                     <button
                         type="button"
@@ -263,7 +216,7 @@ const PagesList = () => {
                     >
                         Add Page
                     </button>
-                    <Link to='/builder' className='mt-0 bg-primary lg:ml-2 text-center hover:bg-blue-500 max-sm:w-[100%] max-md:w-[100%]  py-2 px-5 rounded-lg cursor-pointer text-white '>
+                    <Link to='/builder' className='mt-0 bg-primary lg:ml-2 text-center hover:bg-blue-500 max-sm:w-[100%] max-sm:mt-2  max-md:w-[100%]  py-2 px-5 rounded-lg cursor-pointer text-white '>
                         Page Builder
                     </Link>
 
@@ -282,13 +235,78 @@ const PagesList = () => {
                 {isLoading || isRefetching ? (
                     <Loading />
                 ) : (
-                    <Table
+                    <div className="datatables">
+                    <DataTable
+                        highlightOnHover
+                        className={`${isRtl ? 'whitespace-nowrap table-hover' : 'whitespace-nowrap table-hover'}`}
+                        records={recordsData}
+                        columns={[
+                            { accessor: 'id', title: 'ID', sortable: true , width:"80px"},
+                            {
+                                accessor: 'name',
+                                title: 'Name',
+                                sortable: true,
+                                render: ({ name}:any) => (
+                                    <div>{name}</div>
+                                ),
+                            },
+                            // { accessor: 'content', title: 'Content', sortable: true },
+                            { accessor: 'status',
+                              title: 'Status',
+                              sortable: true,
+                            },
+                            {  accessor: 'searchable',
+                               title: 'Searchable',
+                               sortable: true,
+                            render: ({ searchable }:any) => (
+                                    <div>{searchable? "Yes":"No"}</div>
+                            )},
+                                {
+                                    accessor: 'action',
+                                    title: 'Action',
+                                    titleClassName: '!text-center',
+                                    render: (id) => (
+                                        <div className="flex items-center w-max mx-auto gap-2">
+                                            <Tippy >
+                                                <EditIcon
+                                                action={() => {
+                                                    setOpen(true);
+                                                    //@ts-ignore
 
-                        columns={cols ? cols : []}
-                        //@ts-ignore
-                        data={Pages?.data?.pages? Pages?.data?.pages : []}
-                        showNavigation
+                                                    setEditData(id);
+                                                    setResetForm(false);
+                                                }}
+                                               />
+                                            </Tippy>
+                                            <Tippy >
+                                            <div>
+                                                <SvgDelete
+                                                    action={() => {
+                                                        setPageId(id);
+                                                        showAlert(10, id);
+                                                    }}
+                                                />
+                                            </div>
+                                            </Tippy>
+
+                                        </div>
+                                    ),
+                                },
+                        ]}
+                        totalRecords={initialRecords.length}
+                        recordsPerPage={pageSize}
+                        page={page}
+                        onPageChange={(p) => setPage(p)}
+                        recordsPerPageOptions={PAGE_SIZES}
+                        onRecordsPerPageChange={setPageSize}
+                        sortStatus={sortStatus}
+                        onSortStatusChange={setSortStatus}
+                        selectedRecords={selectedRecords}
+                        onSelectedRecordsChange={setSelectedRecords}
+                        minHeight={200}
+                        paginationText={({ from, to, totalRecords }) => `Showing  ${from} to ${to} of ${totalRecords} entries`}
                     />
+                </div>
                 )}
             </div>
         </div>
