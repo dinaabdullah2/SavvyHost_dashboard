@@ -6,18 +6,16 @@ import { Button } from '../../components/atoms';
 import React from 'react'
 import InputCustom from '../../components/atoms/InputCustom';
 import { TextAreaField } from '../../components/atoms/TextAreaField';
-import { useQueryClient } from '@tanstack/react-query';
 import { useMutate } from '../../hooks/UseMutate';
+import { useQueryClient } from '@tanstack/react-query';
 import Swal from 'sweetalert2';
-
 
 
 
 type InitialValues_TP = {
     [x: string]: string;
 };
-const Blog = ({mainData}:any) => {
-
+const CallToAction = ({mainData}:any) => {
     const [opened, { open, close }] = useDisclosure(false);
     const queryClient = useQueryClient();
 
@@ -38,40 +36,44 @@ const Blog = ({mainData}:any) => {
     });
 
     const initialValues = {
-        Blogs_title: (mainData?.map((item: any) => item?.Blogs_title).join('') || '').replace(/,/g, ''),
-        Blogs_body: (mainData?.map((item: any) => item?.Blogs_body).join('') || '').replace(/,/g, ''),
+        News_title: (mainData?.map((item: any) => item?.News_title).join('') || '').replace(/,/g, ''),
+        News_body: (mainData?.map((item: any) => item?.News_body).join('') || '').replace(/,/g, ''),
     };
-
   return (
     <>
 
     <div className="lg:col-span-12 max-sm:col-span-1 px-1 ">
         <div className='flex flex-row items-center justify-between w-[100%]  border py-3 px-2  bg-gray-100 '>
-            <h6 className=' font-bold '>Blogs Section</h6>
+            <h6 className=' font-bold '>Newsletter Section</h6>
             <button onClick={open}>
                 <IconEdit className='text-blue-700' />
             </button>
         </div>
     </div>
-    <Modal opened={opened}  size='50% ' onClose={close} title="Blog Section">
+    <Modal opened={opened}  size='50% ' onClose={close} title="Newsletter Section">
        <Formik
             initialValues={initialValues}
             // validationSchema={validatopnSchema}
             enableReinitialize={true}
             onSubmit={(values) => {
             console.log("🚀 ~ file: pageFormikData.tsx:65 ~ PageFormikData ~ values:", values)
-            update({ ...values , page:'Blogs_page' });
+                update({ ...values, page:'CallToAction_page' });
             }}
             >
             <Form>
                 <div className=' grid grid-cols-12 gap-2'>
                     <div className='col-span-12'>
                       <label htmlFor="title">title</label>
-                      <InputCustom name='Blogs_title' label='title' />
+                      <InputCustom name='Call_title' label='title' />
                     </div>
                     <div className='col-span-12'>
+                       <label htmlFor="title">Sub title</label>
+                       <TextAreaField name='Call_sup_title' label='sub title'  />
+                    </div>
+                
+                    <div className='col-span-12'>
                        <label htmlFor="title">Description</label>
-                       <TextAreaField name='Blogs_body'  />
+                       <TextAreaField name='Call_body' label='sub title'  />
                     </div>
                     <div className="lg:col-span-12 max-sm:col-span-1 ">
                         <Button variant="primary" type="submit" loading={postLoading} >
@@ -89,4 +91,4 @@ const Blog = ({mainData}:any) => {
   )
 }
 
-export default Blog
+export default CallToAction

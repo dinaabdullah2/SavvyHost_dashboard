@@ -6,6 +6,9 @@ import { Button } from '../../components/atoms';
 import React from 'react'
 import InputCustom from '../../components/atoms/InputCustom';
 import { TextAreaField } from '../../components/atoms/TextAreaField';
+import { useMutate } from '../../hooks/UseMutate';
+import { useQueryClient } from '@tanstack/react-query';
+import Swal from 'sweetalert2';
 
 
 
@@ -13,22 +16,33 @@ import { TextAreaField } from '../../components/atoms/TextAreaField';
 type InitialValues_TP = {
     [x: string]: string;
 };
-const AboutUs = () => {
+const AboutUs = ({mainData}:any) => {
 
     const [opened, { open, close }] = useDisclosure(false);
-    const initialValues: InitialValues_TP = {
-
-    };
 
 
+    const queryClient = useQueryClient();
 
-    const ArrOfFeartures = [
-        {
-          type: "text",
-          id: 1,
-          value: "",
+    // post data
+    const { mutate:update, isLoading: postLoading } = useMutate({
+        mutationKey: ['api/dashboard/part/update'],
+        endpoint: `api/dashboard/part/update`,
+        onSuccess: (data: any) => {
+            queryClient.refetchQueries(['All-Events']);
+            Swal.fire({ title: 'Added!', text: 'Event has been added.', icon: 'success', customClass: 'sweet-alerts' });
+            // setShowCustomizer(false);
         },
-      ];
+        onError: (err: any) => {
+            Swal.fire({ title: 'Event Can not be added!', text: `${err.response.data.message}`, icon: 'error', customClass: 'sweet-alerts' });
+            console.log('error', err);
+        },
+        formData: true,
+    });
+
+    const initialValues = {
+        About_title: (mainData?.map((item: any) => item?.About_title).join('') || '').replace(/,/g, ''),
+        About_body:(mainData?.map((item: any) => item?.About_body).join('') || '').replace(/,/g, ''),
+    };
 
 
   return (
@@ -49,22 +63,19 @@ const AboutUs = () => {
             enableReinitialize={true}
             onSubmit={(values) => {
             console.log("🚀 ~ file: pageFormikData.tsx:65 ~ PageFormikData ~ values:", values)
-                // resetForm ? mutate({ ...values }) : update({ ...values, _methode: 'put' });
+                     update({ ...values , page:"About_page" });
             }}
             >
             <Form>
                 <div className=' grid grid-cols-12 gap-2'>
                     <div className='col-span-12'>
                       <label htmlFor="title">title</label>
-                      <InputCustom name='title' label='title' />
+                      <InputCustom name='About_title' label='title' />
                     </div>
-                    <div className='col-span-12'>
-                       <label htmlFor="title">sub title</label>
-                       <InputCustom name='sub_title' label='sub title'  />
-                    </div>
+             
                     <div className='col-span-12'>
                        <label htmlFor="title">Description</label>
-                       <TextAreaField name='description' label='sub title'  />
+                       <TextAreaField name='About_body' label='sub title'  />
                     </div>
                     <div className="lg:col-span-12 max-sm:col-span-1 ">
                         <Button variant="primary" type="submit" >
