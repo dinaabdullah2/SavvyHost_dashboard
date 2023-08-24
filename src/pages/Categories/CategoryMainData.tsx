@@ -1,19 +1,8 @@
-import React, { Fragment, useState } from 'react';
-import { Tab } from '@headlessui/react';
-import InputCustom from '../../components/atoms/InputCustom';
-import PhoneInput2 from '../../components/atoms/PhoneInput';
-import SelectGender from '../../components/atoms/SelectGender';
-import SelectRole from '../../components/atoms/SelectRole';
-import SelectType from '../../components/atoms/SelectType';
-import SelectStatus from '../../components/atoms/SelectStatus';
-import Editor from '../../components/atoms/Editor';
-import UploadImage from '../../components/atoms/UploadImage';
-import SelectCountries from '../../components/atoms/SelectCountries';
 import { useFormikContext } from 'formik';
+import { useState } from 'react';
 import { Button } from '../../components/atoms';
-import SelectSearch from '../../components/atoms/SelectSearchable';
-import { TextAreaField } from '../../components/atoms/TextAreaField';
-import RadioCustom from '../../components/atoms/RadioCustom';
+import InputCustom from '../../components/atoms/InputCustom';
+import UploadImage from '../../components/atoms/UploadImage';
 
 export default function CategoryMainData({ pageData, resetForm , loadingUpdate , postLoading }: any) {
     const { setFieldValue } = useFormikContext();
@@ -33,7 +22,7 @@ export default function CategoryMainData({ pageData, resetForm , loadingUpdate ,
                 <InputCustom  name="slug" />
             </div>
             <div className="lg:col-span-12 max-sm:col-span-1 ">
-                <UploadImage name="image" />
+                <UploadImage name="image" updateData={pageData} resetForm={resetForm} />
             </div>
 
 

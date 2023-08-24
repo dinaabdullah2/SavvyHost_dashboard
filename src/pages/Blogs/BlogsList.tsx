@@ -130,8 +130,8 @@ const BlogsList = () => {
     const [selectValue, setSelectValue] = useState<any>('');
     const [editData, setEditData] = useState(false);
     const [resetForm, setResetForm] = useState(true);
-
     const [selectedRecords, setSelectedRecords] = useState<any>([]);
+
     const [open, setOpen] = useState(false);
 
     useEffect(() => {

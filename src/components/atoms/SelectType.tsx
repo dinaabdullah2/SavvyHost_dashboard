@@ -12,7 +12,6 @@ type SelectCountries_tp = {
     placeholder?: string;
 };
 export default function SelectType({ updateData, resetForm, onChange, name, label }: SelectCountries_tp) {
-    console.log("🚀 ~ file: SelectType.tsx:16 ~ SelectGender ~ updateData:", updateData)
     const dataOptions = [
       {
           id: 1,

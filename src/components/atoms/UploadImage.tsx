@@ -9,16 +9,15 @@ type ImageCustom_TP = {
     updateData?: any;
     resetForm?: any;
 };
-const UploadImage = ({ className, value, name, type, handleChange,updateData,resetForm, ...props }: ImageCustom_TP) => {
+const UploadImage = ({ className, value, name, type, handleChange, updateData, resetForm, ...props }: ImageCustom_TP) => {
     const { values, setFieldValue } = useFormikContext();
     const [currentImage, setCurrentImage] = useState<File>();
-    const [previewImage, setPreviewImage] = useState<any>('');
+    const [previewImage, setPreviewImage] = useState<any>(!resetForm ? updateData?.avatar || updateData?.image : '');   
     const selectImage = (event: React.ChangeEvent<HTMLInputElement>) => {
         const selectedFiles = event.target.files as FileList;
         setCurrentImage(selectedFiles?.[0]);
         setPreviewImage(URL.createObjectURL(selectedFiles?.[0]));
         setFieldValue(name, selectedFiles?.[0]);
-
     };
     return (
         <>
@@ -27,24 +26,21 @@ const UploadImage = ({ className, value, name, type, handleChange,updateData,res
                 name={name}
                 type="file"
                 accept="image/*"
-
                 onChange={selectImage}
             />
 
             <>
-                {previewImage ?
+                {previewImage ? (
                     <div>
                         <img className="preview w-[50%] m-auto" src={previewImage} alt="" />
                     </div>
-                 :
+                ) : (
                     <div>
                         <img className="preview w-[50%] m-auto" src="/assets/images/file-preview.svg" alt="" />
                     </div>
-                }
+                )}
             </>
-
-
-    </>
+        </>
     );
 };
 

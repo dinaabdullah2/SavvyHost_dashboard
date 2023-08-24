@@ -65,7 +65,6 @@ export default function PageFormikData({ pageData, resetForm, setOpen }: any) {
                 // validationSchema={validatopnSchema}
                 enableReinitialize={true}
                 onSubmit={(values) => {
-                    console.log("🚀 ~ file: pageFormikData.tsx:65 ~ PageFormikData ~ values:", values)
                     resetForm ? mutate({ ...values }) : update({ ...values, _methode: 'put' });
                 }}
             >

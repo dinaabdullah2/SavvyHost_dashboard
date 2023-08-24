@@ -21,13 +21,11 @@ export default function SelectRole({ updateData, resetForm, onChange, name, labe
         endpoint: 'api/dashboard/user/create',
         queryKey: ['Role-option'],
     });
-    console.log('🚀 ~ file: SelectRole.tsx:20 ~ CountryOptions:', CountryOptions);
 
     const dataOptions = CountryOptions?.data?.roles.map((role: any) => ({
         label: role.role_name,
         value: role.id,
     }));
-    console.log("🚀 ~ file: SelectRole.tsx:30 ~ dataOptions ~ dataOptions:", dataOptions)
 
     return (
         <Select
