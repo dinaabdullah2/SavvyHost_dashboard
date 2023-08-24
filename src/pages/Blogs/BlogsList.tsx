@@ -130,33 +130,8 @@ const BlogsList = () => {
     const [selectValue, setSelectValue] = useState<any>('');
     const [editData, setEditData] = useState(false);
     const [resetForm, setResetForm] = useState(true);
-    { accessor: 'id', title: 'ID', sortable: true,width:"71px"  },
-    {
-        accessor: 'title',
-        title: 'Title',
-        width:"200px",
-        sortable: true,
-        render: ({ title, image }) => (
-            <div className="flex items-center ">
-                <img className="w-9 h-9 rounded-full ltr:mr-2 rtl:ml-2 object-cover" src={image} alt="" />
-                <div className='truncate'>{title}</div>
-            </div>
-        ),
-    },
-    {
-        accessor: 'location',
-        title: 'Location',
-        width:"250px",
-        sortable: true,
-        render: ({ location}) => (
-            <div className="truncate  ">
-                {location}
-            </div>
-        ),
-    },
-    // { accessor: 'location',title:'Location', sortable: true },
-    { accessor: 'start_date', title: 'Start Date', sortable: true },
-    { accessor: 'end_date', title: 'End Date', sortable: true },
+
+    const [selectedRecords, setSelectedRecords] = useState<any>([]);
     const [open, setOpen] = useState(false);
 
     useEffect(() => {
