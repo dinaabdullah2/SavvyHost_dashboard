@@ -17,32 +17,30 @@ import { setPageTitle } from '../../store/themeConfigSlice';
 import { Loader } from '@mantine/core';
 import Loading from '../../components/atoms/loading';
 import { SvgDelete } from '../../components/atoms/icons/SvgDelete';
-import AddEvent from './AddEvent';
+import { Button } from '../../components/atoms';
+import InputCustom from '../../components/atoms/InputCustom';
+// import AddCategory from './AddCategory';
 import Tippy from '@tippyjs/react';
+import { Form, Formik } from 'formik';
 
 
-type AllEvents = {
+type AllDomains = {
     [x: string]: string;
 };
-const EventsList = () => {
+const DomainsList = () => {
     const dispatch = useDispatch();
     useEffect(() => {
-        dispatch(setPageTitle('Events Table'));
+        dispatch(setPageTitle('Categories Table'));
     });
     const isRtl = useSelector((state: IRootState) => state.themeConfig.rtlClass) === 'rtl' ? true : false;
-    interface Event {
+    interface Domain {
         id: number;
-        image: string;
-        title: string;
-        status: string;
-        searchable:any;
-        location:any;
-        start_date:any;
-        end_date:any;
-    }
-    const [idEvent, setEventId] = useState<any>();
+        name: string;
 
-    // const cols = useMemo<ColumnDef<AllEvents>[]>(
+    }
+    const [idDomain, setDomainId] = useState<any>();
+
+    // const cols = useMemo<ColumnDef<AllCategories>[]>(
     //     () => [
     //         {
     //             header: 'ID',
@@ -50,48 +48,27 @@ const EventsList = () => {
     //             accessorKey: 'id',
     //         },
     //         {
-    //             header: 'Event',
+    //             header: 'Category',
     //             cell: (info:any) => (
     //                 <div className=' inline-flex  items-center'>
     //                      <div>
-    //                         <img className='rounded-full w-[30px] h-[30px] ' src={info?.row?.original?.avatar}  />
+    //                         <img className='rounded-full w-[30px] h-[30px] ' src={info?.row?.original?.image}  />
     //                      </div>
     //                      <div className='ml-2  truncate '>
-    //                        {info?.row?.original?.title }
+    //                        {info?.row?.original?.name }
     //                     </div>
     //                 </div>
     //             ),
-    //             accessorKey: 'avatar',
+    //             accessorKey: 'name',
     //         },
+
 
     //          {
-    //             header: 'Location',
-
-    //             cell: (info:any) => (
-
-    //                 <div className='truncate w-[150px]'>{info?.row?.original?.location}</div>
-    //             ),
-    //             accessorKey: 'location',
-    //         },
-    //         {
-    //             header: 'Start Date',
+    //             header: 'Slug',
     //             cell: (info:any) => info.renderValue(),
-    //             accessorKey: 'start_date',
+    //             accessorKey: 'slug',
     //         },
-    //         {
-    //             header: 'End Date',
-    //             cell: (info:any) => info.renderValue(),
-    //             accessorKey: 'end_date',
-    //         },
-    //         {
-    //             header: 'Searchable',
-    //             cell: (info:any) => (
-    //                 <div>
-    //                   {info.row.original.searchable == 1 ? "Yes" : 'No' }
-    //                 </div>
-    //             ),
-    //             accessorKey: 'searchable',
-    //         },
+
     //         {
     //             header: `Action`,
     //             cell: (info:any) => (
@@ -100,7 +77,7 @@ const EventsList = () => {
     //                         <SvgDelete
 
     //                             action={() => {
-    //                                 setEventId(info.row.original.id);
+    //                                 setCategoryId(info.row.original.id);
     //                                 showAlert(10, info.row.original.id);
     //                             }}
     //                         />
@@ -124,21 +101,21 @@ const EventsList = () => {
     // );
 
     const {
-        data: Events,
+        data: Domains,
         isLoading,
         isRefetching,
         isFetching,
         refetch,
-    } = useFetch<AllEvents[]>({
-        endpoint: `api/dashboard/event/index`,
-        queryKey: [`All-Events`],
+    } = useFetch<AllDomains[]>({
+        endpoint: `api/dashboard/event/domain/index`,
+        queryKey: [`All-Domains`],
     });
 
     const [page, setPage] = useState(1);
     const PAGE_SIZES = [10, 20, 30, 50, 100];
     const [pageSize, setPageSize] = useState(PAGE_SIZES[0]);
     //@ts-ignore
-    const [initialRecords, setInitialRecords] = useState<any>(sortBy(Events?.data?.events, 'id'));
+    const [initialRecords, setInitialRecords] = useState<any>(sortBy(Domains?.data?.domains, 'id'));
     const [recordsData, setRecordsData] = useState(initialRecords);
     const [showCustomizer, setShowCustomizer] = useState(false);
     const [search, setSearch] = useState('');
@@ -146,15 +123,15 @@ const EventsList = () => {
     const [selectValue, setSelectValue] = useState<any>('');
     const [editData, setEditData] = useState(false);
     const [resetForm, setResetForm] = useState(true);
-    const [open, setOpen] = useState(false);
     const [selectedRecords, setSelectedRecords] = useState<any>([]);
+    const [open, setOpen] = useState(false);
+
 
     useEffect(() => {
         //@ts-ignore
-
-        setInitialRecords(sortBy(Events?.data?.events, 'id'));
+        setInitialRecords(sortBy(Domains?.data?.domains, 'id'));
         //@ts-ignore
-    }, [Events?.data?.events]);
+    }, [Domains?.data?.domains]);
 
     useEffect(() => {
         setPage(1);
@@ -190,8 +167,8 @@ const EventsList = () => {
         setInitialRecords(() => {
             //@ts-ignore
 
-            return Events?.data?.events.filter((item: any) => {
-                return item.title.toLowerCase().includes(search.toLowerCase()) || item.location.toLowerCase().includes(search.toLowerCase());
+            return Domains?.data?.domains.filter((item: any) => {
+                return item.name.toLowerCase().includes(search.toLowerCase()) ;
             });
         });
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -205,18 +182,60 @@ const EventsList = () => {
     }, [sortStatus]);
     const queryClient = useQueryClient();
 
-    const { mutate: deleteEvent } = useMutate({
-        mutationKey: [`events/id/${idEvent}`],
-        endpoint: `api/dashboard/event/delete/${idEvent?.id}`,
+    type InitialValues_TP = {
+        [x: string]: string;
+    };
+    const initialValues: InitialValues_TP = {
+        //@ts-ignore
+        name:  !resetForm ? editData?.name : '',
+
+    };
+    // post data
+    const { mutate, isLoading: postLoading } = useMutate({
+        mutationKey: ['domains/id'],
+        endpoint: `api/dashboard/event/domain/store`,
+        onSuccess: (data: any) => {
+            queryClient.refetchQueries(['All-Domains']);
+            Swal.fire({ title: 'Added!', text: 'Domain has been added.', icon: 'success', customClass: 'sweet-alerts' });
+            // setShowCustomizer(false);
+            setOpen(false);
+        },
+        onError: (err: any) => {
+            Swal.fire({ title: 'Domain Can not be added!', text: `${err.response.data.message}`, icon: 'error', customClass: 'sweet-alerts' });
+            console.log('error', err);
+        },
+        formData: true,
+    });
+
+    const { mutate: update , isLoading:loadingUpdate } = useMutate({
+        mutationKey: ['domain/id'],
+         //@ts-ignore
+        endpoint: `api/dashboard/event/domain/update/${editData?.id}`,
+        onSuccess: (data: any) => {
+            queryClient.refetchQueries(['All-Domains']);
+            Swal.fire({ title: 'Updated!', text: 'Domain has been updated.', icon: 'success', customClass: 'sweet-alerts' });
+            // setShowCustomizer(false);
+            setOpen(false);
+        },
+        onError: (err: any) => {
+            Swal.fire({ title: 'Domain Can not be Updated!', text: `${err.response.data.message}`, icon: 'error', customClass: 'sweet-alerts' });
+        },
+        formData: true,
+    });
+
+
+    const { mutate: deleteDomain } = useMutate({
+        mutationKey: [`domains/id/${idDomain}`],
+        endpoint: `api/dashboard/event/domain/delete/${idDomain?.id}`,
         onSuccess: (data: any) => {
             console.log('done');
-            Swal.fire({ title: 'Deleted!', text: 'Event has been deleted.', icon: 'success', customClass: 'sweet-alerts' });
-            queryClient.refetchQueries(['api/dashboard/event/index']);
+            Swal.fire({ title: 'Deleted!', text: 'Domain has been deleted.', icon: 'success', customClass: 'sweet-alerts' });
+            queryClient.refetchQueries(['api/dashboard/event/domain/index']);
             refetch();
         },
         onError: (err: any) => {
             console.log('error', err);
-            Swal.fire({ title: 'Sorry!', text: 'Event can not be Deleted .', icon: 'error', customClass: 'sweet-alerts' });
+            Swal.fire({ title: 'Sorry!', text: 'Domain can not be Deleted .', icon: 'error', customClass: 'sweet-alerts' });
         },
         method: 'delete',
         formData: false,
@@ -234,42 +253,26 @@ const EventsList = () => {
                 customClass: 'sweet-alerts',
             }).then((result) => {
                 if (result.value) {
-                    deleteEvent(id?.id);
+                    deleteDomain(id?.id);
                 }
             });
         }
     };
 
     return (
-        <div className="panel">
+        <div className='grid grid-cols-12 gap-5'>
+
+        <div className="panel lg:col-span-8 col-span-12">
+
             <div className="flex md:items-center md:flex-row flex-col mb-5 gap-5">
-                <h5 className="font-semibold text-lg dark:text-white-light">All Events</h5>
+                <h5 className="font-semibold text-lg dark:text-white-light">All Domains</h5>
                 <div className="lg:ltr:ml-auto lg:rtl:mr-auto min-md:ltr:mr-auto  min-md:rtl:ml-auto">
                     <input type="text" className="form-input w-[100%]" placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} />
                 </div>
-
                 <div>
-                    <button
-                        type="button"
-                        className="bg-primary font-semibold hover:bg-blue-500 max-sm:w-[100%] max-md:w-[100%] text-white py-2 px-5 rounded-lg cursor-pointer"
-                        onClick={() => {
-                            setOpen(true), setResetForm(true);
-                        }}
-                    >
-                        Add Event
-                    </button>
-
-                    <AddEvent
-                        resetForm={resetForm}
-                        setOpen={setOpen}
-                        open={open}
-                        setResetForm={setResetForm}
-                        eventData={editData}
-                        showCustomizer={showCustomizer}
-                        setShowCustomizer={setShowCustomizer}
-                    />
                 </div>
             </div>
+
             <div className="datatables">
                 {isLoading || isRefetching ? (
                     <Loading />
@@ -280,32 +283,17 @@ const EventsList = () => {
                         className={`${isRtl ? 'whitespace-nowrap table-hover' : 'whitespace-nowrap table-hover'}`}
                         records={recordsData}
                         columns={[
-                            { accessor: 'id', title: 'ID', sortable: true,width:"71px"  },
-                            {
-                                accessor: 'title',
-                                title: 'Title',
-                                width:"200px",
-                                sortable: true,
-                                render: ({ title, image }:any) => (
-                                    <div className="flex items-center ">
-                                        <img className="w-9 h-9 rounded-full ltr:mr-2 rtl:ml-2 object-cover" src={image} alt="" />
-                                        <div className='truncate'>{title}</div>
-                                    </div>
-                                ),
-                            },
-                            {
-                                accessor: 'location',
-                                title: 'Location',
-                                width:"250px",
-                                sortable: true,
-                                render: ({ location}) => (
-                                    <div className="truncate  ">
-                                        {location}
-                                    </div>
-                                ),
-                            },
-                            { accessor: 'start_date', title: 'Start Date', sortable: true },
-                            { accessor: 'end_date', title: 'End Date', sortable: true },
+                                { accessor: 'id', title: 'ID', sortable: true ,width:'80px'},
+                                {
+                                    accessor: 'name',
+                                    title: 'Domain',
+                                    sortable: true,
+                                    render: ({ name }:any) => (
+                                        <div className="flex items-center w-max">
+                                            <div>{name}</div>
+                                        </div>
+                                    ),
+                                },
                                 {
                                     accessor: 'action',
                                     title: 'Action',
@@ -326,7 +314,7 @@ const EventsList = () => {
                                             <div>
                                                 <SvgDelete
                                                     action={() => {
-                                                        setEventId(id);
+                                                        setDomainId(id);
                                                         showAlert(10, id);
                                                     }}
                                                 />
@@ -354,7 +342,44 @@ const EventsList = () => {
                 )}
             </div>
         </div>
+        <div className='panel lg:col-span-4 col-span-12'>
+        <div className='flex justify-between items-center'>
+        <h6 className="font-semibold text-lg dark:text-white-light py-2">{resetForm ? 'Add Domain' : 'Edit Domain'}</h6>
+        {!resetForm?
+             //@ts-ignore
+            <Button variant='primary' className='px-2 py-1' onClick={()=>{setResetForm(true)}}>Add New Domain</Button>
+            :
+            null
+        }
+        </div>
+        <Formik
+            initialValues={initialValues}
+                // validationSchema={validatopnSchema}
+                enableReinitialize={true}
+                onSubmit={(values) => {
+                     resetForm ? mutate({ ...values }) : update({ ...values, _methode: 'put' });
+                }}
+            >
+                {({ setFieldValue }) => (
+                    <Form>
+
+                <div className="grid lg:grid-cols-12 max-sm:grid-cols-1 gap-5">
+                    <div className="lg:col-span-12 max-sm:col-span-1 ">
+                        <label htmlFor="name">Name</label>
+                        <InputCustom type="text" name="name" />
+                    </div>
+                    <div className="lg:col-span-12 max-sm:col-span-1 ">
+                        <Button variant='primary' type='submit' >
+                            submit
+                        </Button>
+                    </div>
+                </div>
+              </Form>
+                )}
+            </Formik>
+        </div>
+        </div>
     );
 };
 
-export default EventsList;
+export default DomainsList;

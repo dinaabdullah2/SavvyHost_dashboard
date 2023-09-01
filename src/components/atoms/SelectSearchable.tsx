@@ -25,6 +25,7 @@ const SelectSearch = ({ updateData, resetForm, onChange, name, label }: SelectSe
         <Select
             placeholder={'updateData?.country?.name'}
             label={label}
+            
             id="optionStatus"
             name={name}
             loadingPlaceholder={'loading'}

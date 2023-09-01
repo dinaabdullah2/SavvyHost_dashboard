@@ -15,6 +15,7 @@ import SelectSearch from '../../components/atoms/SelectSearchable';
 import { TextAreaField } from '../../components/atoms/TextAreaField';
 import RadioCustom from '../../components/atoms/RadioCustom';
 import DateInput from '../../components/atoms/DateInput';
+import SelectDomain from '../../components/atoms/SelectDomain';
 
 export default function EventMainData({ eventData, resetForm , loadingUpdate , postLoading }: any) {
     const { setFieldValue } = useFormikContext();
@@ -40,6 +41,17 @@ export default function EventMainData({ eventData, resetForm , loadingUpdate , p
             <div className="lg:col-span-12 max-sm:col-span-1 ">
                 <label htmlFor="name"> Location</label>
                 <InputCustom name="location" type='text' />
+           </div>
+           <div className="lg:col-span-12 max-sm:col-span-1 ">
+                <label htmlFor="domains"> Domains</label>
+                <SelectDomain
+                 updateData={eventData}
+                 name="domain_ids"
+                 resetForm={resetForm}
+                 onChange={(option) => {
+                     setFieldValue('domain_ids', option )
+                 }}
+                />
            </div>
             <div className="lg:col-span-12 max-sm:col-span-1 ">
                 <label htmlFor="content">Content</label>

@@ -70,30 +70,25 @@ const Sidebar = () => {
                     </div>
                     <PerfectScrollbar className="h-[calc(100vh-80px)] relative">
                         <ul className="relative font-semibold space-y-0.5 p-4 py-0">
-                            <li className="menu nav-item">
-                                <button type="button" className={`${currentMenu === 'dashboard' ? 'active' : ''} nav-link group w-full`} onClick={() => toggleMenu('dashboard')}>
-                                    <div className="flex items-center">
-                                        <svg className="group-hover:!text-primary" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <path
-                                                opacity="0.5"
-                                                d="M2 12.2039C2 9.91549 2 8.77128 2.5192 7.82274C3.0384 6.87421 3.98695 6.28551 5.88403 5.10813L7.88403 3.86687C9.88939 2.62229 10.8921 2 12 2C13.1079 2 14.1106 2.62229 16.116 3.86687L18.116 5.10812C20.0131 6.28551 20.9616 6.87421 21.4808 7.82274C22 8.77128 22 9.91549 22 12.2039V13.725C22 17.6258 22 19.5763 20.8284 20.7881C19.6569 22 17.7712 22 14 22H10C6.22876 22 4.34315 22 3.17157 20.7881C2 19.5763 2 17.6258 2 13.725V12.2039Z"
-                                                fill="currentColor"
-                                            />
-                                            <path
-                                                d="M9 17.25C8.58579 17.25 8.25 17.5858 8.25 18C8.25 18.4142 8.58579 18.75 9 18.75H15C15.4142 18.75 15.75 18.4142 15.75 18C15.75 17.5858 15.4142 17.25 15 17.25H9Z"
-                                                fill="currentColor"
-                                            />
-                                        </svg>
-                                        <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('dashboard')}</span>
-                                    </div>
 
-                                    <div className={currentMenu === 'dashboard' ? 'rotate-90' : 'rtl:rotate-180'}>
-                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M9 5L15 12L9 19" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                                        </svg>
-                                    </div>
-                                </button>
-
+                                <li className="nav-item">
+                                        <NavLink to="/" className="group">
+                                            <div className="flex items-center">
+                                                <svg className="group-hover:!text-primary" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path
+                                                    opacity="0.5"
+                                                    d="M2 12.2039C2 9.91549 2 8.77128 2.5192 7.82274C3.0384 6.87421 3.98695 6.28551 5.88403 5.10813L7.88403 3.86687C9.88939 2.62229 10.8921 2 12 2C13.1079 2 14.1106 2.62229 16.116 3.86687L18.116 5.10812C20.0131 6.28551 20.9616 6.87421 21.4808 7.82274C22 8.77128 22 9.91549 22 12.2039V13.725C22 17.6258 22 19.5763 20.8284 20.7881C19.6569 22 17.7712 22 14 22H10C6.22876 22 4.34315 22 3.17157 20.7881C2 19.5763 2 17.6258 2 13.725V12.2039Z"
+                                                    fill="currentColor"
+                                                />
+                                                <path
+                                                    d="M9 17.25C8.58579 17.25 8.25 17.5858 8.25 18C8.25 18.4142 8.58579 18.75 9 18.75H15C15.4142 18.75 15.75 18.4142 15.75 18C15.75 17.5858 15.4142 17.25 15 17.25H9Z"
+                                                    fill="currentColor"
+                                                 />
+                                                </svg>
+                                                <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">Dashboard</span>
+                                            </div>
+                                        </NavLink>
+                                    </li>
                                 {/* <AnimateHeight duration={300} height={currentMenu === 'dashboard' ? 'auto' : 0}>
                                     <ul className="sub-menu text-gray-500">
                                         <li>
@@ -110,7 +105,7 @@ const Sidebar = () => {
                                         </li>
                                     </ul>
                                 </AnimateHeight> */}
-                            </li>
+                    
 
                              {/* <h2
                                 className="py-3 px-7 flex items-center uppercase font-extrabold bg-white-light/30 dark:bg-dark dark:bg-opacity-[0.08] -mx-4 mb-1">
@@ -122,8 +117,8 @@ const Sidebar = () => {
 
                             <li className="nav-item">
                                 <ul>
-                                    <li className="nav-item">
-                                        <NavLink to="/users" className="group">
+                                    <li className="menu nav-item">
+                                        <button type="button" className={`${currentMenu === 'users' ? 'active' : ''} nav-link group w-full`} onClick={() => toggleMenu('users')}>
                                             <div className="flex items-center">
                                                 <svg className="group-hover:!text-primary" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                     <circle opacity="0.5" cx="15" cy="6" r="3" fill="currentColor" />
@@ -131,14 +126,32 @@ const Sidebar = () => {
                                                     <circle cx="9.00098" cy="6" r="4" fill="currentColor" />
                                                     <ellipse cx="9.00098" cy="17.001" rx="7" ry="4" fill="currentColor" />
                                                 </svg>
-                                                <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('users')}</span>
+                                                <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">Users</span>
                                             </div>
-                                        </NavLink>
+
+                                            <div className={currentMenu === 'users' ? '!rotate-90' : 'rtl:rotate-180'}>
+                                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="M9 5L15 12L9 19" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                                                </svg>
+                                            </div>
+                                        </button>
+
+                                        <AnimateHeight duration={300} height={currentMenu === 'users' ? 'auto' : 0}>
+                                            <ul className="sub-menu text-gray-500">
+                                                <li>
+                                                    <NavLink  to="/users" >All Users</NavLink>
+                                                </li>
+                                                <li>
+                                                    <NavLink to="/Subscribers">All Subscribers</NavLink>
+                                                </li>
+
+                                            </ul>
+                                        </AnimateHeight>
                                     </li>
                                     <li className="nav-item">
                                         <NavLink to="/pages" className="group">
                                             <div className="flex items-center">
-                                                    <svg className="group-hover:!text-primary" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <svg className="group-hover:!text-primary" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                     <path
                                                         opacity="0.5"
                                                         fillRule="evenodd"
@@ -165,7 +178,7 @@ const Sidebar = () => {
                                     </li>
 
                                     <li className="menu nav-item">
-                                        <button type="button" className={`${currentMenu === 'invoice' ? 'active' : ''} nav-link group w-full`} onClick={() => toggleMenu('invoice')}>
+                                        <button type="button" className={`${currentMenu === 'Blogs' ? 'active' : ''} nav-link group w-full`} onClick={() => toggleMenu('Blogs')}>
                                             <div className="flex items-center">
                                                 <svg className="group-hover:!text-primary" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                         <path
@@ -198,7 +211,7 @@ const Sidebar = () => {
                                             </div>
                                         </button>
 
-                                        <AnimateHeight duration={300} height={currentMenu === 'invoice' ? 'auto' : 0}>
+                                        <AnimateHeight duration={300} height={currentMenu === 'Blogs' ? 'auto' : 0}>
                                             <ul className="sub-menu text-gray-500">
                                                 <li>
                                                     <NavLink to="/blogs">All Blogs</NavLink>
@@ -210,7 +223,43 @@ const Sidebar = () => {
                                             </ul>
                                         </AnimateHeight>
                                     </li>
-                                    <li className="nav-item">
+                                    <li className="menu nav-item">
+                                        <button type="button" className={`${currentMenu === 'events' ? 'active' : ''} nav-link group w-full`} onClick={() => toggleMenu('events')}>
+                                            <div className="flex items-center">
+                                                <svg className="group-hover:!text-primary" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <path
+                                                        d="M6.94028 2C7.35614 2 7.69326 2.32421 7.69326 2.72414V4.18487C8.36117 4.17241 9.10983 4.17241 9.95219 4.17241H13.9681C14.8104 4.17241 15.5591 4.17241 16.227 4.18487V2.72414C16.227 2.32421 16.5641 2 16.98 2C17.3958 2 17.733 2.32421 17.733 2.72414V4.24894C19.178 4.36022 20.1267 4.63333 20.8236 5.30359C21.5206 5.97385 21.8046 6.88616 21.9203 8.27586L22 9H2.92456H2V8.27586C2.11571 6.88616 2.3997 5.97385 3.09665 5.30359C3.79361 4.63333 4.74226 4.36022 6.1873 4.24894V2.72414C6.1873 2.32421 6.52442 2 6.94028 2Z"
+                                                        fill="currentColor"
+                                                    />
+                                                    <path
+                                                        opacity="0.5"
+                                                        d="M21.9995 14.0001V12.0001C21.9995 11.161 21.9963 9.66527 21.9834 9H2.00917C1.99626 9.66527 1.99953 11.161 1.99953 12.0001V14.0001C1.99953 17.7713 1.99953 19.6569 3.1711 20.8285C4.34267 22.0001 6.22829 22.0001 9.99953 22.0001H13.9995C17.7708 22.0001 19.6564 22.0001 20.828 20.8285C21.9995 19.6569 21.9995 17.7713 21.9995 14.0001Z"
+                                                        fill="currentColor"
+                                                    />
+                                                </svg>
+                                                <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">Events</span>
+                                            </div>
+
+                                            <div className={currentMenu === 'events' ? '!rotate-90' : 'rtl:rotate-180'}>
+                                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="M9 5L15 12L9 19" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                                                </svg>
+                                            </div>
+                                        </button>
+
+                                        <AnimateHeight duration={300} height={currentMenu === 'events' ? 'auto' : 0}>
+                                            <ul className="sub-menu text-gray-500">
+                                                <li>
+                                                    <NavLink to="/events" >All Events</NavLink>
+                                                </li>
+                                                <li>
+                                                    <NavLink to="/domains">All Domains</NavLink>
+                                                </li>
+
+                                            </ul>
+                                        </AnimateHeight>
+                                    </li>
+                                    {/* <li className="nav-item">
                                         <NavLink to="/events" className="group">
                                             <div className="flex items-center">
                                             <svg className="group-hover:!text-primary" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -227,11 +276,10 @@ const Sidebar = () => {
                                                 <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">Events</span>
                                             </div>
                                         </NavLink>
-                                    </li>
+                                    </li> */}
                                     <li className="nav-item">
                                         <NavLink to="/" className="group">
                                             <div className="flex items-center">
-
                                                 <svg className="group-hover:!text-primary" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                     <path
                                                         d="M4.97883 9.68508C2.99294 8.89073 2 8.49355 2 8C2 7.50645 2.99294 7.10927 4.97883 6.31492L7.7873 5.19153C9.77318 4.39718 10.7661 4 12 4C13.2339 4 14.2268 4.39718 16.2127 5.19153L19.0212 6.31492C21.0071 7.10927 22 7.50645 22 8C22 8.49355 21.0071 8.89073 19.0212 9.68508L16.2127 10.8085C14.2268 11.6028 13.2339 12 12 12C10.7661 12 9.77318 11.6028 7.7873 10.8085L4.97883 9.68508Z"
@@ -261,7 +309,7 @@ const Sidebar = () => {
                                     <li className="nav-item">
                                         <NavLink to="/" className="group">
                                             <div className="flex items-center">
-                                            <svg className="group-hover:!text-primary" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <svg className="group-hover:!text-primary" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                     <path
                                                         opacity="0.5"
                                                         d="M3 10C3 6.22876 3 4.34315 4.17157 3.17157C5.34315 2 7.22876 2 11 2H13C16.7712 2 18.6569 2 19.8284 3.17157C21 4.34315 21 6.22876 21 10V14C21 17.7712 21 19.6569 19.8284 20.8284C18.6569 22 16.7712 22 13 22H11C7.22876 22 5.34315 22 4.17157 20.8284C3 19.6569 3 17.7712 3 14V10Z"

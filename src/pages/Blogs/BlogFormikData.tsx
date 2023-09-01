@@ -68,7 +68,8 @@ export default function BlogFormikData({ blogData, resetForm, setOpen }: any) {
                 // validationSchema={validatopnSchema}
                 enableReinitialize={true}
                 onSubmit={(values) => {
-                    resetForm ? mutate({ ...values, tags: values.tags.map((item) => item.value) }) : update({ ...values, _methode: 'put' });
+                    //@ts-ignore
+                    resetForm ? mutate({ ...values, tags: values?.tags?.map((item:any) => item.value) }) : update({ ...values , tags: values?.tags?.map((item:any) => item.value), _methode: 'put' });
                 }}
             >
                 {({ setFieldValue }) => (

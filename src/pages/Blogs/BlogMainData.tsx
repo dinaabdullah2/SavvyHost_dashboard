@@ -187,12 +187,14 @@ export default function BlogMainData({ blogData, resetForm, loadingUpdate, postL
                             <label htmlFor="tags"> Tags</label>
                             <CreatableSelect
                                 id="tags"
+                                //@ts-ignore
+                                defaultValue={!resetForm ? blogData?.tags?.map(tag => ({label: tag?.name, value: tag?.name})): []}
                                 name="tags"
                                 options={[{label:"sdrh" , value:"sfgsrg"}]}
-                                //    resetForm={resetForm}
+                                // resetForm={resetForm}
                                 isMulti
                                 placeholder="create or select tags"
-                                onChange={(option) => {
+                                onChange={(option:any) => {
                                     setFieldValue('tags', option);
                                 }}
                             />

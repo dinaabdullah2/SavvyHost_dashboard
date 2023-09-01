@@ -31,6 +31,7 @@ export default function EventFormikData({ eventData, resetForm, setOpen }: any) 
         start_date:!resetForm ? eventData?.start_date : '',
         end_date:!resetForm ? eventData?.end_date : '',
         location:!resetForm ? eventData?.location : '',
+        domain_ids: !resetForm ? eventData?.domain_ids : [],
 
     };
     // post data
@@ -71,8 +72,10 @@ export default function EventFormikData({ eventData, resetForm, setOpen }: any) 
                 // validationSchema={validatopnSchema}
                 enableReinitialize={true}
                 onSubmit={(values) => {
-                    console.log("🚀 ~ file: pageFormikData.tsx:65 ~ PageFormikData ~ values:", values)
-                    resetForm ? mutate({ ...values }) : update({ ...values, _methode: 'put' });
+                    console.log("🚀 ~ file: eventFormikData.tsx:65 ~ EventFormikData ~ values:", values)
+                    //@ts-ignore
+                    resetForm ? mutate({ ...values ,domain_ids: values?.domain_ids?.map((item:any) => item.value) }) : update({ ...values,domain_ids: values?.domain_ids?.map((item:any) => item.value) , _methode: 'put' });
+                    // resetForm ? mutate({ ...values }) : update({ ...values, _methode: 'put' });
                 }}
             >
                 {({ setFieldValue }) => (

@@ -5,6 +5,8 @@ import { Navigate } from 'react-router-dom';
 import CategoriesList from '../pages/Categories/CategoriesList';
 import Login from '../pages/Authentication/Login';
 import PageBuilder from '../pages/PageBuilder/PageBuilder';
+import DomainsList from '../pages/Domains/DomainsList';
+import SubscribersList from '../pages/Subscribers/SubscribersList';
 const Index = lazy(() => import('../pages/Index'));
 
 const UsersList = lazy(() => import('../pages/Users/UsersList'));
@@ -47,6 +49,14 @@ const routes = [
         path: '/events',
         element: <EventsList />,
     },
+    {
+        path: '/domains',
+        element: <DomainsList />,
+    },
+    {
+        path: '/subscribers',
+        element: <SubscribersList />,
+    }
 ];
 
 export { routes };
