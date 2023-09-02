@@ -17,104 +17,46 @@ import { setPageTitle } from '../../store/themeConfigSlice';
 import { Loader } from '@mantine/core';
 import Loading from '../../components/atoms/loading';
 import { SvgDelete } from '../../components/atoms/icons/SvgDelete';
-import AddPage from './AddPage';
-import { Link } from 'react-router-dom';
+import { Button } from '../../components/atoms';
+import InputCustom from '../../components/atoms/InputCustom';
+// import AddCategory from './AddCategory';
 import Tippy from '@tippyjs/react';
+import { Form, Formik } from 'formik';
 
 
-
-type AllPages = {
+type AllSurroundingsTypes = {
     [x: string]: string;
 };
-const PagesList = () => {
+const SurroundingsTypesList = () => {
     const dispatch = useDispatch();
     useEffect(() => {
-        dispatch(setPageTitle('Pages Table'));
+        dispatch(setPageTitle('Surroundings Types  Table'));
     });
     const isRtl = useSelector((state: IRootState) => state.themeConfig.rtlClass) === 'rtl' ? true : false;
-    interface Page {
+    interface SurroundingsType {
         id: number;
-        image: string;
         name: string;
-        status: string;
-        searchable:any;
+
     }
-    const [idPage, setPageId] = useState<any>();
+    const [idSurrounding, setSurroundingId] = useState<any>();
 
-    // const cols = useMemo<ColumnDef<AllPages>[]>(
-    //     () => [
-    //         {
-    //             header: 'ID',
-    //             cell: (info:any) => info.renderValue(),
-    //             accessorKey: 'id',
-    //         },
-    //         {
-    //             header: 'Name',
-    //             cell: (info:any) =>  info.renderValue(),
-    //             accessorKey: 'name',
-    //         },
-
-    //          {
-    //             header: 'Status',
-    //             cell: (info:any) => info.renderValue(),
-    //             accessorKey: 'status',
-    //         },
-    //         {
-    //             header: 'Searchable',
-    //             cell: (info:any) => (
-    //                 <div>
-    //                   {info.row.original.searchable == 1 ? "Yes" : 'No' }
-    //                 </div>
-    //             ),
-    //             accessorKey: 'searchable',
-    //         },
-    //         {
-    //             header: `Action`,
-    //             cell: (info:any) => (
-    //                 <div className="flex gap-2">
-    //                     <div>
-    //                         <SvgDelete
-
-    //                             action={() => {
-    //                                 setPageId(info.row.original.id);
-    //                                 showAlert(10, info.row.original.id);
-    //                             }}
-    //                         />
-    //                     </div>
-    //                     <div>
-    //                         <EditIcon
-    //                             action={() => {
-    //                                 setOpen(true);
-    //                                 //@ts-ignore
-    //                                 setEditData(info.row.original);
-    //                                 setResetForm(false);
-    //                             }}
-    //                         />
-    //                     </div>
-    //                 </div>
-    //             ),
-    //             accessorKey: 'join',
-    //         },
-    //     ],
-    //     []
-    // );
 
     const {
-        data: Pages,
+        data: SurroundingTypes,
         isLoading,
         isRefetching,
         isFetching,
         refetch,
-    } = useFetch<AllPages[]>({
-        endpoint: `api/dashboard/page/index`,
-        queryKey: [`All-Pages`],
+    } = useFetch<AllSurroundingsTypes[]>({
+        endpoint: `api/dashboard/surrounding/type/index`,
+        queryKey: [`All-Surrounding`],
     });
 
     const [page, setPage] = useState(1);
     const PAGE_SIZES = [10, 20, 30, 50, 100];
     const [pageSize, setPageSize] = useState(PAGE_SIZES[0]);
     //@ts-ignore
-    const [initialRecords, setInitialRecords] = useState<any>(sortBy(Pages?.data?.pages, 'id'));
+    const [initialRecords, setInitialRecords] = useState<any>(sortBy(SurroundingTypes?.data?.domains, 'id'));
     const [recordsData, setRecordsData] = useState(initialRecords);
     const [showCustomizer, setShowCustomizer] = useState(false);
     const [search, setSearch] = useState('');
@@ -124,12 +66,13 @@ const PagesList = () => {
     const [resetForm, setResetForm] = useState(true);
     const [selectedRecords, setSelectedRecords] = useState<any>([]);
     const [open, setOpen] = useState(false);
+
+
     useEffect(() => {
         //@ts-ignore
-
-        setInitialRecords(sortBy(Pages?.data?.pages, 'id'));
+        setInitialRecords(sortBy(SurroundingTypes?.data?.domains, 'id'));
         //@ts-ignore
-    }, [Pages?.data?.pages]);
+    }, [SurroundingTypes?.data?.domains]);
 
     useEffect(() => {
         setPage(1);
@@ -142,14 +85,30 @@ const PagesList = () => {
     }, [page, pageSize, initialRecords]);
 
 
+    // filter
+    // useEffect(() => {
+    //     if (selectValue !== 'Filter Role') {
+    //         setInitialRecords(() => {
+    //             //@ts-ignore
 
-    search
+    //             return Users?.data?.all_users.filter((item: any) => {
+    //                 return item.role_id == selectValue;
+    //             });
+    //         });
+    //     } else {
+    //         //@ts-ignore
+
+    //         setInitialRecords(Users?.data?.all_users);
+    //     }
+    //     // eslint-disable-next-line react-hooks/exhaustive-deps
+    // }, [selectValue]);
+
+    //search
     useEffect(() => {
         setInitialRecords(() => {
             //@ts-ignore
-
-            return Pages?.data?.pages.filter((item: any) => {
-                return item.name.toLowerCase().includes(search.toLowerCase())
+            return SurroundingTypes?.data?.domains.filter((item: any) => {
+                return item.name.toLowerCase().includes(search.toLowerCase()) ;
             });
         });
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -163,18 +122,60 @@ const PagesList = () => {
     }, [sortStatus]);
     const queryClient = useQueryClient();
 
-    const { mutate: deletePage } = useMutate({
-        mutationKey: [`pages/id/${idPage}`],
-        endpoint: `api/dashboard/page/delete/${idPage?.id}`,
+    type InitialValues_TP = {
+        [x: string]: string;
+    };
+    const initialValues: InitialValues_TP = {
+        //@ts-ignore
+        name:  !resetForm ? editData?.name : '',
+
+    };
+    // post data
+    const { mutate } = useMutate({
+        mutationKey: ['surounding/id'],
+        endpoint: `api/dashboard/surrounding/type/store`,
+        onSuccess: (data: any) => {
+            queryClient.refetchQueries(['All-Surrounding']);
+            Swal.fire({ title: 'Added!', text: 'Surounding Type has been added.', icon: 'success', customClass: 'sweet-alerts' });
+            // setShowCustomizer(false);
+            setOpen(false);
+        },
+        onError: (err: any) => {
+            Swal.fire({ title: 'Surounding Type Can not be added!', text: `${err.response.data.message}`, icon: 'error', customClass: 'sweet-alerts' });
+            console.log('error', err);
+        },
+        formData: true,
+    });
+
+    const { mutate: update , isLoading:loadingUpdate } = useMutate({
+        mutationKey: ['surounding/id'],
+         //@ts-ignore
+        endpoint: `api/dashboard/surrounding/type/update/${editData?.id}`,
+        onSuccess: (data: any) => {
+            queryClient.refetchQueries(['All-Surrounding']);
+            Swal.fire({ title: 'Updated!', text: 'Surounding Type has been updated.', icon: 'success', customClass: 'sweet-alerts' });
+            // setShowCustomizer(false);
+            setOpen(false);
+        },
+        onError: (err: any) => {
+            Swal.fire({ title: 'Surounding Type Can not be Updated!', text: `${err.response.data.message}`, icon: 'error', customClass: 'sweet-alerts' });
+        },
+        formData: true,
+    });
+
+
+    const { mutate: deleteSurrounding } = useMutate({
+        mutationKey: [`domains/id/${idSurrounding}`],
+        endpoint: `api/dashboard/surrounding/type/delete/${idSurrounding?.id}`,
         onSuccess: (data: any) => {
             console.log('done');
-            Swal.fire({ title: 'Deleted!', text: 'Page has been deleted.', icon: 'success', customClass: 'sweet-alerts' });
-            queryClient.refetchQueries(['dashboard/page/index']);
+            Swal.fire({ title: 'Deleted!', text: 'Surounding Type has been deleted.', icon: 'success', customClass: 'sweet-alerts' });
+            queryClient.refetchQueries(['api/dashboard/surrounding/type/index']);
             refetch();
         },
         onError: (err: any) => {
             console.log('error', err);
-            Swal.fire({ title: 'Sorry!', text: 'Page can not be Deleted .', icon: 'error', customClass: 'sweet-alerts' });
+            Swal.fire({ title: 'Sorry!', text: 'Surounding Type can not be Deleted .', icon: 'error', customClass: 'sweet-alerts' });
         },
         method: 'delete',
         formData: false,
@@ -192,28 +193,29 @@ const PagesList = () => {
                 customClass: 'sweet-alerts',
             }).then((result) => {
                 if (result.value) {
-                    deletePage(id?.id);
+                    deleteSurrounding(id?.id);
                 }
             });
         }
     };
 
-    const { mutate:deleteBulk  } = useMutate({
-        mutationKey: ['pages/id'],
-        endpoint: `api/dashboard/page/bulk/delete`,
+    const { mutate:deleteBulk , isLoading:postLoading } = useMutate({
+        mutationKey: ['subscriber/id'],
+        endpoint: `api/dashboard/surrounding/type/bulk/delete`,
         onSuccess: (data: any) => {
             console.log('done');
-            Swal.fire({ title: 'Deleted!', text: 'Pages have been deleted.', icon: 'success', customClass: 'sweet-alerts' });
-            queryClient.refetchQueries(['api/dashboard/page/index']);
+            Swal.fire({ title: 'Deleted!', text: 'Surounding Types have been deleted.', icon: 'success', customClass: 'sweet-alerts' });
+            queryClient.refetchQueries(['api/dashboard/surrounding/type/index']);
             refetch();
             setSelectedRecords([])
         },
         onError: (err: any) => {
-            Swal.fire({ title: 'Pages have not be deleted!', text: `${err.response.data.message}`, icon: 'error', customClass: 'sweet-alerts' });
+            Swal.fire({ title: 'Surounding Types have not be deleted!', text: `${err.response.data.message}`, icon: 'error', customClass: 'sweet-alerts' });
             console.log('error', err);
         },
         formData: true,
     });
+
 
     const showAlertDeleteSelect = async (type: number) => {
         if (type === 12) {
@@ -227,7 +229,6 @@ const PagesList = () => {
                 customClass: 'sweet-alerts',
             }).then((result) => {
                 if (result.value) {
-                    console.log('ddd')
                     deleteBulk({'ids[]': selectedRecords?.map((item:any) => item.id) })
                 }
             });
@@ -235,9 +236,12 @@ const PagesList = () => {
     };
 
     return (
-        <div className="panel">
+        <div className='grid grid-cols-12 gap-5'>
+
+        <div className="panel lg:col-span-8 col-span-12">
+
             <div className="flex md:items-center md:flex-row flex-col mb-5 gap-5">
-                <h5 className="font-semibold text-lg dark:text-white-light">All Pages</h5>
+                <h5 className="font-semibold text-lg dark:text-white-light">All Surrounding Type</h5>
                 <div className="lg:ltr:ml-auto lg:rtl:mr-auto min-md:ltr:mr-auto  min-md:rtl:ml-auto">
                     <input type="text" className="form-input w-[100%]" placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} />
                 </div>
@@ -255,31 +259,10 @@ const PagesList = () => {
                      null
 
                     }
-                <div className='flex md:items-center justify-between md:flex-row flex-col'>
-                    <button
-                        type="button"
-                        className="bg-primary font-semibold hover:bg-blue-500 max-sm:w-[100%] max-md:w-[100%] text-white py-2 px-5 rounded-lg cursor-pointer"
-                        onClick={() => {
-                            setOpen(true), setResetForm(true);
-                        }}
-                    >
-                        Add Page
-                    </button>
-                    <Link to='/builder' className='mt-0 bg-primary lg:ml-2 text-center hover:bg-blue-500 max-sm:w-[100%] max-sm:mt-2  max-md:w-[100%]  py-2 px-5 rounded-lg cursor-pointer text-white '>
-                        Page Builder
-                    </Link>
-
-                    <AddPage
-                        resetForm={resetForm}
-                        setOpen={setOpen}
-                        open={open}
-                        setResetForm={setResetForm}
-                        pageData={editData}
-                        showCustomizer={showCustomizer}
-                        setShowCustomizer={setShowCustomizer}
-                    />
+                <div>
                 </div>
             </div>
+
             <div className="datatables">
                 {isLoading || isRefetching ? (
                     <Loading />
@@ -290,26 +273,17 @@ const PagesList = () => {
                         className={`${isRtl ? 'whitespace-nowrap table-hover' : 'whitespace-nowrap table-hover'}`}
                         records={recordsData}
                         columns={[
-                            { accessor: 'id', title: 'ID', sortable: true , width:"80px"},
-                            {
-                                accessor: 'name',
-                                title: 'Name',
-                                sortable: true,
-                                render: ({ name}:any) => (
-                                    <div>{name}</div>
-                                ),
-                            },
-                            // { accessor: 'content', title: 'Content', sortable: true },
-                            { accessor: 'status',
-                              title: 'Status',
-                              sortable: true,
-                            },
-                            {  accessor: 'searchable',
-                               title: 'Searchable',
-                               sortable: true,
-                            render: ({ searchable }:any) => (
-                                    <div>{searchable? "Yes":"No"}</div>
-                            )},
+                                { accessor: 'id', title: 'ID', sortable: true ,width:'80px'},
+                                {
+                                    accessor: 'name',
+                                    title: 'Sounding Type',
+                                    sortable: true,
+                                    render: ({ name }:any) => (
+                                        <div className="flex items-center w-max">
+                                            <div>{name}</div>
+                                        </div>
+                                    ),
+                                },
                                 {
                                     accessor: 'action',
                                     title: 'Action',
@@ -321,7 +295,6 @@ const PagesList = () => {
                                                 action={() => {
                                                     setOpen(true);
                                                     //@ts-ignore
-
                                                     setEditData(id);
                                                     setResetForm(false);
                                                 }}
@@ -331,7 +304,7 @@ const PagesList = () => {
                                             <div>
                                                 <SvgDelete
                                                     action={() => {
-                                                        setPageId(id);
+                                                        setSurroundingId(id);
                                                         showAlert(10, id);
                                                     }}
                                                 />
@@ -355,12 +328,48 @@ const PagesList = () => {
                         minHeight={200}
                         paginationText={({ from, to, totalRecords }) => `Showing  ${from} to ${to} of ${totalRecords} entries`}
                     />
-                </div>
+                    </div>
                 )}
             </div>
+        </div>
+        <div className='panel lg:col-span-4 col-span-12'>
+        <div className='flex justify-between items-center'>
+        <h6 className="font-semibold text-lg dark:text-white-light py-2">{resetForm ? 'Add New Surrounding Type' : 'Add Surrounding Typein'}</h6>
+        {!resetForm?
+             //@ts-ignore
+            <Button variant='primary' className='px-2 py-1' onClick={()=>{setResetForm(true)}}>Add New Surrounding Type</Button>
+            :
+            null
+        }
+        </div>
+        <Formik
+            initialValues={initialValues}
+                // validationSchema={validatopnSchema}
+                enableReinitialize={true}
+                onSubmit={(values) => {
+                     resetForm ? mutate({ ...values }) : update({ ...values, _methode: 'put' });
+                }}
+            >
+                {({ setFieldValue }) => (
+                    <Form>
+
+                <div className="grid lg:grid-cols-12 max-sm:grid-cols-1 gap-5">
+                    <div className="lg:col-span-12 max-sm:col-span-1 ">
+                        <label htmlFor="name">Name</label>
+                        <InputCustom type="text" name="name" />
+                    </div>
+                    <div className="lg:col-span-12 max-sm:col-span-1 ">
+                        <Button variant='primary' type='submit' >
+                            submit
+                        </Button>
+                    </div>
+                </div>
+              </Form>
+                )}
+            </Formik>
+        </div>
         </div>
     );
 };
 
-export default PagesList;
-
+export default SurroundingsTypesList;

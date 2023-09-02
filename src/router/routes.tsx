@@ -7,6 +7,7 @@ import Login from '../pages/Authentication/Login';
 import PageBuilder from '../pages/PageBuilder/PageBuilder';
 import DomainsList from '../pages/Domains/DomainsList';
 import SubscribersList from '../pages/Subscribers/SubscribersList';
+import SurroundingsTypesList from '../pages/Hotels/SurroundingsTypesList';
 const Index = lazy(() => import('../pages/Index'));
 
 const UsersList = lazy(() => import('../pages/Users/UsersList'));
@@ -56,6 +57,11 @@ const routes = [
     {
         path: '/subscribers',
         element: <SubscribersList />,
+    }
+    ,
+    {
+        path: '/surrounding-types',
+        element: <SurroundingsTypesList />,
     }
 ];
 

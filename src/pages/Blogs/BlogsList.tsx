@@ -227,6 +227,44 @@ const BlogsList = () => {
         }
     };
 
+
+    const { mutate:deleteBulk  } = useMutate({
+        mutationKey: ['blogs/id'],
+        endpoint: `api/dashboard/blog/bulk/delete`,
+        onSuccess: (data: any) => {
+            console.log('done');
+            Swal.fire({ title: 'Deleted!', text: 'Blogs have been deleted.', icon: 'success', customClass: 'sweet-alerts' });
+            queryClient.refetchQueries(['api/dashboard/blog']);
+            refetch();
+            setSelectedRecords([])
+        },
+        onError: (err: any) => {
+            Swal.fire({ title: 'Blogs have not be deleted!', text: `${err.response.data.message}`, icon: 'error', customClass: 'sweet-alerts' });
+            console.log('error', err);
+        },
+        formData: true,
+    });
+
+
+    const showAlertDeleteSelect = async (type: number) => {
+        if (type === 12) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                showCancelButton: true,
+                confirmButtonText: 'Delete',
+                padding: '2em',
+                customClass: 'sweet-alerts',
+            }).then((result) => {
+                if (result.value) {
+                    console.log('ddd')
+                    deleteBulk({'ids[]': selectedRecords?.map((item:any) => item.id) })
+                }
+            });
+        }
+    };
+
     return (
         <div className="panel">
             <div className="flex md:items-center md:flex-row flex-col mb-5 gap-5">
@@ -234,6 +272,20 @@ const BlogsList = () => {
                 <div className="lg:ltr:ml-auto lg:rtl:mr-auto min-md:ltr:mr-auto  min-md:rtl:ml-auto">
                     <input type="text" className="form-input w-[100%]" placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} />
                 </div>
+                {selectedRecords.length?
+                         <button
+                         type="button"
+                         className="bg-primary font-semibold hover:bg-blue-500 max-sm:w-[100%] max-md:w-[100%] text-white py-2 px-5 rounded-lg cursor-pointer"
+                         onClick={() => {
+                            showAlertDeleteSelect(12)
+                         }}
+                     >
+                         Delete Records
+                     </button>
+                     :
+                     null
+
+                    }
                 <div>
                     <button
                         type="button"

@@ -105,7 +105,7 @@ const Sidebar = () => {
                                         </li>
                                     </ul>
                                 </AnimateHeight> */}
-                    
+
 
                              {/* <h2
                                 className="py-3 px-7 flex items-center uppercase font-extrabold bg-white-light/30 dark:bg-dark dark:bg-opacity-[0.08] -mx-4 mb-1">
@@ -277,8 +277,9 @@ const Sidebar = () => {
                                             </div>
                                         </NavLink>
                                     </li> */}
-                                    <li className="nav-item">
-                                        <NavLink to="/" className="group">
+
+                                    <li className="menu nav-item">
+                                        <button type="button" className={`${currentMenu === 'hotels' ? 'active' : ''} nav-link group w-full`} onClick={() => toggleMenu('hotels')}>
                                             <div className="flex items-center">
                                                 <svg className="group-hover:!text-primary" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                     <path
@@ -304,7 +305,25 @@ const Sidebar = () => {
                                                 </svg>
                                                 <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">Hotels</span>
                                             </div>
-                                        </NavLink>
+
+                                            <div className={currentMenu === 'hotels' ? '!rotate-90' : 'rtl:rotate-180'}>
+                                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="M9 5L15 12L9 19" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                                                </svg>
+                                            </div>
+                                        </button>
+
+                                        <AnimateHeight duration={300} height={currentMenu === 'hotels' ? 'auto' : 0}>
+                                            <ul className="sub-menu text-gray-500">
+                                                <li>
+                                                   <NavLink to="/hotels">All Hotels</NavLink>
+                                                </li>
+                                                <li>
+                                                   <NavLink to="/surrounding-types" >Surrounding Types</NavLink>
+                                                </li>
+
+                                            </ul>
+                                        </AnimateHeight>
                                     </li>
                                     <li className="nav-item">
                                         <NavLink to="/" className="group">
