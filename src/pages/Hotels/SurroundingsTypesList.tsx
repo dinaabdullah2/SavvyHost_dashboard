@@ -56,7 +56,7 @@ const SurroundingsTypesList = () => {
     const PAGE_SIZES = [10, 20, 30, 50, 100];
     const [pageSize, setPageSize] = useState(PAGE_SIZES[0]);
     //@ts-ignore
-    const [initialRecords, setInitialRecords] = useState<any>(sortBy(SurroundingTypes?.data?.domains, 'id'));
+    const [initialRecords, setInitialRecords] = useState<any>(sortBy(SurroundingTypes?.data?.surroundings_types, 'id'));
     const [recordsData, setRecordsData] = useState(initialRecords);
     const [showCustomizer, setShowCustomizer] = useState(false);
     const [search, setSearch] = useState('');
@@ -70,9 +70,9 @@ const SurroundingsTypesList = () => {
 
     useEffect(() => {
         //@ts-ignore
-        setInitialRecords(sortBy(SurroundingTypes?.data?.domains, 'id'));
+        setInitialRecords(sortBy(SurroundingTypes?.data?.surroundings_types, 'id'));
         //@ts-ignore
-    }, [SurroundingTypes?.data?.domains]);
+    }, [SurroundingTypes?.data?.surroundings_types]);
 
     useEffect(() => {
         setPage(1);
@@ -107,7 +107,7 @@ const SurroundingsTypesList = () => {
     useEffect(() => {
         setInitialRecords(() => {
             //@ts-ignore
-            return SurroundingTypes?.data?.domains.filter((item: any) => {
+            return SurroundingTypes?.data?.surroundings_types.filter((item: any) => {
                 return item.name.toLowerCase().includes(search.toLowerCase()) ;
             });
         });
@@ -334,10 +334,10 @@ const SurroundingsTypesList = () => {
         </div>
         <div className='panel lg:col-span-4 col-span-12'>
         <div className='flex justify-between items-center'>
-        <h6 className="font-semibold text-lg dark:text-white-light py-2">{resetForm ? 'Add New Surrounding Type' : 'Add Surrounding Typein'}</h6>
+        <h6 className="font-semibold text-lg dark:text-white-light py-2">{resetForm ? 'Add New Surrounding Type' : 'Edit Surrounding Type'}</h6>
         {!resetForm?
              //@ts-ignore
-            <Button variant='primary' className='px-2 py-1' onClick={()=>{setResetForm(true)}}>Add New Surrounding Type</Button>
+            <Button variant='primary' className='px-2 py-1' onClick={()=>{setResetForm(true)}}>Add New </Button>
             :
             null
         }

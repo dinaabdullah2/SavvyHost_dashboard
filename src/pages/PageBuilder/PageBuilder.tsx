@@ -39,14 +39,14 @@ const PageBuilder = () => {
                                 <div className="border w-[100%]  border-white-light dark:border-[#1b2e4b] rounded-md mb-3 pb-5">
                                     <h5 className="mb-5 w-[100%] text-base  font-bold dark:text-white p-2  border-b   border-white-light">Home Page </h5>
                                     <div className="grid lg:grid-cols-12 max-sm:grid-cols-1 gap-5 px-3 ">
-                                        <HeroSection mainData={mainData?.data?.parts?.map((item)=>item)} />
+                                        {/* <HeroSection mainData={mainData?.data?.parts?.map((item)=>item)} />
                                         <Features mainData={mainData?.data?.parts?.map((item)=>item)}  />
                                         <Security mainData={mainData?.data?.parts?.map((item)=>item)}  />
                                         <AboutUs mainData={mainData?.data?.parts?.map((item)=>item)}  />
                                         <Events mainData={mainData?.data?.parts?.map((item)=>item)}  />
                                         <Blog mainData={mainData?.data?.parts?.map((item)=>item)}  />
                                         <Newsletter mainData={mainData?.data?.parts?.map((item)=>item)}  />
-                                        <CallToAction mainData={mainData?.data?.parts?.map((item)=>item)}  />
+                                        <CallToAction mainData={mainData?.data?.parts?.map((item)=>item)}  /> */}
 
                                     </div>
                                 </div>

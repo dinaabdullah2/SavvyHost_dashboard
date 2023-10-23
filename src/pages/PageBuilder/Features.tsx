@@ -70,6 +70,7 @@ const Features = () => {
   };
   const removeSubFeature = (index: any) => {
     const rows = [...arrSubFeatures];
+    console.log(index,'index')
     rows.splice(index, 1);
     setArrSubFeatures(rows);
   };

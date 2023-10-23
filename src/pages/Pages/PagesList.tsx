@@ -20,6 +20,7 @@ import { SvgDelete } from '../../components/atoms/icons/SvgDelete';
 import AddPage from './AddPage';
 import { Link } from 'react-router-dom';
 import Tippy from '@tippyjs/react';
+import TableSkelton from '../../components/Skelton/TableSkelton';
 
 
 
@@ -235,130 +236,131 @@ const PagesList = () => {
     };
 
     return (
-        <div className="panel">
-            <div className="flex md:items-center md:flex-row flex-col mb-5 gap-5">
-                <h5 className="font-semibold text-lg dark:text-white-light">All Pages</h5>
-                <div className="lg:ltr:ml-auto lg:rtl:mr-auto min-md:ltr:mr-auto  min-md:rtl:ml-auto">
-                    <input type="text" className="form-input w-[100%]" placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} />
-                </div>
-                {selectedRecords.length?
-                         <button
-                         type="button"
-                         className="bg-primary font-semibold hover:bg-blue-500 max-sm:w-[100%] max-md:w-[100%] text-white py-2 px-5 rounded-lg cursor-pointer"
-                         onClick={() => {
-                            showAlertDeleteSelect(12)
-                         }}
-                     >
-                         Delete Records
-                     </button>
-                     :
-                     null
+        <TableSkelton loading={true} />
+        // <div className="panel">
+        //     <div className="flex md:items-center md:flex-row flex-col mb-5 gap-5">
+        //         <h5 className="font-semibold text-lg dark:text-white-light">All Pages</h5>
+        //         <div className="lg:ltr:ml-auto lg:rtl:mr-auto min-md:ltr:mr-auto  min-md:rtl:ml-auto">
+        //             <input type="text" className="form-input w-[100%]" placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} />
+        //         </div>
+        //         {selectedRecords.length?
+        //                  <button
+        //                  type="button"
+        //                  className="bg-primary font-semibold hover:bg-blue-500 max-sm:w-[100%] max-md:w-[100%] text-white py-2 px-5 rounded-lg cursor-pointer"
+        //                  onClick={() => {
+        //                     showAlertDeleteSelect(12)
+        //                  }}
+        //              >
+        //                  Delete Records
+        //              </button>
+        //              :
+        //              null
 
-                    }
-                <div className='flex md:items-center justify-between md:flex-row flex-col'>
-                    <button
-                        type="button"
-                        className="bg-primary font-semibold hover:bg-blue-500 max-sm:w-[100%] max-md:w-[100%] text-white py-2 px-5 rounded-lg cursor-pointer"
-                        onClick={() => {
-                            setOpen(true), setResetForm(true);
-                        }}
-                    >
-                        Add Page
-                    </button>
-                    <Link to='/builder' className='mt-0 bg-primary lg:ml-2 text-center hover:bg-blue-500 max-sm:w-[100%] max-sm:mt-2  max-md:w-[100%]  py-2 px-5 rounded-lg cursor-pointer text-white '>
-                        Page Builder
-                    </Link>
+        //             }
+        //         <div className='flex md:items-center justify-between md:flex-row flex-col'>
+        //             <button
+        //                 type="button"
+        //                 className="bg-primary font-semibold hover:bg-blue-500 max-sm:w-[100%] max-md:w-[100%] text-white py-2 px-5 rounded-lg cursor-pointer"
+        //                 onClick={() => {
+        //                     setOpen(true), setResetForm(true);
+        //                 }}
+        //             >
+        //                 Add Page
+        //             </button>
+        //             <Link to='/builder' className='mt-0 bg-primary lg:ml-2 text-center hover:bg-blue-500 max-sm:w-[100%] max-sm:mt-2  max-md:w-[100%]  py-2 px-5 rounded-lg cursor-pointer text-white '>
+        //                 Page Builder
+        //             </Link>
 
-                    <AddPage
-                        resetForm={resetForm}
-                        setOpen={setOpen}
-                        open={open}
-                        setResetForm={setResetForm}
-                        pageData={editData}
-                        showCustomizer={showCustomizer}
-                        setShowCustomizer={setShowCustomizer}
-                    />
-                </div>
-            </div>
-            <div className="datatables">
-                {isLoading || isRefetching ? (
-                    <Loading />
-                ) : (
-                    <div className="datatables">
-                    <DataTable
-                        highlightOnHover
-                        className={`${isRtl ? 'whitespace-nowrap table-hover' : 'whitespace-nowrap table-hover'}`}
-                        records={recordsData}
-                        columns={[
-                            { accessor: 'id', title: 'ID', sortable: true , width:"80px"},
-                            {
-                                accessor: 'name',
-                                title: 'Name',
-                                sortable: true,
-                                render: ({ name}:any) => (
-                                    <div>{name}</div>
-                                ),
-                            },
-                            // { accessor: 'content', title: 'Content', sortable: true },
-                            { accessor: 'status',
-                              title: 'Status',
-                              sortable: true,
-                            },
-                            {  accessor: 'searchable',
-                               title: 'Searchable',
-                               sortable: true,
-                            render: ({ searchable }:any) => (
-                                    <div>{searchable? "Yes":"No"}</div>
-                            )},
-                                {
-                                    accessor: 'action',
-                                    title: 'Action',
-                                    titleClassName: '!text-center',
-                                    render: (id) => (
-                                        <div className="flex items-center w-max mx-auto gap-2">
-                                            <Tippy >
-                                                <EditIcon
-                                                action={() => {
-                                                    setOpen(true);
-                                                    //@ts-ignore
+        //             <AddPage
+        //                 resetForm={resetForm}
+        //                 setOpen={setOpen}
+        //                 open={open}
+        //                 setResetForm={setResetForm}
+        //                 pageData={editData}
+        //                 showCustomizer={showCustomizer}
+        //                 setShowCustomizer={setShowCustomizer}
+        //             />
+        //         </div>
+        //     </div>
+        //     <div className="datatables">
+        //         {isLoading || isRefetching ? (
+        //             <Loading />
+        //         ) : (
+        //             <div className="datatables">
+        //             <DataTable
+        //                 highlightOnHover
+        //                 className={`${isRtl ? 'whitespace-nowrap table-hover' : 'whitespace-nowrap table-hover'}`}
+        //                 records={recordsData}
+        //                 columns={[
+        //                     { accessor: 'id', title: 'ID', sortable: true , width:"80px"},
+        //                     {
+        //                         accessor: 'name',
+        //                         title: 'Name',
+        //                         sortable: true,
+        //                         render: ({ name}:any) => (
+        //                             <div>{name}</div>
+        //                         ),
+        //                     },
+        //                     // { accessor: 'content', title: 'Content', sortable: true },
+        //                     { accessor: 'status',
+        //                       title: 'Status',
+        //                       sortable: true,
+        //                     },
+        //                     {  accessor: 'searchable',
+        //                        title: 'Searchable',
+        //                        sortable: true,
+        //                     render: ({ searchable }:any) => (
+        //                             <div>{searchable? "Yes":"No"}</div>
+        //                     )},
+        //                         {
+        //                             accessor: 'action',
+        //                             title: 'Action',
+        //                             titleClassName: '!text-center',
+        //                             render: (id) => (
+        //                                 <div className="flex items-center w-max mx-auto gap-2">
+        //                                     <Tippy >
+        //                                         <EditIcon
+        //                                         action={() => {
+        //                                             setOpen(true);
+        //                                             //@ts-ignore
 
-                                                    setEditData(id);
-                                                    setResetForm(false);
-                                                }}
-                                               />
-                                            </Tippy>
-                                            <Tippy >
-                                            <div>
-                                                <SvgDelete
-                                                    action={() => {
-                                                        setPageId(id);
-                                                        showAlert(10, id);
-                                                    }}
-                                                />
-                                            </div>
-                                            </Tippy>
+        //                                             setEditData(id);
+        //                                             setResetForm(false);
+        //                                         }}
+        //                                        />
+        //                                     </Tippy>
+        //                                     <Tippy >
+        //                                     <div>
+        //                                         <SvgDelete
+        //                                             action={() => {
+        //                                                 setPageId(id);
+        //                                                 showAlert(10, id);
+        //                                             }}
+        //                                         />
+        //                                     </div>
+        //                                     </Tippy>
 
-                                        </div>
-                                    ),
-                                },
-                        ]}
-                        totalRecords={initialRecords.length}
-                        recordsPerPage={pageSize}
-                        page={page}
-                        onPageChange={(p) => setPage(p)}
-                        recordsPerPageOptions={PAGE_SIZES}
-                        onRecordsPerPageChange={setPageSize}
-                        sortStatus={sortStatus}
-                        onSortStatusChange={setSortStatus}
-                        selectedRecords={selectedRecords}
-                        onSelectedRecordsChange={setSelectedRecords}
-                        minHeight={200}
-                        paginationText={({ from, to, totalRecords }) => `Showing  ${from} to ${to} of ${totalRecords} entries`}
-                    />
-                </div>
-                )}
-            </div>
-        </div>
+        //                                 </div>
+        //                             ),
+        //                         },
+        //                 ]}
+        //                 totalRecords={initialRecords.length}
+        //                 recordsPerPage={pageSize}
+        //                 page={page}
+        //                 onPageChange={(p) => setPage(p)}
+        //                 recordsPerPageOptions={PAGE_SIZES}
+        //                 onRecordsPerPageChange={setPageSize}
+        //                 sortStatus={sortStatus}
+        //                 onSortStatusChange={setSortStatus}
+        //                 selectedRecords={selectedRecords}
+        //                 onSelectedRecordsChange={setSelectedRecords}
+        //                 minHeight={200}
+        //                 paginationText={({ from, to, totalRecords }) => `Showing  ${from} to ${to} of ${totalRecords} entries`}
+        //             />
+        //         </div>
+        //         )}
+        //     </div>
+        // </div>
     );
 };
 

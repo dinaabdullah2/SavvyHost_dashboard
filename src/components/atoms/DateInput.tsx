@@ -21,7 +21,6 @@ const DateInput = ({ label, placeholder, description, error, className, value, n
     useEffect(()=>{
         if(values['start_date']&& !values['end_date'] ){
            document.getElementById('end_date')?.click()
-
         }
     })
 
